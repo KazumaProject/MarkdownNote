@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MarkdownNote</string>
+    <string name="add_button">add button</string>
+    <string name="main_menu_draft">Draft</string>
+    <string name="main_menu_tag">Tag</string>
+    <string name="main_menu_setting">Setting</string>
 </resources>
