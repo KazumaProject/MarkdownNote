@@ -4,4 +4,6 @@
     <string name="main_menu_draft">Draft</string>
     <string name="main_menu_tag">Edit tag</string>
     <string name="main_menu_setting">Setting</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
