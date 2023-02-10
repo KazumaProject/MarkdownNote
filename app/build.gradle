@@ -114,5 +114,5 @@ dependencies {
     annotationProcessor "io.noties:prism4j-bundler:${prism_version}"
 
     // Color Picker Dialog
-    implementation "com.github.skydoves:colorpickerview:2.1.7"
+    implementation "com.github.skydoves:colorpickerview:2.2.4"
 }
