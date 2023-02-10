@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintTop_toTopOf="parent"
-        android:paddingHorizontal="24dp"
+        android:paddingHorizontal="20dp"
         android:background="@android:color/transparent">
 
         <SearchView
