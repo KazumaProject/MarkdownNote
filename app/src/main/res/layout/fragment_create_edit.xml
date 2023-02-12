@@ -38,6 +38,13 @@
                 android:layout_weight="3"
                 android:background="@color/emoji_chooser_bg_color"
                 >
+                <androidx.emoji.widget.EmojiTextView
+                    android:id="@+id/chosen_emoji_text_view"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:textSize="36sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -66,12 +73,18 @@
         app:shape_roundRect_borderColor="@color/emoji_chooser_boarder_color"
         app:shape_roundRect_borderWidth="1dp"
         android:elevation="2dp">
-        <ScrollView
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/markdown_raw_edit_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/markdown_bg_color">
-
-        </ScrollView>
+            android:background="@color/markdown_bg_color"
+            android:gravity="top"
+            android:hint="@string/markdown_hint"
+            android:paddingHorizontal="12dp"
+            android:paddingTop="16dp"
+            android:textColor="@color/text_color_main"
+            android:textColorHint="@color/text_color_sub1" />
     </io.github.florent37.shapeofview.shapes.RoundRectView>
 
 </LinearLayout>

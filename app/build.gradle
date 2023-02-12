@@ -115,4 +115,7 @@ dependencies {
 
     // ShapeOfView
     implementation 'io.github.florent37:shapeofview:1.4.7'
+
+    // Emoji
+    implementation 'androidx.emoji:emoji:1.1.0'
 }
