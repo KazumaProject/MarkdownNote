@@ -1,5 +1,6 @@
 package com.kazumaproject.markdownnote.ui.create_edit
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +9,7 @@ import androidx.emoji.text.EmojiCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import com.kazumaproject.emojipicker.Constants.EMOJI_LIST_SMILEYS_EMOTION
-import com.kazumaproject.emojipicker.Emoji
+import com.kazumaproject.emojipicker.Constants.EMOJI_LIST_SMILEYS_PEOPLE
 import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
 import com.kazumaproject.emojipicker.convertUnicode
 import com.kazumaproject.markdownnote.MainViewModel
@@ -45,14 +45,14 @@ class CreateEditFragment : Fragment() {
 
     private fun setChooseEmojiView() = binding.changeEmojiParentView.apply {
         setOnClickListener {
-            val dialog = EmojiPickerDialogFragment()
+            val dialog = EmojiPickerDialogFragment(binding.chosenEmojiTextView)
             dialog.show(requireActivity().supportFragmentManager,"emoji picker dialog")
         }
     }
 
     private fun setEmojiTextView() = binding.chosenEmojiTextView.apply {
         try {
-            val textStr = EmojiCompat.get().process(EMOJI_LIST_SMILEYS_EMOTION[10].unicode.convertUnicode())
+            val textStr = EmojiCompat.get().process(EMOJI_LIST_SMILEYS_PEOPLE[10].unicode.convertUnicode())
             Timber.d("emoji: $text")
             text = textStr
         }catch (e: Exception){

@@ -1,7 +1,7 @@
 package com.kazumaproject.emojipicker
 
 object Constants {
-    val EMOJI_LIST_SMILEYS_EMOTION = arrayListOf(
+    val EMOJI_LIST_SMILEYS_PEOPLE = arrayListOf(
         Emoji(1,"grinning face",0x1f600),
         Emoji(2,"grinning face with big eyes",0x1f603),
         Emoji(3,"grinning face with smiling eyes",0x1f604),
@@ -16,5 +16,14 @@ object Constants {
         Emoji(12,"winking face",0x1f609),
         Emoji(13,"smiling face with smiling eyes",0x1f60a),
         Emoji(14,"smiling face with halo",0x1f607),
+    )
+
+    val EMOJI_LIST_ANIMALS_NATURE = arrayListOf(
+        Emoji(534,"monkey face",0x1f435),
+        Emoji(535,"monkey",0x1f412),
+        Emoji(536,"gorilla",0x1f98d),
+        Emoji(537,"orangutan",0x1f9a7),
+        Emoji(538,"dog face",0x1f436),
+        Emoji(539,"dog",0x1f415)
     )
 }
