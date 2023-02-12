@@ -21,6 +21,7 @@ class Application: Application() {
             R.array.com_google_android_gms_fonts_certs
         )
         val config = FontRequestEmojiCompatConfig(applicationContext, fontRequest)
+            .setReplaceAll(true)
         EmojiCompat.init(config)
     }
 }

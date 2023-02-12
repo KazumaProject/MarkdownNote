@@ -48,9 +48,13 @@ class CreateEditFragment : Fragment() {
     }
 
     private fun setEmojiTextView() = binding.chosenEmojiTextView.apply {
-        val textStr = EmojiCompat.get().process("\uD83E\uDD23")
-        Timber.d("emoji: $text")
-        text = textStr
+        try {
+            val textStr = EmojiCompat.get().process("\ud83d\ude01")
+            Timber.d("emoji: $text")
+            text = textStr
+        }catch (e: Exception){
+            //** Noting to do **//
+        }
     }
 
 }
