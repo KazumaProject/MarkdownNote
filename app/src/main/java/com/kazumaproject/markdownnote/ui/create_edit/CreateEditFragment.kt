@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.emoji.text.EmojiCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.databinding.FragmentCreateEditBinding
@@ -34,6 +35,7 @@ class CreateEditFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         activityViewModel.updateCurrentFragmentType(FragmentType.CreateEditFragment)
         setEmojiTextView()
+        setChooseEmojiView()
     }
 
     override fun onDestroyView() {
@@ -43,7 +45,8 @@ class CreateEditFragment : Fragment() {
 
     private fun setChooseEmojiView() = binding.changeEmojiParentView.apply {
         setOnClickListener {
-
+            val dialog = EmojiPickerDialogFragment()
+            dialog.show(requireActivity().supportFragmentManager,"emoji picker dialog")
         }
     }
 
