@@ -9,7 +9,17 @@
         android:id="@+id/homeFragment"
         android:name="com.kazumaproject.markdownnote.ui.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_draftFragment"
+            app:destination="@id/draftFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_createEditFragment"
+            app:destination="@id/createEditFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
+    </fragment>
     <fragment
         android:id="@+id/createEditFragment"
         android:name="com.kazumaproject.markdownnote.ui.create_edit.CreateEditFragment"
