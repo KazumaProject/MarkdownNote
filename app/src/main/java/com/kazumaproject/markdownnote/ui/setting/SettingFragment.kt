@@ -20,6 +20,10 @@ class SettingFragment : Fragment() {
     private var _binding : FragmentSettingBinding? = null
     private val binding get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activityViewModel.updateCurrentFragmentType(FragmentType.SettingFragment)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,7 +34,7 @@ class SettingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activityViewModel.updateCurrentFragmentType(FragmentType.SettingFragment)
+
     }
 
     override fun onDestroyView() {

@@ -113,6 +113,6 @@ dependencies {
     implementation "io.noties:prism4j:${prism_version}"
     annotationProcessor "io.noties:prism4j-bundler:${prism_version}"
 
-    // Color Picker Dialog
-    implementation "com.github.skydoves:colorpickerview:2.2.4"
+    // ShapeOfView
+    implementation 'io.github.florent37:shapeofview:1.4.7'
 }
