@@ -1,4 +1,4 @@
-package com.kazumaproject.emojipicker
+package com.kazumaproject.markdownnote.emojipicker
 
 import android.app.AlertDialog
 import android.view.LayoutInflater
@@ -9,13 +9,14 @@ import androidx.emoji.widget.EmojiTextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.kazumaproject.markdownnote.R
+import com.kazumaproject.markdownnote.ui.create_edit.CreateEditViewModel
 
 class ParentEmojiRecyclerViewAdapter (
-    private val emojiTextView: EmojiTextView,
-    private val alertDialog: AlertDialog
-        ) : RecyclerView.Adapter<ParentEmojiRecyclerViewAdapter.ParentEmojiListViewHolder>() {
+    private val alertDialog: AlertDialog,
+    private val createEditViewModel: CreateEditViewModel
+    ) : RecyclerView.Adapter<ParentEmojiRecyclerViewAdapter.ParentEmojiListViewHolder>() {
     inner class ParentEmojiListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
     private val viewPool = RecyclerView.RecycledViewPool()
@@ -36,7 +37,7 @@ class ParentEmojiRecyclerViewAdapter (
         get() = differ.currentList
         set(value) = differ.submitList(value)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ParentEmojiRecyclerViewAdapter.ParentEmojiListViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ParentEmojiListViewHolder {
         return ParentEmojiListViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.emoji_recycler_view_item_layout,
@@ -70,7 +71,7 @@ class ParentEmojiRecyclerViewAdapter (
             layoutManager = childLayoutManager
         }
         childAdapter.setOnItemClickListener { emoji, i ->
-            emojiTextView.text = emoji.unicode.convertUnicode()
+            createEditViewModel.updateCurrentEmoji(emoji)
             alertDialog.dismiss()
         }
     }

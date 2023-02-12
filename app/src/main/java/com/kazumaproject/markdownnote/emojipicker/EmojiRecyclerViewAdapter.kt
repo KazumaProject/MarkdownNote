@@ -1,4 +1,4 @@
-package com.kazumaproject.emojipicker
+package com.kazumaproject.markdownnote.emojipicker
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +7,7 @@ import androidx.emoji.widget.EmojiTextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.kazumaproject.markdownnote.R
 
 class EmojiRecyclerViewAdapter : RecyclerView.Adapter<EmojiRecyclerViewAdapter.EmojiListViewHolder>() {
 

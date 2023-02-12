@@ -29,10 +29,9 @@ class MainActivity : AppCompatActivity() {
         collectLatestLifecycleFlow(viewModel.current_fragment_type){
             Timber.d("current fragment: $it")
             setAppBottomBarAppearanceByFragmentType(it)
+            setFloatingButton(it)
         }
-
         setBottomAppBar()
-        setFloatingButton()
     }
 
     private fun setAppBottomBarAppearanceByFragmentType(type: FragmentType){
@@ -42,6 +41,7 @@ class MainActivity : AppCompatActivity() {
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.baseline_add_24)
                     alpha = 1.0f
+                    isEnabled = true
                 }
             }
             is FragmentType.CreateEditFragment -> {
@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.diskette)
                     alpha = 0.5f
+                    isEnabled = false
                 }
             }
             is FragmentType.DraftFragment -> {
@@ -56,6 +57,7 @@ class MainActivity : AppCompatActivity() {
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.draft)
                     alpha = 0.5f
+                    isEnabled = false
                 }
             }
             is FragmentType.SettingFragment -> {
@@ -63,6 +65,7 @@ class MainActivity : AppCompatActivity() {
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.settings)
                     alpha = 0.5f
+                    isEnabled = false
                 }
             }
         }
@@ -83,11 +86,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setFloatingButton() = binding.addFloatingButton.apply {
-        setOnClickListener {
-            findNavController(R.id.navHostFragment).navigate(
-                HomeFragmentDirections.actionHomeFragmentToCreateEditFragment()
-            )
+    private fun setFloatingButton(fragmentType: FragmentType) = binding.addFloatingButton.apply {
+        when(fragmentType){
+            is FragmentType.HomeFragment ->{
+                setOnClickListener {
+                    findNavController(R.id.navHostFragment).navigate(
+                        HomeFragmentDirections.actionHomeFragmentToCreateEditFragment()
+                    )
+                }
+            }
+            is FragmentType.CreateEditFragment ->{
+                setOnClickListener {
+                    viewModel.updateNoteSaveRequest(true)
+                }
+            }
+            is FragmentType.DraftFragment ->{
+
+            }
+            is FragmentType.SettingFragment ->{
+
+            }
         }
     }
 

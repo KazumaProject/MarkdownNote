@@ -14,4 +14,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "MarkdownNote"
 include ':app'
-include ':emojipicker'

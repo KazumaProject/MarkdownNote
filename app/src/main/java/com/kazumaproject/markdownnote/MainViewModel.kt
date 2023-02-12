@@ -11,8 +11,13 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor() : ViewModel() {
     private val _current_fragment_type = MutableStateFlow<FragmentType>(FragmentType.HomeFragment)
     val current_fragment_type = _current_fragment_type.asStateFlow()
-
     fun updateCurrentFragmentType(type: FragmentType){
         _current_fragment_type.value = type
+    }
+
+    private val _note_save_request = MutableStateFlow(false)
+    val note_save_request = _note_save_request.asStateFlow()
+    fun updateNoteSaveRequest(value: Boolean){
+        _note_save_request.value = value
     }
 }
