@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import com.kazumaproject.emojipicker.Constants.EMOJI_LIST_SMILEYS_EMOTION
 import com.kazumaproject.emojipicker.Emoji
 import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
+import com.kazumaproject.emojipicker.convertUnicode
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.databinding.FragmentCreateEditBinding
 import com.kazumaproject.markdownnote.other.FragmentType
@@ -51,8 +52,7 @@ class CreateEditFragment : Fragment() {
 
     private fun setEmojiTextView() = binding.chosenEmojiTextView.apply {
         try {
-            val textStr = EmojiCompat.get().process(String(Character.toChars(
-                EMOJI_LIST_SMILEYS_EMOTION[4].unicode)))
+            val textStr = EmojiCompat.get().process(EMOJI_LIST_SMILEYS_EMOTION[10].unicode.convertUnicode())
             Timber.d("emoji: $text")
             text = textStr
         }catch (e: Exception){
