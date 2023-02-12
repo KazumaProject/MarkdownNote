@@ -1,20 +1,19 @@
 package com.kazumaproject.markdownnote.ui.create_edit
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.emoji.text.EmojiCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.kazumaproject.emojipicker.Constants.EMOJI_LIST_SMILEYS_EMOTION
+import com.kazumaproject.emojipicker.Emoji
 import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
 import com.kazumaproject.markdownnote.MainViewModel
-import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.databinding.FragmentCreateEditBinding
-import com.kazumaproject.markdownnote.databinding.FragmentHomeBinding
 import com.kazumaproject.markdownnote.other.FragmentType
-import com.kazumaproject.markdownnote.ui.home.HomeViewModel
 import timber.log.Timber
 
 class CreateEditFragment : Fragment() {
@@ -52,7 +51,8 @@ class CreateEditFragment : Fragment() {
 
     private fun setEmojiTextView() = binding.chosenEmojiTextView.apply {
         try {
-            val textStr = EmojiCompat.get().process("\ud83d\ude01")
+            val textStr = EmojiCompat.get().process(String(Character.toChars(
+                EMOJI_LIST_SMILEYS_EMOTION[4].unicode)))
             Timber.d("emoji: $text")
             text = textStr
         }catch (e: Exception){

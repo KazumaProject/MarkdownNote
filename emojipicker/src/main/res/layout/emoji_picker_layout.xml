@@ -16,6 +16,8 @@
         android:id="@+id/emoji_search_view"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:iconifiedByDefault="true"
+        android:layoutDirection="rtl"
         app:layout_constraintTop_toBottomOf="@id/tab_layout"/>
 
     <androidx.recyclerview.widget.RecyclerView
