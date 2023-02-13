@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
-import com.kazumaproject.emojipicker.convertUnicode
+import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.emojipicker.model.Emoji
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.databinding.FragmentCreateEditBinding

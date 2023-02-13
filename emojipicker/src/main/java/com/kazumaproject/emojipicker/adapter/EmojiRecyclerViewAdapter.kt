@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.kazumaproject.emojipicker.R
-import com.kazumaproject.emojipicker.convertUnicode
+import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.emojipicker.model.Emoji
 
 class EmojiRecyclerViewAdapter : RecyclerView.Adapter<EmojiRecyclerViewAdapter.EmojiListViewHolder>() {
