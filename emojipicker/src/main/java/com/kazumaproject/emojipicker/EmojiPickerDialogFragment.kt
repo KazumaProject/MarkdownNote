@@ -1,4 +1,4 @@
-package com.kazumaproject.markdownnote.emojipicker
+package com.kazumaproject.emojipicker
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -7,16 +7,19 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.kazumaproject.markdownnote.R
-import com.kazumaproject.markdownnote.emojipicker.Constants.EMOJI_LIST_ANIMALS_NATURE
-import com.kazumaproject.markdownnote.emojipicker.Constants.EMOJI_LIST_SMILEYS_PEOPLE
-import com.kazumaproject.markdownnote.ui.create_edit.CreateEditViewModel
+import com.kazumaproject.emojipicker.Constants.EMOJI_LIST_ANIMALS_NATURE
+import com.kazumaproject.emojipicker.Constants.EMOJI_LIST_SMILEYS_PEOPLE
 
 class EmojiPickerDialogFragment (
-    private val createEditViewModel: CreateEditViewModel
+    private val mEmojiItemClickListener: EmojiItemClickListener
         ): DialogFragment(){
 
     private var adapter: ParentEmojiRecyclerViewAdapter? = null
+
+    open interface EmojiItemClickListener{
+        fun onEmojiClicked(emoji: Emoji)
+    }
+
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val parentView = layoutInflater.inflate(R.layout.emoji_picker_layout, null)
@@ -24,7 +27,7 @@ class EmojiPickerDialogFragment (
         builder.apply {
             setView(parentView)
         }
-        adapter = ParentEmojiRecyclerViewAdapter(builder, createEditViewModel)
+        adapter = ParentEmojiRecyclerViewAdapter(builder, mEmojiItemClickListener)
         setParentRecyclerView(parentView.findViewById(R.id.emoji_recycler_view), adapter)
         return builder
     }

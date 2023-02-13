@@ -8,9 +8,8 @@ import androidx.emoji.text.EmojiCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import com.kazumaproject.markdownnote.emojipicker.Constants.EMOJI_LIST_SMILEYS_PEOPLE
-import com.kazumaproject.markdownnote.emojipicker.EmojiPickerDialogFragment
-import com.kazumaproject.markdownnote.emojipicker.convertUnicode
+import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
+import com.kazumaproject.emojipicker.convertUnicode
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.databinding.FragmentCreateEditBinding
 import com.kazumaproject.markdownnote.other.FragmentType
@@ -19,7 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
 @AndroidEntryPoint
-class CreateEditFragment : Fragment(){
+class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListener{
     private val createEditViewModel: CreateEditViewModel by viewModels()
     private val activityViewModel: MainViewModel by activityViewModels()
     private var _binding : FragmentCreateEditBinding? = null
@@ -63,9 +62,15 @@ class CreateEditFragment : Fragment(){
 
     private fun setChooseEmojiView() = binding.changeEmojiParentView.apply {
         setOnClickListener {
-            val dialog = EmojiPickerDialogFragment(createEditViewModel)
+            val dialog = EmojiPickerDialogFragment(
+                this@CreateEditFragment
+            )
             dialog.show(requireActivity().supportFragmentManager,"emoji picker dialog")
         }
+    }
+
+    override fun onEmojiClicked(emoji: com.kazumaproject.emojipicker.Emoji) {
+        createEditViewModel.updateCurrentEmoji(emoji)
     }
 
 }

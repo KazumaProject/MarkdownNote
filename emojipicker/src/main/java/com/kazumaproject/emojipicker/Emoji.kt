@@ -1,4 +1,4 @@
-package com.kazumaproject.markdownnote.emojipicker
+package com.kazumaproject.emojipicker
 
 data class Emoji(
     val id: Int,

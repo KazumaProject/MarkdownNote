@@ -1,4 +1,4 @@
-package com.kazumaproject.markdownnote.emojipicker
+package com.kazumaproject.emojipicker
 
 sealed class EmojiTypes{
     object SmileysAndPeople : EmojiTypes()

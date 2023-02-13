@@ -1,21 +1,18 @@
-package com.kazumaproject.markdownnote.emojipicker
+package com.kazumaproject.emojipicker
 
 import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.emoji.widget.EmojiTextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.kazumaproject.markdownnote.R
-import com.kazumaproject.markdownnote.ui.create_edit.CreateEditViewModel
 
 class ParentEmojiRecyclerViewAdapter (
     private val alertDialog: AlertDialog,
-    private val createEditViewModel: CreateEditViewModel
+    private val emojiItemClickListener: EmojiPickerDialogFragment.EmojiItemClickListener
     ) : RecyclerView.Adapter<ParentEmojiRecyclerViewAdapter.ParentEmojiListViewHolder>() {
     inner class ParentEmojiListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
@@ -71,7 +68,7 @@ class ParentEmojiRecyclerViewAdapter (
             layoutManager = childLayoutManager
         }
         childAdapter.setOnItemClickListener { emoji, i ->
-            createEditViewModel.updateCurrentEmoji(emoji)
+            emojiItemClickListener.onEmojiClicked(emoji)
             alertDialog.dismiss()
         }
     }

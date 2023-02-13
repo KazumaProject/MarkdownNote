@@ -1,4 +1,4 @@
-package com.kazumaproject.markdownnote.emojipicker
+package com.kazumaproject.emojipicker
 
 object Constants {
     val EMOJI_LIST_SMILEYS_PEOPLE = arrayListOf(
