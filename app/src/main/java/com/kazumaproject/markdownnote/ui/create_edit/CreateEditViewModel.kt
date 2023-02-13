@@ -1,7 +1,7 @@
 package com.kazumaproject.markdownnote.ui.create_edit
 
 import androidx.lifecycle.ViewModel
-import com.kazumaproject.emojipicker.Emoji
+import com.kazumaproject.emojipicker.model.Emoji
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,7 +11,7 @@ import javax.inject.Inject
 class CreateEditViewModel @Inject constructor() : ViewModel() {
 
     private var _currentEmoji = MutableStateFlow(
-        com.kazumaproject.emojipicker.Emoji(
+        Emoji(
             539,
             "dog",
             0x1f415
@@ -20,7 +20,7 @@ class CreateEditViewModel @Inject constructor() : ViewModel() {
 
     val currentEmoji = _currentEmoji.asStateFlow()
 
-    fun updateCurrentEmoji(emoji: com.kazumaproject.emojipicker.Emoji){
+    fun updateCurrentEmoji(emoji: Emoji){
         _currentEmoji.value = emoji
     }
 

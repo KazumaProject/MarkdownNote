@@ -1,4 +1,4 @@
-package com.kazumaproject.emojipicker
+package com.kazumaproject.emojipicker.adapter
 
 import android.app.AlertDialog
 import android.view.LayoutInflater
@@ -9,6 +9,9 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
+import com.kazumaproject.emojipicker.R
+import com.kazumaproject.emojipicker.model.ParentEmojiItem
 
 class ParentEmojiRecyclerViewAdapter (
     private val alertDialog: AlertDialog,

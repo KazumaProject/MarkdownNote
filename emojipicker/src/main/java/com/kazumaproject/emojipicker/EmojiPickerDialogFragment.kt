@@ -7,8 +7,11 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.kazumaproject.emojipicker.Constants.EMOJI_LIST_ANIMALS_NATURE
-import com.kazumaproject.emojipicker.Constants.EMOJI_LIST_SMILEYS_PEOPLE
+import com.kazumaproject.emojipicker.adapter.ParentEmojiRecyclerViewAdapter
+import com.kazumaproject.emojipicker.model.Emoji
+import com.kazumaproject.emojipicker.model.ParentEmojiItem
+import com.kazumaproject.emojipicker.other.Constants.EMOJI_LIST_ANIMALS_NATURE
+import com.kazumaproject.emojipicker.other.Constants.EMOJI_LIST_SMILEYS_PEOPLE
 
 class EmojiPickerDialogFragment (
     private val mEmojiItemClickListener: EmojiItemClickListener

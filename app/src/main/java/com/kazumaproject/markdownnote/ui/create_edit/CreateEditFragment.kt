@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
 import com.kazumaproject.emojipicker.convertUnicode
+import com.kazumaproject.emojipicker.model.Emoji
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.databinding.FragmentCreateEditBinding
 import com.kazumaproject.markdownnote.other.FragmentType
@@ -69,7 +70,7 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
         }
     }
 
-    override fun onEmojiClicked(emoji: com.kazumaproject.emojipicker.Emoji) {
+    override fun onEmojiClicked(emoji: Emoji) {
         createEditViewModel.updateCurrentEmoji(emoji)
     }
 
