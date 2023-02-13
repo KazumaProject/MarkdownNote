@@ -119,6 +119,17 @@ object Constants {
         Emoji(113,"alien",0x1f47d),
         Emoji(114,"alien monster",0x1f47e),
         Emoji(115,"robot",0x1f916),
+        Emoji(167,"waving hand",0x1f44b),
+        Emoji(168,"raised back of hand",0x1f91a),
+        Emoji(169,"hand with fingers splayed",0x1f590),
+        Emoji(170,"raised hand",0x270b),
+        Emoji(171,"vulcan salute",0x1f596),
+        Emoji(172,"rightwards hand",0x1faf1),
+        Emoji(173,"leftwards hand",0x1faf2),
+        Emoji(174,"palm down hand",0x1faf3),
+        Emoji(175,"palm up hand",0x1faf4),
+        Emoji(176,"leftwards pushing hand",0x1faf7),
+        Emoji(177,"rightwards pushing hand",0x1faf8),
     )
 
     val EMOJI_LIST_ANIMALS_NATURE = arrayListOf(
