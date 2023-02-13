@@ -104,6 +104,21 @@ object Constants {
         Emoji(98,"tired face",0x1f62b),
         Emoji(99,"yawning face",0x1f971),
         Emoji(100,"face with steam from nose",0x1f624),
+        Emoji(101,"enraged face",0x1f621),
+        Emoji(102,"angry face",0x1f620),
+        Emoji(103,"face with symbols on mouth",0x1f92c),
+        Emoji(104,"smiling face with horns",0x1f608),
+        Emoji(105,"angry face with horns",0x1f47f),
+        Emoji(106,"skull",0x1f480),
+        Emoji(107,"skull and crossbones",0x2620),
+        Emoji(108,"pile of poo",0x1f4a9),
+        Emoji(109,"clown face",0x1f921),
+        Emoji(110,"ogre",0x1f479),
+        Emoji(111,"goblin",0x1f47a),
+        Emoji(112,"ghost",0x1f47b),
+        Emoji(113,"alien",0x1f47d),
+        Emoji(114,"alien monster",0x1f47e),
+        Emoji(115,"robot",0x1f916),
     )
 
     val EMOJI_LIST_ANIMALS_NATURE = arrayListOf(
