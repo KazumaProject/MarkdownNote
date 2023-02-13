@@ -16,6 +16,15 @@ object Constants {
         Emoji(12,"winking face",0x1f609),
         Emoji(13,"smiling face with smiling eyes",0x1f60a),
         Emoji(14,"smiling face with halo",0x1f607),
+        Emoji(15,"smiling face with hearts",0x1f970),
+        Emoji(16,"smiling face with heart-eyes",0x1f60d),
+        Emoji(17,"star-struck",0x1f929),
+        Emoji(18,"face blowing a kiss",0x1f618),
+        Emoji(19,"kissing face",0x1f617),
+        Emoji(20,"smiling face",0x263a),
+        Emoji(21,"kissing face with closed eyes",0x1f61a),
+        Emoji(22,"kissing face with smiling eyes",0x1f619),
+        Emoji(23,"smiling face with tear",0x1f972),
     )
 
     val EMOJI_LIST_ANIMALS_NATURE = arrayListOf(
