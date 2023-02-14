@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.emoji.text.EmojiCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -51,6 +52,11 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                 }catch (e: Exception){
                     //** Noting to do **//
                 }
+            }
+        }
+        binding.markdownRawEditText.addTextChangedListener { editable ->
+            editable?.let { input ->
+                activityViewModel.updateFloatingButtonEnableState(input.isNotBlank())
             }
         }
     }

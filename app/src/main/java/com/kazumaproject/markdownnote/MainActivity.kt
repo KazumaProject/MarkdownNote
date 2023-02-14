@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
         collectLatestLifecycleFlow(viewModel.fragmentAndFloatingButtonState){ fragmentAndFloatingButtonState ->
             setAppBottomBarAppearanceByFragmentType(fragmentAndFloatingButtonState.currentFragmentType, fragmentAndFloatingButtonState.floatingButtonState)
             setFloatingButton(fragmentAndFloatingButtonState.currentFragmentType)
+            binding.addFloatingButton.alpha = if (fragmentAndFloatingButtonState.floatingButtonState) 1.0f else 0.5f
         }
         setBottomAppBar()
     }
@@ -36,7 +37,6 @@ class MainActivity : AppCompatActivity() {
                 setBottomAppBarMenuItemsVisibility(true)
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.baseline_add_24)
-                    alpha = 1.0f
                     isEnabled = isEnable
                 }
             }
@@ -44,7 +44,6 @@ class MainActivity : AppCompatActivity() {
                 setBottomAppBarMenuItemsVisibility(false)
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.diskette)
-                    alpha = 0.5f
                     isEnabled = isEnable
                 }
             }
@@ -52,7 +51,6 @@ class MainActivity : AppCompatActivity() {
                 setBottomAppBarMenuItemsVisibility(false)
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.draft)
-                    alpha = 0.5f
                     isEnabled = isEnable
                 }
             }
@@ -60,7 +58,6 @@ class MainActivity : AppCompatActivity() {
                 setBottomAppBarMenuItemsVisibility(false)
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.settings)
-                    alpha = 0.5f
                     isEnabled = isEnable
                 }
             }
