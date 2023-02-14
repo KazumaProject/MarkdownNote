@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
-import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.emojipicker.model.Emoji
+import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.databinding.FragmentCreateEditBinding
 import com.kazumaproject.markdownnote.other.FragmentType
@@ -25,6 +25,10 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
     private var _binding : FragmentCreateEditBinding? = null
     private val binding get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activityViewModel.updateFloatingButtonEnableState(false)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,11 +51,6 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                 }catch (e: Exception){
                     //** Noting to do **//
                 }
-            }
-        }
-        collectLatestLifecycleFlow(activityViewModel.note_save_request){
-            if (it){
-                Timber.d("current selected emoji: ${binding.chosenEmojiTextView.text}")
             }
         }
     }

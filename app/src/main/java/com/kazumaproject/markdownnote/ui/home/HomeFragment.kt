@@ -31,8 +31,8 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activityViewModel.updateCurrentFragmentType(FragmentType.HomeFragment)
+        activityViewModel.updateFloatingButtonEnableState(true)
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

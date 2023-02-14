@@ -23,6 +23,7 @@ class SettingFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityViewModel.updateCurrentFragmentType(FragmentType.SettingFragment)
+        activityViewModel.updateFloatingButtonEnableState(false)
     }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

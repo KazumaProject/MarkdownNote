@@ -1,16 +1,14 @@
 package com.kazumaproject.markdownnote
 
-import android.content.Context
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.kazumaproject.markdownnote.databinding.ActivityMainBinding
 import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
+import com.kazumaproject.markdownnote.ui.create_edit.CreateEditFragmentDirections
 import com.kazumaproject.markdownnote.ui.home.HomeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -26,22 +24,20 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.hide()
 
-        collectLatestLifecycleFlow(viewModel.current_fragment_type){
-            Timber.d("current fragment: $it")
-            setAppBottomBarAppearanceByFragmentType(it)
-            setFloatingButton(it)
+        collectLatestLifecycleFlow(viewModel.fragmentAndFloatingButtonState){ fragmentAndFloatingButtonState ->
+            setAppBottomBarAppearanceByFragmentType(fragmentAndFloatingButtonState.currentFragmentType, fragmentAndFloatingButtonState.floatingButtonState)
+            setFloatingButton(fragmentAndFloatingButtonState.currentFragmentType)
         }
         setBottomAppBar()
     }
-
-    private fun setAppBottomBarAppearanceByFragmentType(type: FragmentType){
+    private fun setAppBottomBarAppearanceByFragmentType(type: FragmentType, isEnable: Boolean){
         when(type){
             is FragmentType.HomeFragment -> {
                 setBottomAppBarMenuItemsVisibility(true)
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.baseline_add_24)
                     alpha = 1.0f
-                    isEnabled = true
+                    isEnabled = isEnable
                 }
             }
             is FragmentType.CreateEditFragment -> {
@@ -49,7 +45,7 @@ class MainActivity : AppCompatActivity() {
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.diskette)
                     alpha = 0.5f
-                    isEnabled = false
+                    isEnabled = isEnable
                 }
             }
             is FragmentType.DraftFragment -> {
@@ -57,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.draft)
                     alpha = 0.5f
-                    isEnabled = false
+                    isEnabled = isEnable
                 }
             }
             is FragmentType.SettingFragment -> {
@@ -65,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.settings)
                     alpha = 0.5f
-                    isEnabled = false
+                    isEnabled = isEnable
                 }
             }
         }
@@ -97,7 +93,9 @@ class MainActivity : AppCompatActivity() {
             }
             is FragmentType.CreateEditFragment ->{
                 setOnClickListener {
-                    viewModel.updateNoteSaveRequest(true)
+                    findNavController(R.id.navHostFragment).navigate(
+                        CreateEditFragmentDirections.actionCreateEditFragmentToHomeFragment()
+                    )
                 }
             }
             is FragmentType.DraftFragment ->{

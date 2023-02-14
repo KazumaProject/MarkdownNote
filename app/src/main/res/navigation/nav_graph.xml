@@ -24,7 +24,13 @@
         android:id="@+id/createEditFragment"
         android:name="com.kazumaproject.markdownnote.ui.create_edit.CreateEditFragment"
         android:label="fragment_create_edit"
-        tools:layout="@layout/fragment_create_edit" />
+        tools:layout="@layout/fragment_create_edit" >
+        <action
+            android:id="@+id/action_createEditFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/homeFragment"/>
+    </fragment>
     <fragment
         android:id="@+id/draftFragment"
         android:name="com.kazumaproject.markdownnote.ui.draft.DraftFragment"

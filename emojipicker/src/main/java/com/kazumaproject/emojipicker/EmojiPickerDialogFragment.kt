@@ -19,7 +19,7 @@ class EmojiPickerDialogFragment (
 
     private var adapter: ParentEmojiRecyclerViewAdapter? = null
 
-    open interface EmojiItemClickListener{
+    interface EmojiItemClickListener{
         fun onEmojiClicked(emoji: Emoji)
     }
 
