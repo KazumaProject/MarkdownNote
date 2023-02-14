@@ -1,9 +1,13 @@
 package com.kazumaproject.markdownnote.ui.create_edit
 
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.KeyEvent.ACTION_UP
+import android.view.KeyEvent.KEYCODE_BACK
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.widget.addTextChangedListener
 import androidx.emoji.text.EmojiCompat
 import androidx.fragment.app.Fragment
@@ -54,9 +58,14 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                 }
             }
         }
-        binding.markdownRawEditText.addTextChangedListener { editable ->
-            editable?.let { input ->
-                activityViewModel.updateFloatingButtonEnableState(input.isNotBlank())
+        binding.markdownRawEditText.apply {
+            addTextChangedListener { editable ->
+                editable?.let { input ->
+                    activityViewModel.updateFloatingButtonEnableState(input.isNotBlank())
+                }
+            }
+            setOnFocusChangeListener { v, hasFocus ->
+                isCursorVisible = hasFocus
             }
         }
     }

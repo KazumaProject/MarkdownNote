@@ -109,6 +109,8 @@ dependencies {
     implementation "io.noties.markwon:linkify:$markwon_version"
     implementation "io.noties.markwon:image:$markwon_version"
     implementation "io.noties.markwon:syntax-highlight:$markwon_version"
+    implementation "io.noties.markwon:ext-latex:$markwon_version"
+    implementation "io.noties.markwon:ext-strikethrough:$markwon_version"
 
     final def prism_version ='2.0.0'
     implementation "io.noties:prism4j:${prism_version}"
