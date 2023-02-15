@@ -1,13 +1,9 @@
 package com.kazumaproject.markdownnote.ui.create_edit
 
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.KeyEvent.ACTION_UP
-import android.view.KeyEvent.KEYCODE_BACK
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import androidx.core.widget.addTextChangedListener
 import androidx.emoji.text.EmojiCompat
 import androidx.fragment.app.Fragment
@@ -46,26 +42,28 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
         super.onViewCreated(view, savedInstanceState)
         activityViewModel.updateCurrentFragmentType(FragmentType.CreateEditFragment)
         setChooseEmojiView()
-        collectLatestLifecycleFlow(createEditViewModel.currentEmoji){ current_emoji ->
-            Timber.d("current emoji: ${current_emoji.unicode.convertUnicode()}\nname: ${current_emoji.emoji_short_name}\nunicode: ${current_emoji.unicode}")
+        collectLatestLifecycleFlow(createEditViewModel.createEditState){ state ->
             binding.chosenEmojiTextView.apply {
                 try {
-                    val textStr = EmojiCompat.get().process(current_emoji.unicode.convertUnicode())
+                    val textStr = EmojiCompat.get().process(state.emoji.unicode.convertUnicode())
                     Timber.d("emoji: $text")
                     text = textStr
                 }catch (e: Exception){
                     //** Noting to do **//
                 }
             }
+            activityViewModel.updateFloatingButtonEnableState(state.currentText.isNotBlank())
         }
         binding.markdownRawEditText.apply {
             addTextChangedListener { editable ->
                 editable?.let { input ->
-                    activityViewModel.updateFloatingButtonEnableState(input.isNotBlank())
+                    createEditViewModel.updateCurrentText(input.toString())
                 }
             }
             setOnFocusChangeListener { v, hasFocus ->
                 isCursorVisible = hasFocus
+                createEditViewModel.updateEditTextHasFocus(hasFocus)
+                activityViewModel.updateEditTextInCreateEditHasFocus(hasFocus)
             }
         }
     }

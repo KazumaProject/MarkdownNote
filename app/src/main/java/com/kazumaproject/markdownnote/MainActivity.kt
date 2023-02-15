@@ -1,10 +1,17 @@
 package com.kazumaproject.markdownnote
 
+import android.content.Context
+import android.graphics.Rect
 import android.os.Bundle
+import android.view.MotionEvent
+import android.view.inputmethod.InputMethodManager
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.textfield.TextInputEditText
 import com.kazumaproject.markdownnote.databinding.ActivityMainBinding
 import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
@@ -29,8 +36,33 @@ class MainActivity : AppCompatActivity() {
             setFloatingButton(fragmentAndFloatingButtonState.currentFragmentType)
             binding.addFloatingButton.alpha = if (fragmentAndFloatingButtonState.floatingButtonState) 1.0f else 0.5f
         }
+
+        collectLatestLifecycleFlow(viewModel.fragmentCreateEditState) { fragmentCreateEditState ->
+            binding.bottomAppBar.isVisible = !fragmentCreateEditState.editTextInCreateEditHasFocus
+            binding.addFloatingButton.isVisible = !fragmentCreateEditState.editTextInCreateEditHasFocus
+        }
+
         setBottomAppBar()
     }
+
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        ev?.let { event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                val v = currentFocus
+                if (v is TextInputEditText) {
+                    val outRect = Rect()
+                    v.getGlobalVisibleRect(outRect)
+                    if (!outRect.contains(event.rawX.toInt(), event.rawY.toInt())){
+                        v.clearFocus()
+                        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(v.windowToken,0)
+                    }
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev)
+    }
+
     private fun setAppBottomBarAppearanceByFragmentType(type: FragmentType, isEnable: Boolean){
         when(type){
             is FragmentType.HomeFragment -> {
