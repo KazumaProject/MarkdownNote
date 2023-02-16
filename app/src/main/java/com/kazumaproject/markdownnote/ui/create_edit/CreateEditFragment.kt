@@ -63,10 +63,11 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
             setOnFocusChangeListener { v, hasFocus ->
                 isCursorVisible = hasFocus
                 createEditViewModel.updateEditTextHasFocus(hasFocus)
-                activityViewModel.updateEditTextInCreateEditHasFocus(hasFocus)
             }
         }
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

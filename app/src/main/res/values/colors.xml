@@ -25,4 +25,6 @@
     <color name="emoji_chooser_boarder_color">#d6e3ed</color>
     <color name="emoji_chooser_bg_color">#edf2f7</color>
     <color name="emoji_chooser_description_text_bg_color">#FFFFFFFF</color>
+
+    <color name="keyboard_helper_bg_color">#edf2f7</color>
 </resources>

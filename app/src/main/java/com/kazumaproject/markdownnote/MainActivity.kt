@@ -5,10 +5,8 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.textfield.TextInputEditText
@@ -18,13 +16,13 @@ import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
 import com.kazumaproject.markdownnote.ui.create_edit.CreateEditFragmentDirections
 import com.kazumaproject.markdownnote.ui.home.HomeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding
     private val viewModel : MainViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -36,12 +34,6 @@ class MainActivity : AppCompatActivity() {
             setFloatingButton(fragmentAndFloatingButtonState.currentFragmentType)
             binding.addFloatingButton.alpha = if (fragmentAndFloatingButtonState.floatingButtonState) 1.0f else 0.5f
         }
-
-        collectLatestLifecycleFlow(viewModel.fragmentCreateEditState) { fragmentCreateEditState ->
-            binding.bottomAppBar.isVisible = !fragmentCreateEditState.editTextInCreateEditHasFocus
-            binding.addFloatingButton.isVisible = !fragmentCreateEditState.editTextInCreateEditHasFocus
-        }
-
         setBottomAppBar()
     }
 
