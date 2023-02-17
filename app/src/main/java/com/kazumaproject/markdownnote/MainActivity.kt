@@ -144,7 +144,6 @@ class MainActivity : AppCompatActivity() {
         binding.bottomAppBar.menu.apply {
             findItem(R.id.bottom_bar_item_draft).isVisible = visibility
             findItem(R.id.bottom_bar_item_setting).isVisible = visibility
-            findItem(R.id.bottom_bar_item_back_arrow).isVisible = !visibility
             findItem(R.id.bottom_app_bar_item_preview_raw_change).isVisible = switchVisibility && !hasFocus
         }
         binding.addFloatingButton.isEnabled = visibility
