@@ -2,6 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/bottom_bar_item_back_arrow"
+        android:icon="@drawable/chevron"
+        android:title="@string/back_button"
+        android:visible="false"
+        app:showAsAction="ifRoom"/>
+    <item
         android:id="@+id/bottom_bar_item_draft"
         android:icon="@drawable/draft"
         android:title="@string/main_menu_draft"

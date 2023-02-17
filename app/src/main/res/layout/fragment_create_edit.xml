@@ -94,7 +94,8 @@
                 android:paddingVertical="16dp"
                 android:textColor="@color/text_color_main"
                 android:textColorHint="@color/text_color_sub1"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:fontFamily="@font/regular"/>
         </io.github.florent37.shapeofview.shapes.RoundRectView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

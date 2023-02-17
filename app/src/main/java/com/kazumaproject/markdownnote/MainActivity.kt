@@ -5,9 +5,11 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.textfield.TextInputEditText
 import com.kazumaproject.markdownnote.databinding.ActivityMainBinding
@@ -16,6 +18,7 @@ import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
 import com.kazumaproject.markdownnote.ui.create_edit.CreateEditFragmentDirections
 import com.kazumaproject.markdownnote.ui.home.HomeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -89,7 +92,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setBottomAppBar() = binding.bottomAppBar.apply {
-        setupWithNavController(findNavController(R.id.navHostFragment))
+        setupActionBarWithNavController(findNavController(R.id.navHostFragment))
         setOnMenuItemClickListener { item ->
             when(item.itemId){
                 R.id.bottom_bar_item_draft -> findNavController(R.id.navHostFragment).navigate(
@@ -98,6 +101,7 @@ class MainActivity : AppCompatActivity() {
                 R.id.bottom_bar_item_setting -> findNavController(R.id.navHostFragment).navigate(
                     HomeFragmentDirections.actionHomeFragmentToSettingFragment()
                 )
+                R.id.bottom_bar_item_back_arrow -> findNavController(R.id.navHostFragment).popBackStack()
             }
             return@setOnMenuItemClickListener true
         }
@@ -132,6 +136,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomAppBar.menu.apply {
             findItem(R.id.bottom_bar_item_draft).isVisible = visibility
             findItem(R.id.bottom_bar_item_setting).isVisible = visibility
+            findItem(R.id.bottom_bar_item_back_arrow).isVisible = !visibility
         }
         binding.addFloatingButton.isEnabled = visibility
     }

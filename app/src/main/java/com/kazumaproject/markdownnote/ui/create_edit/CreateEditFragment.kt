@@ -4,11 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.core.widget.addTextChangedListener
 import androidx.emoji.text.EmojiCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
 import com.kazumaproject.emojipicker.model.Emoji
 import com.kazumaproject.emojipicker.other.convertUnicode
@@ -53,6 +57,15 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                 }
             }
             activityViewModel.updateFloatingButtonEnableState(state.currentText.isNotBlank())
+            requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true){
+                override fun handleOnBackPressed() {
+                    if (state.editTextHasFocus){
+                        binding.markdownRawEditText.clearFocus()
+                    } else {
+                        findNavController().popBackStack()
+                    }
+                }
+            })
         }
         binding.markdownRawEditText.apply {
             addTextChangedListener { editable ->
@@ -66,8 +79,6 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
             }
         }
     }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()
