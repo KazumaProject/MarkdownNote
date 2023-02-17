@@ -1,12 +1,12 @@
 package com.kazumaproject.markdownnote.ui.create_edit
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.emoji.text.EmojiCompat
 import androidx.fragment.app.Fragment
@@ -19,6 +19,7 @@ import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.databinding.FragmentCreateEditBinding
 import com.kazumaproject.markdownnote.other.FragmentType
+import com.kazumaproject.markdownnote.other.KeyboardHelper
 import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -42,6 +43,7 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
         return binding.root
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activityViewModel.updateCurrentFragmentType(FragmentType.CreateEditFragment)
@@ -67,6 +69,9 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                 }
             })
         }
+        collectLatestLifecycleFlow(activityViewModel.markdown_switch_state){ state ->
+            binding.markdownRawEditText.isVisible = !state
+        }
         binding.markdownRawEditText.apply {
             addTextChangedListener { editable ->
                 editable?.let { input ->
@@ -76,7 +81,12 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
             setOnFocusChangeListener { v, hasFocus ->
                 isCursorVisible = hasFocus
                 createEditViewModel.updateEditTextHasFocus(hasFocus)
+                activityViewModel.updateHasFocusInEditText(hasFocus)
             }
+        }
+        binding.root.setOnTouchListener { _, _ ->
+            KeyboardHelper.hideKeyboardAndClearFocus(requireActivity())
+            return@setOnTouchListener true
         }
     }
 

@@ -8,6 +8,10 @@
         android:visible="false"
         app:showAsAction="ifRoom"/>
     <item
+        android:id="@+id/bottom_app_bar_item_preview_raw_change"
+        android:title="@string/switch_markdown"
+        app:showAsAction="ifRoom"/>
+    <item
         android:id="@+id/bottom_bar_item_draft"
         android:icon="@drawable/draft"
         android:title="@string/main_menu_draft"
