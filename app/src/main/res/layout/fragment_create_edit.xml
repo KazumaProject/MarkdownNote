@@ -101,6 +101,42 @@
                 android:fontFamily="@font/regular"/>
         </io.github.florent37.shapeofview.shapes.RoundRectView>
 
+        <io.github.florent37.shapeofview.shapes.RoundRectView
+            android:id="@+id/markdown_preview_show_text_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="32dp"
+            android:layout_weight="16"
+            android:elevation="4dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/change_emoji_parent_view"
+            app:shape_roundRect_borderColor="@color/emoji_chooser_boarder_color"
+            app:shape_roundRect_borderWidth="1dp"
+            app:shape_roundRect_bottomLeftRadius="10dp"
+            app:shape_roundRect_bottomRightRadius="10dp"
+            app:shape_roundRect_topLeftRadius="10dp"
+            app:shape_roundRect_topRightRadius="10dp"
+            android:layout_marginBottom="16dp"
+            tools:layout_editor_absoluteX="20dp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/markdown_preview_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="512dp"
+                android:maxHeight="700dp"
+                android:background="@color/markdown_bg_color"
+                android:gravity="top"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="16dp"
+                android:textColor="@color/text_color_main"
+                android:textColorHint="@color/text_color_sub1"
+                android:textSize="20sp"
+                android:fontFamily="@font/regular"/>
+        </io.github.florent37.shapeofview.shapes.RoundRectView>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

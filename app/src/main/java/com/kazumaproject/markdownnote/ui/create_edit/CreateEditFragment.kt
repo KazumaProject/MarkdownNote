@@ -22,7 +22,9 @@ import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.other.KeyboardHelper
 import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
 import dagger.hilt.android.AndroidEntryPoint
+import io.noties.markwon.Markwon
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListener{
@@ -30,6 +32,9 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
     private val activityViewModel: MainViewModel by activityViewModels()
     private var _binding : FragmentCreateEditBinding? = null
     private val binding get() = _binding!!
+
+    @Inject
+    lateinit var markwon: Markwon
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,9 +73,11 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                     }
                 }
             })
+            markwon.setMarkdown(binding.markdownPreviewText, state.currentText)
         }
         collectLatestLifecycleFlow(activityViewModel.markdown_switch_state){ state ->
-            binding.markdownRawEditText.isVisible = !state
+            binding.markdownRawEditTextParent.isVisible = !state
+            binding.markdownPreviewShowTextParent.isVisible = state
         }
         binding.markdownRawEditText.apply {
             addTextChangedListener { editable ->
