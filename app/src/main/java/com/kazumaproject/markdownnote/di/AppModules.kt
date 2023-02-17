@@ -39,12 +39,14 @@ object AppModules {
                     Prism4jThemeDarkula.create(0))
             )
             .usePlugin(MarkwonInlineParserPlugin.create())
-            .usePlugin(JLatexMathPlugin.create((context.resources.displayMetrics.widthPixels)/ (context.resources.displayMetrics.density), object : JLatexMathPlugin.BuilderConfigure{
-                override fun configureBuilder(builder: JLatexMathPlugin.Builder) {
-                    builder.inlinesEnabled(true)
+            .usePlugin(JLatexMathPlugin.create(50f
+            ) { builder ->
+                builder.apply {
+                    inlinesEnabled(true)
+                    blocksEnabled(true)
+                    blocksLegacy(true)
                 }
-
-            }))
+            })
             .usePlugin(StrikethroughPlugin.create())
             .build()
 }
