@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             setAppBottomBarAppearanceByFragmentType(fragmentAndFloatingButtonState.currentFragmentType, fragmentAndFloatingButtonState.floatingButtonState, fragmentAndFloatingButtonState.hasFocus)
             setFloatingButton(fragmentAndFloatingButtonState.currentFragmentType)
             binding.addFloatingButton.alpha = if (fragmentAndFloatingButtonState.floatingButtonState) 1.0f else 0.5f
-            setBottomAppBar(fragmentAndFloatingButtonState.currentFragmentType, fragmentAndFloatingButtonState.hasFocus)
+            setBottomAppBar(fragmentAndFloatingButtonState.currentFragmentType, fragmentAndFloatingButtonState.hasFocus, viewModel.markdown_switch_state.value)
         }
     }
     private fun setAppBottomBarAppearanceByFragmentType(type: FragmentType, isEnable: Boolean, hasFocus: Boolean){
@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private fun setBottomAppBar(fragmentType: FragmentType, hasFocus: Boolean) = binding.bottomAppBar.apply {
+    private fun setBottomAppBar(fragmentType: FragmentType, hasFocus: Boolean, isPreview: Boolean) = binding.bottomAppBar.apply {
         val markdownSwitch = Switch(this@MainActivity)
         markdownSwitch.setOnCheckedChangeListener { _, isChecked ->
             viewModel.updateMarkdownSwitchState(isChecked)
@@ -90,7 +90,11 @@ class MainActivity : AppCompatActivity() {
                             this@MainActivity.finish()
                         }
                         is FragmentType.CreateEditFragment -> {
-                            if (hasFocus) KeyboardHelper.hideKeyboardAndClearFocus(this@MainActivity) else findNavController(R.id.navHostFragment).popBackStack()
+                            when{
+                                hasFocus -> KeyboardHelper.hideKeyboardAndClearFocus(this@MainActivity)
+                                viewModel.markdown_switch_state.value -> viewModel.updateMarkdownSwitchState(false)
+                                else ->  findNavController(R.id.navHostFragment).popBackStack()
+                            }
                         }
                         is FragmentType.DraftFragment -> {
                             findNavController(R.id.navHostFragment).popBackStack()

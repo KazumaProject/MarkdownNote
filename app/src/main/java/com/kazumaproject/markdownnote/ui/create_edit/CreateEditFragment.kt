@@ -67,10 +67,10 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
             activityViewModel.updateFloatingButtonEnableState(state.currentText.isNotBlank())
             requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true){
                 override fun handleOnBackPressed() {
-                    if (state.editTextHasFocus){
-                        binding.markdownRawEditText.clearFocus()
-                    } else {
-                        findNavController().popBackStack()
+                    when{
+                        state.editTextHasFocus -> binding.markdownRawEditText.clearFocus()
+                        activityViewModel.markdown_switch_state.value -> activityViewModel.updateMarkdownSwitchState(false)
+                        else -> findNavController().popBackStack()
                     }
                 }
             })
