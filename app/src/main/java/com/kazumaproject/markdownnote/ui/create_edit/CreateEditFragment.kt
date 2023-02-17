@@ -80,15 +80,12 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
         collectLatestLifecycleFlow(activityViewModel.markdown_switch_state){ state ->
             binding.markdownRawEditText.isVisible = !state
             binding.markdownPreviewText.isVisible = state
-
+            binding.createEditFragmentRootView.setOnTouchListener(null)
             if (!state){
-                binding.createEditFragmentRootView.setOnTouchListener(null)
                 binding.createEditFragmentRootView.setOnTouchListener { _, _ ->
                     KeyboardHelper.hideKeyboardAndClearFocus(requireActivity())
                     return@setOnTouchListener true
                 }
-            } else {
-                binding.createEditFragmentRootView.setOnTouchListener(null)
             }
         }
         binding.markdownRawEditText.apply {
@@ -103,6 +100,11 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                 activityViewModel.updateHasFocusInEditText(hasFocus)
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        activityViewModel.updateMarkdownSwitchState(false)
     }
 
     override fun onDestroyView() {

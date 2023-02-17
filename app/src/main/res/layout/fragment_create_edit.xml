@@ -77,7 +77,7 @@
                 android:gravity="top"
                 android:hint="@string/markdown_hint"
                 android:minHeight="256dp"
-                android:maxHeight="512dp"
+                android:maxHeight="480dp"
                 android:paddingHorizontal="16dp"
                 android:paddingVertical="16dp"
                 android:textColor="@color/text_color_main"
@@ -87,6 +87,7 @@
                 android:scrollbars="vertical"
                 android:layout_marginBottom="16dp"
                 android:elevation="4dp"
+                android:overScrollMode="always"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="32dp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -114,7 +115,4 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
-
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
