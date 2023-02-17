@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private val viewModel : MainViewModel by viewModels()
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -33,6 +34,16 @@ class MainActivity : AppCompatActivity() {
             setFloatingButton(fragmentAndFloatingButtonState.currentFragmentType)
             binding.addFloatingButton.alpha = if (fragmentAndFloatingButtonState.floatingButtonState) 1.0f else 0.5f
             setBottomAppBar(fragmentAndFloatingButtonState.currentFragmentType, fragmentAndFloatingButtonState.hasFocus, viewModel.markdown_switch_state.value)
+        }
+
+        collectLatestLifecycleFlow(viewModel.markdown_switch_state){ state ->
+            val markdownSwitch = Switch(this@MainActivity)
+            markdownSwitch.isChecked = state
+            markdownSwitch.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.updateMarkdownSwitchState(isChecked)
+            }
+            val bottomAppBarItemPreviewRawChange = binding.bottomAppBar.menu.findItem(R.id.bottom_app_bar_item_preview_raw_change)
+            bottomAppBarItemPreviewRawChange.actionView = markdownSwitch
         }
     }
     private fun setAppBottomBarAppearanceByFragmentType(type: FragmentType, isEnable: Boolean, hasFocus: Boolean){
@@ -70,12 +81,7 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun setBottomAppBar(fragmentType: FragmentType, hasFocus: Boolean, isPreview: Boolean) = binding.bottomAppBar.apply {
-        val markdownSwitch = Switch(this@MainActivity)
-        markdownSwitch.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.updateMarkdownSwitchState(isChecked)
-        }
-        val bottomAppBarItemPreviewRawChange = menu.findItem(R.id.bottom_app_bar_item_preview_raw_change)
-        bottomAppBarItemPreviewRawChange.actionView = markdownSwitch
+
         setOnMenuItemClickListener { item ->
             when(item.itemId){
                 R.id.bottom_bar_item_draft -> findNavController(R.id.navHostFragment).navigate(
