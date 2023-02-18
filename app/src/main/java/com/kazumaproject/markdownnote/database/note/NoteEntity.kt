@@ -10,7 +10,6 @@ data class NoteEntity(
     val emojiUnicode: Int,
     val bookmark: Boolean,
     val createdAt: Long,
-    val updatedAtPre: Long,
     val updatedAt: Long,
     @PrimaryKey(autoGenerate = false)
     val id: String = UUID.randomUUID().toString(),
