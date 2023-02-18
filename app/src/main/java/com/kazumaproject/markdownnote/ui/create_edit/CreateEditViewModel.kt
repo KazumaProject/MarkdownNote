@@ -3,8 +3,17 @@ package com.kazumaproject.markdownnote.ui.create_edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazumaproject.emojipicker.model.Emoji
+import com.kazumaproject.markdownnote.database.note.NoteEntity
+import com.kazumaproject.markdownnote.repositories.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 data class CreateEditState(
@@ -17,7 +26,9 @@ data class CreateEditState(
     )
 )
 @HiltViewModel
-class CreateEditViewModel @Inject constructor() : ViewModel() {
+class CreateEditViewModel @Inject constructor(
+    private val noteRepository: NoteRepository
+) : ViewModel() {
 
     private val _currentText = MutableStateFlow("")
     private val _editTextHasFocus = MutableStateFlow(false)
@@ -47,6 +58,15 @@ class CreateEditViewModel @Inject constructor() : ViewModel() {
 
     fun updateEditTextHasFocus(value: Boolean){
         _editTextHasFocus.value = value
+    }
+
+    /**************************
+      Database methods start
+     **************************/
+
+    fun insertNote(note: NoteEntity) = CoroutineScope(Dispatchers.IO).launch {
+        Timber.d("insert note called")
+        noteRepository.insertNote(note)
     }
 
 }

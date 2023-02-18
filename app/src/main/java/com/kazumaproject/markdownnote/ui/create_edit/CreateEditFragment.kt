@@ -17,6 +17,7 @@ import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
 import com.kazumaproject.emojipicker.model.Emoji
 import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.markdownnote.MainViewModel
+import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.databinding.FragmentCreateEditBinding
 import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.other.KeyboardHelper
@@ -86,6 +87,16 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                     KeyboardHelper.hideKeyboardAndClearFocus(requireActivity())
                     return@setOnTouchListener true
                 }
+            }
+        }
+        collectLatestLifecycleFlow(activityViewModel.saveClicked){ clicked ->
+            if (clicked && createEditViewModel.createEditState.value.currentText.isNotBlank()){
+                createEditViewModel.insertNote(NoteEntity(
+                    createEditViewModel.createEditState.value.currentText,
+                    createEditViewModel.createEditState.value.emoji.unicode,
+                    System.currentTimeMillis(),
+                    System.currentTimeMillis()
+                ))
             }
         }
         binding.markdownRawEditText.apply {

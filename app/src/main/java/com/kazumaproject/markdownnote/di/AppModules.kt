@@ -1,6 +1,9 @@
 package com.kazumaproject.markdownnote.di
 
 import android.content.Context
+import androidx.room.Room
+import com.kazumaproject.markdownnote.database.note.NoteDatabase
+import com.kazumaproject.markdownnote.other.Constants.NOTE_DATABASE_NAME
 import com.kazumaproject.markdownnote.other.GrammarLocatorDef
 import dagger.Module
 import dagger.Provides
@@ -49,4 +52,14 @@ object AppModules {
             })
             .usePlugin(StrikethroughPlugin.create())
             .build()
+
+    @Singleton
+    @Provides
+    fun providesNoteDatabase(
+        @ApplicationContext context: Context
+    ) = Room.databaseBuilder(context, NoteDatabase::class.java, NOTE_DATABASE_NAME).build()
+
+    @Singleton
+    @Provides
+    fun providesNoteDao(db: NoteDatabase) = db.noteDao()
 }

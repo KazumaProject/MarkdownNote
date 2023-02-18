@@ -44,4 +44,11 @@ class MainViewModel @Inject constructor() : ViewModel() {
         _markdown_switch_state.value = value
     }
 
+    private var _saveClicked = MutableStateFlow(false)
+    val saveClicked = _saveClicked.asStateFlow()
+
+    fun updateSaveClicked(value: Boolean){
+        _saveClicked.value = value
+    }
+
 }

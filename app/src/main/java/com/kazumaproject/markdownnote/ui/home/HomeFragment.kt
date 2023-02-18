@@ -11,7 +11,10 @@ import androidx.fragment.app.viewModels
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.databinding.FragmentHomeBinding
 import com.kazumaproject.markdownnote.other.FragmentType
+import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
+import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -33,8 +36,14 @@ class HomeFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback {
             requireActivity().finish()
         }
+
+        collectLatestLifecycleFlow(homeViewModel.getAllNotes()){ notes ->
+            Timber.d("current all notes: $notes\ncounts: ${notes.size}")
+        }
+
         activityViewModel.updateCurrentFragmentType(FragmentType.HomeFragment)
         activityViewModel.updateFloatingButtonEnableState(true)
+        activityViewModel.updateSaveClicked(false)
     }
     override fun onDestroyView() {
         super.onDestroyView()

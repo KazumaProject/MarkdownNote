@@ -130,6 +130,7 @@ class MainActivity : AppCompatActivity() {
             }
             is FragmentType.CreateEditFragment ->{
                 setOnClickListener {
+                    viewModel.updateSaveClicked(true)
                     findNavController(R.id.navHostFragment).navigate(
                         CreateEditFragmentDirections.actionCreateEditFragmentToHomeFragment()
                     )
