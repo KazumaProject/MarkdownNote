@@ -6,4 +6,7 @@
     <string name="main_menu_setting">Setting</string>
 
     <string name="query_hint">Search in notes…</string>
+    <string name="markdown_hint">Write in Markdown…</string>
+    <string name="back_button">Back</string>
+    <string name="switch_markdown">Switch Markdown</string>
 </resources>

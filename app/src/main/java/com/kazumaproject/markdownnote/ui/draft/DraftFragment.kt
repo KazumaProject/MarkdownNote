@@ -21,6 +21,11 @@ class DraftFragment : Fragment() {
     private var _binding : FragmentDraftBinding? = null
     private val binding get() = _binding!!
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        activityViewModel.updateCurrentFragmentType(FragmentType.DraftFragment)
+        activityViewModel.updateFloatingButtonEnableState(false)
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,7 +36,7 @@ class DraftFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        activityViewModel.updateCurrentFragmentType(FragmentType.DraftFragment)
+
     }
 
     override fun onDestroyView() {

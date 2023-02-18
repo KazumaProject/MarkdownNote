@@ -2,8 +2,6 @@
 
 ## Used icon
 
-- [下書きのアイコン](https://www.flaticon.com/free-icon/draft_4673261?term=draft&page=1&position=31&origin=search&related_id=4673261)
+- [下書きのアイコン](https://www.flaticon.com/free-icon/inbox_5372235?related_id=5372235&origin=pack)
 
-- [タグのアイコン](https://www.flaticon.com/free-icon/tag_1946422?term=tag&page=1&position=8&origin=search&related_id=1946422)
-
-- [設定のアイコン](https://www.flaticon.com/free-icon/settings_3524636?term=setting&page=1&position=5&origin=search&related_id=3524636)
+- [設定のアイコン](https://www.flaticon.com/free-icon/settings_5372357?related_id=5372357&origin=pack)

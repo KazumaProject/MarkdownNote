@@ -51,6 +51,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation project(path: ':emojipicker')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -108,11 +109,16 @@ dependencies {
     implementation "io.noties.markwon:linkify:$markwon_version"
     implementation "io.noties.markwon:image:$markwon_version"
     implementation "io.noties.markwon:syntax-highlight:$markwon_version"
+    implementation "io.noties.markwon:ext-latex:$markwon_version"
+    implementation "io.noties.markwon:ext-strikethrough:$markwon_version"
 
     final def prism_version ='2.0.0'
     implementation "io.noties:prism4j:${prism_version}"
     annotationProcessor "io.noties:prism4j-bundler:${prism_version}"
 
-    // Color Picker Dialog
-    implementation "com.github.skydoves:colorpickerview:2.2.4"
+    // ShapeOfView
+    implementation 'io.github.florent37:shapeofview:1.4.7'
+
+    // Emoji
+    implementation 'androidx.emoji:emoji:1.1.0'
 }

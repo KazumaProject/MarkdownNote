@@ -6,4 +6,7 @@
     <string name="main_menu_setting">設定</string>
 
     <string name="query_hint">ノートを検索</string>
+    <string name="markdown_hint">Write in Markdown…</string>
+    <string name="back_button">戻る</string>
+    <string name="switch_markdown">Switch Markdown</string>
 </resources>

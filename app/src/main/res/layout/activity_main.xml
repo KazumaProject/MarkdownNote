@@ -25,7 +25,8 @@
         app:backgroundTint="@color/bottom_bar_bg_color"
         app:fabAlignmentMode="end"
         app:menu="@menu/bottombar_main_screen_menu"
-        app:menuAlignmentMode="auto" />
+        app:menuAlignmentMode="auto"
+        app:hideOnScroll="true"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_floating_button"

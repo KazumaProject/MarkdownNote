@@ -11,6 +11,7 @@
     <color name="toolbar_bg_color">#FF000000</color>
     <color name="bottom_bar_bg_color">#FF000000</color>
     <color name="window_bg_color">#120d09</color>
+    <color name="markdown_bg_color">#FF000000</color>
 
     <color name="text_color_main">#c7c7c7</color>
     <color name="text_color_sub1">#7b7b7b</color>
@@ -18,4 +19,12 @@
 
     <color name="button_bg_color">#c05800</color>
     <color name="button_text_color">#FF000000</color>
+
+    <color name="not_enable_color">#6e7b85</color>
+
+    <color name="emoji_chooser_boarder_color">#d6e3ed</color>
+    <color name="emoji_chooser_bg_color">#edf2f7</color>
+    <color name="emoji_chooser_description_text_bg_color">#FF000000</color>
+
+    <color name="keyboard_helper_bg_color">#edf2f7</color>
 </resources>
