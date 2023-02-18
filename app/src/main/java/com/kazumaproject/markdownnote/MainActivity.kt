@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Switch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.kazumaproject.markdownnote.databinding.ActivityMainBinding
@@ -33,7 +34,10 @@ class MainActivity : AppCompatActivity() {
             setAppBottomBarAppearanceByFragmentType(fragmentAndFloatingButtonState.currentFragmentType, fragmentAndFloatingButtonState.floatingButtonState, fragmentAndFloatingButtonState.hasFocus)
             setFloatingButton(fragmentAndFloatingButtonState.currentFragmentType)
             binding.addFloatingButton.alpha = if (fragmentAndFloatingButtonState.floatingButtonState) 1.0f else 0.5f
-            setBottomAppBar(fragmentAndFloatingButtonState.currentFragmentType, fragmentAndFloatingButtonState.hasFocus, viewModel.markdown_switch_state.value)
+            setBottomAppBar(
+                fragmentAndFloatingButtonState.currentFragmentType,
+                fragmentAndFloatingButtonState.hasFocus
+            )
         }
 
         collectLatestLifecycleFlow(viewModel.markdown_switch_state){ state ->
@@ -65,7 +69,7 @@ class MainActivity : AppCompatActivity() {
             is FragmentType.DraftFragment -> {
                 setBottomAppBarMenuItemsVisibility(visibility = false, switchVisibility = false, hasFocus)
                 binding.addFloatingButton.apply {
-                    setImageResource(R.drawable.draft)
+                    setImageResource(R.drawable.inbox)
                     isEnabled = isEnable
                 }
             }
@@ -80,7 +84,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private fun setBottomAppBar(fragmentType: FragmentType, hasFocus: Boolean, isPreview: Boolean) = binding.bottomAppBar.apply {
+    private fun setBottomAppBar(fragmentType: FragmentType, hasFocus: Boolean) = binding.bottomAppBar.apply {
 
         setOnMenuItemClickListener { item ->
             when(item.itemId){
@@ -145,6 +149,9 @@ class MainActivity : AppCompatActivity() {
             findItem(R.id.bottom_bar_item_draft).isVisible = visibility
             findItem(R.id.bottom_bar_item_setting).isVisible = visibility
             findItem(R.id.bottom_app_bar_item_preview_raw_change).isVisible = switchVisibility && !hasFocus
+            if (hasFocus) findItem(R.id.bottom_bar_item_back_arrow).icon =
+                ContextCompat.getDrawable(this@MainActivity,R.drawable.arrow_down) else findItem(R.id.bottom_bar_item_back_arrow).icon =
+                ContextCompat.getDrawable(this@MainActivity,R.drawable.back)
         }
         binding.addFloatingButton.isEnabled = visibility
     }
