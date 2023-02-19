@@ -207,26 +207,36 @@ class MainActivity : AppCompatActivity() {
         binding.addFloatingButton.isEnabled = visibility
     }
 
-    private fun getMainDrawerItems(notes: List<NoteEntity>): List<DrawerItem>{
-        val mainDrawerItems: MutableList<DrawerItem> = mutableListOf()
-        val allNotesDrawerItem = DrawerItem(
+    private fun getMainDrawerItems(databaseValues: DatabaseValues): List<DrawerItem> = listOf(
+        DrawerItem(
             title = getString(R.string.all_notes),
-            count = notes.size,
+            count = databaseValues.allNotes.size,
             type = DrawerItemType.FilterNotes,
             resID = R.drawable.inbox,
             emojiUnicode = null
-        )
-        mainDrawerItems.add(allNotesDrawerItem)
-        val bookmarkedNotesDrawerItem = DrawerItem(
+        ),
+        DrawerItem(
             title = getString(R.string.bookmarked_notes),
-            count = notes.size,
+            count = databaseValues.allBookmarkNotes.size,
             type = DrawerItemType.FilterNotes,
-            resID = R.drawable.inbox,
+            resID = R.drawable.love,
+            emojiUnicode = null
+        ),
+        DrawerItem(
+            title = getString(R.string.draft_notes),
+            count = databaseValues.allDraftNotes.size,
+            type = DrawerItemType.FilterNotes,
+            resID = R.drawable.draft,
+            emojiUnicode = null
+        ),
+        DrawerItem(
+            title = getString(R.string.trash_notes),
+            count = databaseValues.allTrashNotes.size,
+            type = DrawerItemType.FilterNotes,
+            resID = R.drawable.trash,
             emojiUnicode = null
         )
-
-        return mainDrawerItems.toList()
-    }
+    )
     private fun getEmojiDrawerItems(notes: List<NoteEntity>): List<DrawerItem>{
         val emojiItems = notes.groupingBy {
             it.emojiUnicode
