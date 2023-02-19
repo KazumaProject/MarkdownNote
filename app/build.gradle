@@ -121,4 +121,6 @@ dependencies {
 
     // Emoji
     implementation 'androidx.emoji:emoji:1.1.0'
+
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.25'
 }
