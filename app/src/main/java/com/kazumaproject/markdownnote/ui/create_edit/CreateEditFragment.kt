@@ -94,8 +94,6 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                     createEditViewModel.createEditState.value.currentText,
                     createEditViewModel.createEditState.value.emoji.unicode,
                     bookmark = false,
-                    draft = false,
-                    trash = false,
                     createdAt = System.currentTimeMillis(),
                     updatedAt = System.currentTimeMillis()
                 ))
