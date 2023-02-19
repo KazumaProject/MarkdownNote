@@ -1,7 +1,6 @@
 package com.kazumaproject.markdownnote.ui.create_edit
 
 import android.annotation.SuppressLint
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -50,10 +49,9 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
         return binding.root
     }
 
-    @SuppressLint("ClickableViewAccessibility", "SourceLockedOrientationActivity")
+    @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         activityViewModel.updateCurrentFragmentType(FragmentType.CreateEditFragment)
         setChooseEmojiView()
         collectLatestLifecycleFlow(createEditViewModel.createEditState){ state ->
@@ -124,7 +122,6 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
 
     override fun onDestroyView() {
         super.onDestroyView()
-        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         _binding = null
     }
 
