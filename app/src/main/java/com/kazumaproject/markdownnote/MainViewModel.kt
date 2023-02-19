@@ -2,7 +2,9 @@ package com.kazumaproject.markdownnote
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.other.FragmentType
+import com.kazumaproject.markdownnote.repositories.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -14,7 +16,9 @@ data class FragmentAndFloatingButtonState(
 )
 
 @HiltViewModel
-class MainViewModel @Inject constructor() : ViewModel() {
+class MainViewModel @Inject constructor(
+    private val noteRepository: NoteRepository
+) : ViewModel() {
     private val _current_fragment_type = MutableStateFlow<FragmentType>(FragmentType.HomeFragment)
     private val _floating_button_enable_state = MutableStateFlow(true)
     private val _hasFocus = MutableStateFlow(false)
@@ -49,6 +53,16 @@ class MainViewModel @Inject constructor() : ViewModel() {
 
     fun updateSaveClicked(value: Boolean){
         _saveClicked.value = value
+    }
+
+    private var _allNote = MutableStateFlow<List<NoteEntity>>(
+        emptyList()
+    )
+
+    val allNotes = _allNote.asStateFlow()
+
+    fun getAllNotes(): Flow<List<NoteEntity>>{
+        return noteRepository.getAllNotes()
     }
 
 }
