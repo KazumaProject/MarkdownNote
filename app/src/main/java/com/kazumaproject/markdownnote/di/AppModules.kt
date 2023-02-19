@@ -22,6 +22,8 @@ import io.noties.markwon.image.file.FileSchemeHandler
 import io.noties.markwon.image.gif.GifMediaDecoder
 import io.noties.markwon.image.network.NetworkSchemeHandler
 import io.noties.markwon.image.network.OkHttpNetworkSchemeHandler
+import io.noties.markwon.image.svg.SvgMediaDecoder
+import io.noties.markwon.image.svg.SvgPictureMediaDecoder
 import io.noties.markwon.inlineparser.MarkwonInlineParserPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
 import io.noties.markwon.syntax.Prism4jThemeDarkula
@@ -41,7 +43,9 @@ object AppModules {
             .usePlugin(TaskListPlugin.create(context))
             .usePlugin(LinkifyPlugin.create())
             .usePlugin(ImagesPlugin.create {
+                it.addSchemeHandler(FileSchemeHandler.createWithAssets(context))
                 it.addMediaDecoder(GifMediaDecoder.create(true))
+                it.addMediaDecoder(SvgPictureMediaDecoder.create())
             })
             .usePlugin(
                 SyntaxHighlightPlugin.create(
