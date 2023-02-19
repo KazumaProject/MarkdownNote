@@ -253,7 +253,6 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         }
-
         Timber.d("current all notes in main activity: \nemoji drawer list: $emojiDrawerList\nemoji drawer list size: ${emojiDrawerList.size}")
         return emojiDrawerList.toList()
     }

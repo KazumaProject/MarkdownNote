@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
     <!--Title-->
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/parent_item_title"
+        android:id="@+id/drawer_parent_item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="12sp"
@@ -20,7 +20,7 @@
 
         <!--Child RecyclerView-->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/child_recyclerview"
+            android:id="@+id/drawer_child_recyclerview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"

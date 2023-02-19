@@ -6,6 +6,7 @@ import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.database.note_bookmark.NoteBookMarkEntity
 import com.kazumaproject.markdownnote.database.note_draft.NoteDraftEntity
 import com.kazumaproject.markdownnote.database.note_trash.NoteTrashEntity
+import com.kazumaproject.markdownnote.drawer.model.DrawerSelectedItem
 import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.repositories.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +25,6 @@ data class DatabaseValues(
     val allTrashNotes: List<NoteTrashEntity> = emptyList(),
     val allBookmarkNotes: List<NoteBookMarkEntity> = emptyList()
 )
-
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val noteRepository: NoteRepository
@@ -95,4 +95,9 @@ class MainViewModel @Inject constructor(
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DatabaseValues())
 
+    private var _current_selected_drawer_item = MutableStateFlow<DrawerSelectedItem>(DrawerSelectedItem.AllNotes)
+    val current_selected_drawer_item = _current_selected_drawer_item.asStateFlow()
+    fun updateCurrentSelectedDrawerItem(value: DrawerSelectedItem){
+        _current_selected_drawer_item.value = value
+    }
 }
