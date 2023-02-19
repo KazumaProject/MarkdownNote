@@ -3,7 +3,12 @@ package com.kazumaproject.markdownnote.di
 import android.content.Context
 import androidx.room.Room
 import com.kazumaproject.markdownnote.database.note.NoteDatabase
+import com.kazumaproject.markdownnote.database.note_draft.NoteDraftDao
+import com.kazumaproject.markdownnote.database.note_draft.NoteDraftDatabase
+import com.kazumaproject.markdownnote.database.note_trash.NoteTrashDatabase
 import com.kazumaproject.markdownnote.other.Constants.NOTE_DATABASE_NAME
+import com.kazumaproject.markdownnote.other.Constants.NOTE_DRAFT_DATABASE_NAME
+import com.kazumaproject.markdownnote.other.Constants.NOTE_TRASH_DATABASE_NAME
 import com.kazumaproject.markdownnote.other.GrammarLocatorDef
 import dagger.Module
 import dagger.Provides
@@ -17,12 +22,8 @@ import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.ext.tasklist.TaskListPlugin
 import io.noties.markwon.html.HtmlPlugin
 import io.noties.markwon.image.ImagesPlugin
-import io.noties.markwon.image.data.DataUriSchemeHandler
 import io.noties.markwon.image.file.FileSchemeHandler
 import io.noties.markwon.image.gif.GifMediaDecoder
-import io.noties.markwon.image.network.NetworkSchemeHandler
-import io.noties.markwon.image.network.OkHttpNetworkSchemeHandler
-import io.noties.markwon.image.svg.SvgMediaDecoder
 import io.noties.markwon.image.svg.SvgPictureMediaDecoder
 import io.noties.markwon.inlineparser.MarkwonInlineParserPlugin
 import io.noties.markwon.linkify.LinkifyPlugin
@@ -73,4 +74,24 @@ object AppModules {
     @Singleton
     @Provides
     fun providesNoteDao(db: NoteDatabase) = db.noteDao()
+
+    @Singleton
+    @Provides
+    fun providesNoteDraftDatabase(
+        @ApplicationContext context: Context
+    ) = Room.databaseBuilder(context, NoteDraftDatabase::class.java, NOTE_DRAFT_DATABASE_NAME).build()
+
+    @Singleton
+    @Provides
+    fun providesNoteDraftDao(db: NoteDraftDatabase) = db.noteDraftDao()
+
+    @Singleton
+    @Provides
+    fun providesNoteTrashDatabase(
+        @ApplicationContext context: Context
+    ) = Room.databaseBuilder(context, NoteTrashDatabase::class.java, NOTE_TRASH_DATABASE_NAME).build()
+
+    @Singleton
+    @Provides
+    fun providesNoteTrashDao(db: NoteTrashDatabase) = db.noteTrashDao()
 }

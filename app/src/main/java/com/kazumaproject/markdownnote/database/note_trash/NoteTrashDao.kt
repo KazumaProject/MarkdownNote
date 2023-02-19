@@ -1,24 +1,25 @@
 package com.kazumaproject.markdownnote.database.note_trash
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.kazumaproject.markdownnote.database.note.NoteEntity
 import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface NoteTrashDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertNote(note: NoteEntity)
+    suspend fun insertTrashNote(note: NoteTrashEntity)
 
     @Query("SELECT * FROM note_trash_table WHERE id = :noteID")
-    suspend fun getNoteById(noteID: String): NoteEntity?
+    suspend fun getTrashNoteById(noteID: String): NoteTrashEntity?
 
     @Query("SELECT * FROM note_trash_table ORDER BY updatedAt DESC")
-    fun getAllNotes(): Flow<List<NoteEntity>>
+    fun getAllTrashNotes(): Flow<List<NoteTrashEntity>>
 
     @Query("DELETE FROM note_trash_table WHERE id = :noteID")
-    suspend fun deleteNoteById(noteID: String)
+    suspend fun deleteTrashNoteById(noteID: String)
 
     @Query("DELETE FROM note_trash_table")
-    suspend fun deleteAllNotes()
+    suspend fun deleteAllTrashNotes()
 }

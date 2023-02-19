@@ -38,10 +38,7 @@ class HomeFragment : Fragment() {
         }
 
         collectLatestLifecycleFlow(homeViewModel.getAllNotes()){ notes ->
-            val filteredNotes = notes.filter { note ->
-                !note.draft && !note.trash
-            }
-            Timber.d("current all notes: $notes\ncounts: ${notes.size}\nfiltered notes: $filteredNotes")
+            Timber.d("current all notes: $notes\ncounts: ${notes.size}\n")
         }
 
         activityViewModel.updateCurrentFragmentType(FragmentType.HomeFragment)
