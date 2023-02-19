@@ -8,7 +8,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
-import android.view.Gravity
 import android.widget.Switch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +17,8 @@ import androidx.core.view.GravityCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.kazumaproject.markdownnote.databinding.ActivityMainBinding
+import com.kazumaproject.markdownnote.drawer.model.DrawerItem
+import com.kazumaproject.markdownnote.drawer.model.DrawerItemType
 import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.other.KeyboardHelper
 import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
@@ -94,7 +95,25 @@ class MainActivity : AppCompatActivity() {
             bottomAppBarItemPreviewRawChange.actionView = markdownSwitch
         }
 
+        collectLatestLifecycleFlow(viewModel.getAllNotes()){ notes ->
+            val emojiItems = notes.groupingBy {
+                it.emojiUnicode
+            }.eachCount()
+            val emojiDrawerList: MutableList<DrawerItem> = mutableListOf()
+            emojiItems.forEach { (unicode, count) ->
+                emojiDrawerList.add(
+                    DrawerItem(
+                        title = unicode.toString(),
+                        count= count,
+                        type = DrawerItemType.CategoryEmoji,
+                        resID = null,
+                        emojiUnicode = unicode
+                    )
+                )
+            }
 
+            Timber.d("current all notes in main activity: $notes\ncounts: ${notes.size}\nemoji: $emojiItems\nkeys: ${emojiItems.keys}\nvalues: ${emojiItems.values}\nemoji drawer list: $emojiDrawerList\nemoji drawer list size: ${emojiDrawerList.size}")
+        }
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {

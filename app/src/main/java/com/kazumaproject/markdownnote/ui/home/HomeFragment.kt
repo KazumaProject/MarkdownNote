@@ -13,7 +13,6 @@ import com.kazumaproject.markdownnote.databinding.FragmentHomeBinding
 import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -38,7 +37,7 @@ class HomeFragment : Fragment() {
         }
 
         collectLatestLifecycleFlow(activityViewModel.getAllNotes()){ notes ->
-            Timber.d("current all notes: $notes\ncounts: ${notes.size}\n")
+            Timber.d("current all notes in home fragment: $notes\ncounts: ${notes.size}\n")
         }
 
         activityViewModel.updateCurrentFragmentType(FragmentType.HomeFragment)
