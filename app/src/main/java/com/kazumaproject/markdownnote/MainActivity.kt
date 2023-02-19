@@ -8,11 +8,13 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
+import android.view.Gravity
 import android.widget.Switch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.kazumaproject.markdownnote.databinding.ActivityMainBinding
@@ -91,6 +93,8 @@ class MainActivity : AppCompatActivity() {
             val bottomAppBarItemPreviewRawChange = binding.bottomAppBar.menu.findItem(R.id.bottom_app_bar_item_preview_raw_change)
             bottomAppBarItemPreviewRawChange.actionView = markdownSwitch
         }
+
+
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
@@ -134,12 +138,9 @@ class MainActivity : AppCompatActivity() {
 
         setOnMenuItemClickListener { item ->
             when(item.itemId){
-                R.id.bottom_bar_item_draft -> findNavController(R.id.navHostFragment).navigate(
-                    HomeFragmentDirections.actionHomeFragmentToDraftFragment()
-                )
-                R.id.bottom_bar_item_setting -> findNavController(R.id.navHostFragment).navigate(
-                    HomeFragmentDirections.actionHomeFragmentToSettingFragment()
-                )
+                R.id.bottom_bar_item_draft -> {
+                    binding.drawerLayout.openDrawer(GravityCompat.START)
+                }
                 R.id.bottom_bar_item_back_arrow ->{
                     when(fragmentType){
                         is FragmentType.HomeFragment -> {
@@ -194,7 +195,6 @@ class MainActivity : AppCompatActivity() {
     private fun setBottomAppBarMenuItemsVisibility(visibility: Boolean, switchVisibility: Boolean, hasFocus: Boolean){
         binding.bottomAppBar.menu.apply {
             findItem(R.id.bottom_bar_item_draft).isVisible = visibility
-            findItem(R.id.bottom_bar_item_setting).isVisible = visibility
             findItem(R.id.bottom_app_bar_item_preview_raw_change).isVisible = switchVisibility && !hasFocus
             if (hasFocus) findItem(R.id.bottom_bar_item_back_arrow).icon =
                 ContextCompat.getDrawable(this@MainActivity,R.drawable.arrow_down) else findItem(R.id.bottom_bar_item_back_arrow).icon =

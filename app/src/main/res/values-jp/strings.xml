@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">マークダウンノート</string>
     <string name="add_button">追加ボタン</string>
-    <string name="main_menu_draft">下書き</string>
+    <string name="main_menu_draft">ナビゲーションを開く</string>
     <string name="main_menu_tag">タグを編集</string>
     <string name="main_menu_setting">設定</string>
 
