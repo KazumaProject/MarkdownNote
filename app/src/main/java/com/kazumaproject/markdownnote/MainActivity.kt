@@ -1,10 +1,17 @@
 package com.kazumaproject.markdownnote
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import android.widget.Switch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -15,6 +22,7 @@ import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
 import com.kazumaproject.markdownnote.ui.create_edit.CreateEditFragmentDirections
 import com.kazumaproject.markdownnote.ui.home.HomeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -22,11 +30,45 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private val viewModel : MainViewModel by viewModels()
 
+    companion object {
+
+        private const val REQUEST_CODE_PERMISSIONS = 17
+
+        private val REQUIRED_PERMISSIONS = arrayOf(
+            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            android.Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+    }
+
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            if (!Environment.isExternalStorageManager()){
+                try {
+                    val uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID)
+                    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri)
+                    startActivity(intent)
+                }catch (e : Exception){
+                    val intent = Intent()
+                    intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+                    Timber.d("Error: $e")
+                }
+            }
+            if (!allPermissionsGranted()){
+                ActivityCompat.requestPermissions(this,
+                    REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+            }
+        }else {
+            if (!allPermissionsGranted()){
+                ActivityCompat.requestPermissions(this,
+                    REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+            }
+        }
+
         supportActionBar?.hide()
         setupActionBarWithNavController(findNavController(R.id.navHostFragment))
 
@@ -49,6 +91,10 @@ class MainActivity : AppCompatActivity() {
             val bottomAppBarItemPreviewRawChange = binding.bottomAppBar.menu.findItem(R.id.bottom_app_bar_item_preview_raw_change)
             bottomAppBarItemPreviewRawChange.actionView = markdownSwitch
         }
+    }
+
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
     }
     private fun setAppBottomBarAppearanceByFragmentType(type: FragmentType, isEnable: Boolean, hasFocus: Boolean){
         when(type){

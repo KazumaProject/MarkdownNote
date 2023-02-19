@@ -43,7 +43,7 @@ object AppModules {
             .usePlugin(TaskListPlugin.create(context))
             .usePlugin(LinkifyPlugin.create())
             .usePlugin(ImagesPlugin.create {
-                it.addSchemeHandler(FileSchemeHandler.createWithAssets(context))
+                it.addSchemeHandler(FileSchemeHandler.create())
                 it.addMediaDecoder(GifMediaDecoder.create(true))
                 it.addMediaDecoder(SvgPictureMediaDecoder.create())
             })
