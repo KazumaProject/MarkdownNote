@@ -3,9 +3,11 @@ package com.kazumaproject.markdownnote.di
 import android.content.Context
 import androidx.room.Room
 import com.kazumaproject.markdownnote.database.note.NoteDatabase
+import com.kazumaproject.markdownnote.database.note_bookmark.NoteBookMarkDatabase
 import com.kazumaproject.markdownnote.database.note_draft.NoteDraftDao
 import com.kazumaproject.markdownnote.database.note_draft.NoteDraftDatabase
 import com.kazumaproject.markdownnote.database.note_trash.NoteTrashDatabase
+import com.kazumaproject.markdownnote.other.Constants.NOTE_BOOKMARK_DATABASE_NAME
 import com.kazumaproject.markdownnote.other.Constants.NOTE_DATABASE_NAME
 import com.kazumaproject.markdownnote.other.Constants.NOTE_DRAFT_DATABASE_NAME
 import com.kazumaproject.markdownnote.other.Constants.NOTE_TRASH_DATABASE_NAME
@@ -94,4 +96,14 @@ object AppModules {
     @Singleton
     @Provides
     fun providesNoteTrashDao(db: NoteTrashDatabase) = db.noteTrashDao()
+
+    @Singleton
+    @Provides
+    fun providesNoteBookmarkDatabase(
+        @ApplicationContext context: Context
+    ) = Room.databaseBuilder(context, NoteBookMarkDatabase::class.java, NOTE_BOOKMARK_DATABASE_NAME).build()
+
+    @Singleton
+    @Provides
+    fun providesNoteBookmarkDao(db: NoteBookMarkDatabase) = db.noteBookmarkDao()
 }

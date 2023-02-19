@@ -1,13 +1,14 @@
-package com.kazumaproject.markdownnote.database.note
+package com.kazumaproject.markdownnote.database.note_bookmark
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.UUID
+import java.util.*
 
-@Entity(tableName = "note_table")
-data class NoteEntity(
+@Entity(tableName = "note_bookmark_table")
+data class NoteBookMarkEntity(
     val body: String,
     val emojiUnicode: Int,
+    val bookmark: Boolean,
     val createdAt: Long,
     val updatedAt: Long,
     @PrimaryKey(autoGenerate = false)
