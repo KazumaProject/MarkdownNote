@@ -94,9 +94,11 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                 createEditViewModel.insertNote(NoteEntity(
                     createEditViewModel.createEditState.value.currentText,
                     createEditViewModel.createEditState.value.emoji.unicode,
-                    false,
-                    System.currentTimeMillis(),
-                    System.currentTimeMillis()
+                    bookmark = false,
+                    draft = false,
+                    trash = false,
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis()
                 ))
             }
         }

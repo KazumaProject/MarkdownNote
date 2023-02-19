@@ -9,6 +9,8 @@ data class NoteEntity(
     val body: String,
     val emojiUnicode: Int,
     val bookmark: Boolean,
+    val draft: Boolean,
+    val trash: Boolean,
     val createdAt: Long,
     val updatedAt: Long,
     @PrimaryKey(autoGenerate = false)
