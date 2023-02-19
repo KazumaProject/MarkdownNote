@@ -9,4 +9,9 @@
     <string name="markdown_hint">Write in Markdown…</string>
     <string name="back_button">戻る</string>
     <string name="switch_markdown">Switch Markdown</string>
+
+    <string name="all_notes">全てのノート</string>
+    <string name="bookmarked_notes">お気に入り</string>
+    <string name="draft_notes">下書き</string>
+    <string name="trash_notes">ごみ箱</string>
 </resources>

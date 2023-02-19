@@ -3,6 +3,9 @@ package com.kazumaproject.markdownnote
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazumaproject.markdownnote.database.note.NoteEntity
+import com.kazumaproject.markdownnote.database.note_bookmark.NoteBookMarkEntity
+import com.kazumaproject.markdownnote.database.note_draft.NoteDraftEntity
+import com.kazumaproject.markdownnote.database.note_trash.NoteTrashEntity
 import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.repositories.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,6 +16,13 @@ data class FragmentAndFloatingButtonState(
     val currentFragmentType: FragmentType = FragmentType.HomeFragment,
     val floatingButtonState: Boolean = true,
     val hasFocus: Boolean = false
+)
+
+data class DatabaseValues(
+    val allNotes: List<NoteEntity> = emptyList(),
+    val allDraftNotes: List<NoteDraftEntity> = emptyList(),
+    val allTrashNotes: List<NoteTrashEntity> = emptyList(),
+    val allBookmarkNotes: List<NoteBookMarkEntity> = emptyList()
 )
 
 @HiltViewModel
@@ -55,14 +65,34 @@ class MainViewModel @Inject constructor(
         _saveClicked.value = value
     }
 
-    private var _allNote = MutableStateFlow<List<NoteEntity>>(
-        emptyList()
-    )
-
-    val allNotes = _allNote.asStateFlow()
-
-    fun getAllNotes(): Flow<List<NoteEntity>>{
+    private fun getAllNotes(): Flow<List<NoteEntity>>{
         return noteRepository.getAllNotes()
     }
+
+    private fun getAllDraftNotes(): Flow<List<NoteDraftEntity>>{
+        return noteRepository.getAllDraftNotes()
+    }
+
+    private fun getAllTrashNotes(): Flow<List<NoteTrashEntity>>{
+        return noteRepository.getAllTrashNotes()
+    }
+
+    private fun getAllBookmarkNotes(): Flow<List<NoteBookMarkEntity>>{
+        return noteRepository.getAllBookmarkNotes()
+    }
+
+    val dataBaseValues = combine(
+        getAllNotes(),
+        getAllDraftNotes(),
+        getAllTrashNotes(),
+        getAllBookmarkNotes()
+    ){ notes, drafts, trash, bookmarks ->
+        DatabaseValues(
+            allNotes = notes,
+            allDraftNotes = drafts,
+            allTrashNotes = trash,
+            allBookmarkNotes = bookmarks
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DatabaseValues())
 
 }

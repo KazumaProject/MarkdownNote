@@ -9,4 +9,9 @@
     <string name="markdown_hint">Write in Markdown…</string>
     <string name="back_button">Back</string>
     <string name="switch_markdown">Switch Markdown</string>
+
+    <string name="all_notes">All notes</string>
+    <string name="bookmarked_notes">Liked</string>
+    <string name="draft_notes">Drafts</string>
+    <string name="trash_notes">Trash</string>
 </resources>

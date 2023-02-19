@@ -36,8 +36,8 @@ class HomeFragment : Fragment() {
             requireActivity().finish()
         }
 
-        collectLatestLifecycleFlow(activityViewModel.getAllNotes()){ notes ->
-            Timber.d("current all notes in home fragment: $notes\ncounts: ${notes.size}\n")
+        collectLatestLifecycleFlow(activityViewModel.dataBaseValues){ value ->
+
         }
 
         activityViewModel.updateCurrentFragmentType(FragmentType.HomeFragment)

@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.databinding.ActivityMainBinding
 import com.kazumaproject.markdownnote.drawer.model.DrawerItem
 import com.kazumaproject.markdownnote.drawer.model.DrawerItemType
@@ -95,24 +96,8 @@ class MainActivity : AppCompatActivity() {
             bottomAppBarItemPreviewRawChange.actionView = markdownSwitch
         }
 
-        collectLatestLifecycleFlow(viewModel.getAllNotes()){ notes ->
-            val emojiItems = notes.groupingBy {
-                it.emojiUnicode
-            }.eachCount()
-            val emojiDrawerList: MutableList<DrawerItem> = mutableListOf()
-            emojiItems.forEach { (unicode, count) ->
-                emojiDrawerList.add(
-                    DrawerItem(
-                        title = unicode.toString(),
-                        count= count,
-                        type = DrawerItemType.CategoryEmoji,
-                        resID = null,
-                        emojiUnicode = unicode
-                    )
-                )
-            }
-
-            Timber.d("current all notes in main activity: $notes\ncounts: ${notes.size}\nemoji: $emojiItems\nkeys: ${emojiItems.keys}\nvalues: ${emojiItems.values}\nemoji drawer list: $emojiDrawerList\nemoji drawer list size: ${emojiDrawerList.size}")
+        collectLatestLifecycleFlow(viewModel.dataBaseValues){ value ->
+            getEmojiDrawerItems(value.allNotes)
         }
     }
 
@@ -220,5 +205,46 @@ class MainActivity : AppCompatActivity() {
                 ContextCompat.getDrawable(this@MainActivity,R.drawable.back)
         }
         binding.addFloatingButton.isEnabled = visibility
+    }
+
+    private fun getMainDrawerItems(notes: List<NoteEntity>): List<DrawerItem>{
+        val mainDrawerItems: MutableList<DrawerItem> = mutableListOf()
+        val allNotesDrawerItem = DrawerItem(
+            title = getString(R.string.all_notes),
+            count = notes.size,
+            type = DrawerItemType.FilterNotes,
+            resID = R.drawable.inbox,
+            emojiUnicode = null
+        )
+        mainDrawerItems.add(allNotesDrawerItem)
+        val bookmarkedNotesDrawerItem = DrawerItem(
+            title = getString(R.string.bookmarked_notes),
+            count = notes.size,
+            type = DrawerItemType.FilterNotes,
+            resID = R.drawable.inbox,
+            emojiUnicode = null
+        )
+
+        return mainDrawerItems.toList()
+    }
+    private fun getEmojiDrawerItems(notes: List<NoteEntity>): List<DrawerItem>{
+        val emojiItems = notes.groupingBy {
+            it.emojiUnicode
+        }.eachCount()
+        val emojiDrawerList: MutableList<DrawerItem> = mutableListOf()
+        emojiItems.forEach { (unicode, count) ->
+            emojiDrawerList.add(
+                DrawerItem(
+                    title = unicode.toString(),
+                    count= count,
+                    type = DrawerItemType.CategoryEmoji,
+                    resID = null,
+                    emojiUnicode = unicode
+                )
+            )
+        }
+
+        Timber.d("current all notes in main activity: \nemoji drawer list: $emojiDrawerList\nemoji drawer list size: ${emojiDrawerList.size}")
+        return emojiDrawerList.toList()
     }
 }
