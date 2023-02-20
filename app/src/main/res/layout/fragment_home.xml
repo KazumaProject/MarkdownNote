@@ -28,6 +28,8 @@
                 android:layoutDirection="rtl"
                 app:tint="@color/text_color_sub1"
                 android:queryHint="@string/query_hint"
+                android:queryBackground="@drawable/search_view_bg"
+                android:textAlignment="textStart"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

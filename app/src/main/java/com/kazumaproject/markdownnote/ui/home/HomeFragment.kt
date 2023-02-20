@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -85,6 +86,7 @@ class HomeFragment : Fragment() {
             }
             setRecyclerView(filteredNotes,homeNotesRecyclerViewAdapter)
             setSwipeRefreshLayout(filteredNotes, homeNotesRecyclerViewAdapter)
+            setSearchView(filteredNotes, homeNotesRecyclerViewAdapter)
             Timber.d("current filtered notes: $filteredNotes\ncounts: ${filteredNotes.size}")
         }
 
@@ -122,6 +124,27 @@ class HomeFragment : Fragment() {
                 isRefreshing = false
             }
         }
+    }
+
+    private fun setSearchView(notes: List<NoteEntity>, homeNotesAdapter: HomeNotesRecyclerViewAdapter?){
+        binding.homeSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let { text ->
+                    homeNotesAdapter?.let { noteAdapter ->
+                        noteAdapter.filtered_notes = notes.filter {
+                            it.body.contains(text)
+                        }
+                        binding.homeNotesRecyclerView.adapter = noteAdapter
+                    }
+                }
+                return false
+            }
+
+        })
     }
 
 }
