@@ -8,7 +8,6 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.databinding.FragmentHomeBinding
@@ -41,11 +40,10 @@ class HomeFragment : Fragment() {
             requireActivity().finish()
         }
 
-        collectLatestLifecycleFlow(activityViewModel.current_selected_drawer_item){ selected_drawer_item ->
-            val filteredNotes: List<NoteEntity> = when(selected_drawer_item){
+        collectLatestLifecycleFlow(activityViewModel.filteredNotesValue){ filtered_notes ->
+            val filteredNotes: List<NoteEntity> = when(filtered_notes.currentDrawerSelectedItem){
                 is DrawerSelectedItem.AllNotes -> {
-                    delay(150)
-                    activityViewModel.dataBaseValues.value.allNotes
+                   filtered_notes.allNotes
                 }
                 is DrawerSelectedItem.BookmarkedNotes -> {
                     activityViewModel.dataBaseValues.value.allBookmarkNotes.map {
@@ -63,12 +61,12 @@ class HomeFragment : Fragment() {
                     }
                 }
                 is DrawerSelectedItem.EmojiCategory ->{
-                    activityViewModel.dataBaseValues.value.allNotes.filter {
-                        it.emojiUnicode == selected_drawer_item.unicode
+                    filtered_notes.allNotes.filter {
+                        it.emojiUnicode == filtered_notes.currentDrawerSelectedItem.unicode
                     }
                 }
                 is DrawerSelectedItem.GoToSettings -> {
-                    activityViewModel.dataBaseValues.value.allNotes
+                    filtered_notes.allNotes
                 }
             }
             Timber.d("current filtered notes: $filteredNotes\ncounts: ${filteredNotes.size}")
