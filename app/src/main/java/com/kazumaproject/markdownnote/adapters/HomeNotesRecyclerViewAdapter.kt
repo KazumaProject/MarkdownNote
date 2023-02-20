@@ -10,10 +10,9 @@ import com.google.android.material.textview.MaterialTextView
 import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.database.note.NoteEntity
-import com.kazumaproject.markdownnote.drawer.model.DrawerItem
-import com.kazumaproject.markdownnote.other.convertLongToTime
+import com.kazumaproject.markdownnote.other.DateAgoCalculator
 import com.kazumaproject.markdownnote.other.getTitleFromNote
-import java.time.LocalDateTime
+import java.util.*
 
 class HomeNotesRecyclerViewAdapter: RecyclerView.Adapter<HomeNotesRecyclerViewAdapter.HomeNotesViewHolder>() {
 
@@ -68,7 +67,11 @@ class HomeNotesRecyclerViewAdapter: RecyclerView.Adapter<HomeNotesRecyclerViewAd
             val noteTimeText = findViewById<MaterialTextView>(R.id.note_item_time_text)
             emojiText.text = note.emojiUnicode.convertUnicode()
             noteTitleText.text = note.body.getTitleFromNote()
-            noteTimeText.text = note.updatedAt.convertLongToTime()
+            noteTimeText.text = DateAgoCalculator.getLabel(
+                Date(System.currentTimeMillis()),
+                Date(note.updatedAt),
+                context
+            )
         }
     }
 }

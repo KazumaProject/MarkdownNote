@@ -84,6 +84,7 @@ class HomeFragment : Fragment() {
                 is DrawerSelectedItem.GoToSettings -> filtered_notes.allNotes
             }
             setRecyclerView(filteredNotes,homeNotesRecyclerViewAdapter)
+            setSwipeRefreshLayout(filteredNotes, homeNotesRecyclerViewAdapter)
             Timber.d("current filtered notes: $filteredNotes\ncounts: ${filteredNotes.size}")
         }
 
@@ -109,6 +110,18 @@ class HomeFragment : Fragment() {
             }
         }
         this.layoutManager = LinearLayoutManager(requireContext())
+    }
+
+    private fun setSwipeRefreshLayout(notes: List<NoteEntity>, adapter: HomeNotesRecyclerViewAdapter?){
+        binding.homeFragmentSwipeRefreshLayout.apply {
+            setOnRefreshListener {
+                adapter?.let { noteAdapter ->
+                    noteAdapter.filtered_notes = notes
+                    binding.homeNotesRecyclerView.adapter = noteAdapter
+                }
+                isRefreshing = false
+            }
+        }
     }
 
 }
