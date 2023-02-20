@@ -242,6 +242,7 @@ class MainActivity : AppCompatActivity() {
             is FragmentType.HomeFragment ->{
                 isVisible = true
                 setOnClickListener {
+                    binding.bottomAppBar.performShow()
                     findNavController(R.id.navHostFragment).navigate(
                         HomeFragmentDirections.actionHomeFragmentToCreateEditFragment()
                     )
@@ -250,6 +251,7 @@ class MainActivity : AppCompatActivity() {
             is FragmentType.CreateEditFragment ->{
                 isVisible = true
                 setOnClickListener {
+                    binding.bottomAppBar.performShow()
                     viewModel.updateSaveClicked(true)
                     findNavController(R.id.navHostFragment).navigate(
                         CreateEditFragmentDirections.actionCreateEditFragmentToHomeFragment()

@@ -60,9 +60,25 @@
         android:ellipsize="end"
         android:textAlignment="textStart"
         android:textColor="@color/text_color_sub1"
-        android:text="Jan/17/2023"
         android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="@+id/note_item_title"
         app:layout_constraintTop_toBottomOf="@+id/note_item_title" />
+
+    <xyz.hanks.library.bang.SmallBangView
+        android:id="@+id/note_item_like_heart_parent"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintEnd_toEndOf="@+id/note_item_time_text"
+        app:layout_constraintTop_toBottomOf="@+id/note_item_title">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/note_item_like_image"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:src="@drawable/heart_selector" />
+    </xyz.hanks.library.bang.SmallBangView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

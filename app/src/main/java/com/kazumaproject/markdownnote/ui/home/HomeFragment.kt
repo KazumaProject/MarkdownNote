@@ -119,6 +119,9 @@ class HomeFragment : Fragment() {
                     HomeFragmentDirections.actionHomeFragmentToDraftFragment()
                 )
             }
+            noteAdapter.setOnItemLikedClickListener { noteEntity, i, isSelected ->
+                Timber.d("clicked note: $noteEntity\nindex: $i\nselected: $isSelected")
+            }
         }
         this.layoutManager = LinearLayoutManager(requireContext())
     }

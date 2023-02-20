@@ -12,6 +12,7 @@ import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.other.DateAgoCalculator
 import com.kazumaproject.markdownnote.other.getTitleFromNote
+import xyz.hanks.library.bang.SmallBangView
 import java.util.*
 
 class HomeNotesRecyclerViewAdapter: RecyclerView.Adapter<HomeNotesRecyclerViewAdapter.HomeNotesViewHolder>() {
@@ -32,6 +33,12 @@ class HomeNotesRecyclerViewAdapter: RecyclerView.Adapter<HomeNotesRecyclerViewAd
 
     fun setOnItemClickListener(onItemClick: (NoteEntity, Int) -> Unit) {
         this.onItemClickListener = onItemClick
+    }
+
+    private var onItemLikedClickListener: ((NoteEntity, Int, Boolean) -> Unit)? = null
+
+    fun setOnItemLikedClickListener(onItemLikeClick: (NoteEntity, Int, Boolean) -> Unit) {
+        this.onItemLikedClickListener = onItemLikeClick
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
@@ -65,6 +72,7 @@ class HomeNotesRecyclerViewAdapter: RecyclerView.Adapter<HomeNotesRecyclerViewAd
             val emojiText = findViewById<MaterialTextView>(R.id.note_item_emoji_view)
             val noteTitleText = findViewById<MaterialTextView>(R.id.note_item_title)
             val noteTimeText = findViewById<MaterialTextView>(R.id.note_item_time_text)
+            val likedButton = findViewById<SmallBangView>(R.id.note_item_like_heart_parent)
             emojiText.text = note.emojiUnicode.convertUnicode()
             noteTitleText.text = note.body.getTitleFromNote()
             noteTimeText.text = DateAgoCalculator.getLabel(
@@ -72,6 +80,15 @@ class HomeNotesRecyclerViewAdapter: RecyclerView.Adapter<HomeNotesRecyclerViewAd
                 Date(note.updatedAt),
                 context
             )
+            likedButton.apply {
+                setOnClickListener {
+                    onItemLikedClickListener?.let { likedClick ->
+                        isSelected = !this.isSelected
+                        likeAnimation()
+                        likedClick(note, position,isSelected)
+                    }
+                }
+            }
         }
     }
 }
