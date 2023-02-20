@@ -42,7 +42,7 @@ class EmojiPickerDialogFragment (
 
     private fun setParentRecyclerView(recyclerView: RecyclerView, parentEmojiRecyclerViewAdapter: ParentEmojiRecyclerViewAdapter?) = recyclerView.apply {
         parentEmojiRecyclerViewAdapter?.let { parentAdapter ->
-            val emoji_itemList = ArrayList<ParentEmojiItem>()
+            val emoji_itemList = mutableListOf<ParentEmojiItem>()
             val emoji_item_smiley_and_people = ParentEmojiItem(
                 "Smileys & People",
                 EMOJI_LIST_SMILEYS_PEOPLE
@@ -53,7 +53,7 @@ class EmojiPickerDialogFragment (
                 EMOJI_LIST_ANIMALS_NATURE
             )
             emoji_itemList.add(emoji_item_animals_and_nature)
-            parentAdapter.parent_emoji_list = emoji_itemList
+            parentAdapter.parent_emoji_list = emoji_itemList.toList()
             this.adapter = parentAdapter
         }
         this.layoutManager = LinearLayoutManager(requireContext())

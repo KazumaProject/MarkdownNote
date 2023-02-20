@@ -23,7 +23,7 @@ class ParentEmojiRecyclerViewAdapter (
 
     private val diffCallback = object : DiffUtil.ItemCallback<ParentEmojiItem>() {
         override fun areItemsTheSame(oldItem: ParentEmojiItem, newItem: ParentEmojiItem): Boolean {
-            return oldItem.patentTitle == newItem.patentTitle
+            return oldItem.parentTitle == newItem.parentTitle
         }
 
         override fun areContentsTheSame(oldItem: ParentEmojiItem, newItem: ParentEmojiItem): Boolean {
@@ -55,7 +55,7 @@ class ParentEmojiRecyclerViewAdapter (
         val parentItem = parent_emoji_list[position]
         val childRecyclerView = holder.itemView.findViewById<RecyclerView>(R.id.child_recyclerview)
         holder.itemView.apply {
-            findViewById<TextView>(R.id.parent_item_title).text = parentItem.patentTitle
+            findViewById<TextView>(R.id.parent_item_title).text = parentItem.parentTitle
         }
         val childLayoutManager = GridLayoutManager(
             childRecyclerView.context,

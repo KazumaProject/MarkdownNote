@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MarkdownNote</string>
+    <string name="app_name">Markdown Note</string>
     <string name="add_button">add button</string>
     <string name="main_menu_draft">Open navigation drawer</string>
     <string name="main_menu_tag">Edit tag</string>
@@ -14,4 +14,6 @@
     <string name="bookmarked_notes">Liked</string>
     <string name="draft_notes">Drafts</string>
     <string name="trash_notes">Trash</string>
+
+    <string name="emoji_string">Emoji</string>
 </resources>

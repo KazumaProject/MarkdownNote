@@ -8,7 +8,8 @@ sealed class DrawerSelectedItem{
     object DraftNotes: DrawerSelectedItem()
     object TrashNotes: DrawerSelectedItem()
     data class EmojiCategory(
-        val emoji: Emoji
+        val unicode: Int,
+        val index: Int
     ): DrawerSelectedItem()
     object GoToSettings: DrawerSelectedItem()
 }

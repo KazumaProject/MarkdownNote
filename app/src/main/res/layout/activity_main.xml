@@ -56,6 +56,11 @@
         android:background="@color/bottom_bar_bg_color"
         android:elevation="4dp">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/drawer_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

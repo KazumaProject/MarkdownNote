@@ -16,10 +16,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.kazumaproject.markdownnote.adapters.DrawerParentRecyclerViewAdapter
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.databinding.ActivityMainBinding
 import com.kazumaproject.markdownnote.drawer.model.DrawerItem
 import com.kazumaproject.markdownnote.drawer.model.DrawerItemType
+import com.kazumaproject.markdownnote.drawer.model.DrawerParentItem
+import com.kazumaproject.markdownnote.drawer.model.DrawerSelectedItem
 import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.other.KeyboardHelper
 import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
@@ -33,6 +37,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding
     private val viewModel : MainViewModel by viewModels()
+    private var drawerParentRecyclerViewAdapter: DrawerParentRecyclerViewAdapter? = null
 
     companion object {
 
@@ -72,8 +77,10 @@ class MainActivity : AppCompatActivity() {
                     REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
             }
         }
-
         supportActionBar?.hide()
+
+        drawerParentRecyclerViewAdapter = DrawerParentRecyclerViewAdapter()
+
         setupActionBarWithNavController(findNavController(R.id.navHostFragment))
 
         collectLatestLifecycleFlow(viewModel.fragmentAndFloatingButtonState){ fragmentAndFloatingButtonState ->
@@ -97,8 +104,57 @@ class MainActivity : AppCompatActivity() {
         }
 
         collectLatestLifecycleFlow(viewModel.dataBaseValues){ value ->
+            drawerParentRecyclerViewAdapter?.let { drawerAdapter ->
+                val drawer_parent_items = mutableListOf<DrawerParentItem>()
+                val mainDrawerItems = DrawerParentItem(
+                    parentTitle = getString(R.string.app_name),
+                    childList = getMainDrawerItems(value)
+                )
+                drawer_parent_items.add(mainDrawerItems)
+                val emojiDrawerItems = DrawerParentItem(
+                    parentTitle = getString(R.string.emoji_string),
+                    childList = getEmojiDrawerItems(value.allNotes)
+                )
+                drawer_parent_items.add(emojiDrawerItems)
+                drawerAdapter.parent_drawer_item_list = drawer_parent_items.toList()
+                binding.drawerRecyclerView.apply {
+                    this.adapter = drawerAdapter
+                    this.layoutManager = LinearLayoutManager(this@MainActivity)
+                }
+                drawerAdapter.setOnItemClickListener { drawerItem, i ->
+                    Timber.d("clicked drawer item: $drawerItem\nindex: $i")
+                    binding.drawerLayout.closeDrawer(GravityCompat.START)
+                    when(drawerItem.type){
+                        is DrawerItemType.FilterNotes -> {
+                            when(i){
+                                0 -> viewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
+                                1 -> viewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.BookmarkedNotes)
+                                2 -> viewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.DraftNotes)
+                                3 -> viewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.TrashNotes)
+                            }
+                        }
+                        is DrawerItemType.CategoryEmoji -> {
+                            drawerItem.emojiUnicode?.let { unicode ->
+                                viewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.EmojiCategory(
+                                    unicode = unicode,
+                                    index = i
+                                ))
+                            }
+                        }
+                        is DrawerItemType.Navigation -> {
+
+                        }
+                    }
+                }
+            }
             getEmojiDrawerItems(value.allNotes)
+
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        drawerParentRecyclerViewAdapter = null
     }
 
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {

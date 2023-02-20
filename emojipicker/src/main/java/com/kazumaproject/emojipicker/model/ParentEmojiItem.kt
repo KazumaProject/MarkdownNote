@@ -1,6 +1,6 @@
 package com.kazumaproject.emojipicker.model
 
 data class ParentEmojiItem(
-    val patentTitle: String,
+    val parentTitle: String,
     val childItemList: List<Emoji>
 )

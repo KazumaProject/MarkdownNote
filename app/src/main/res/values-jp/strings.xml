@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">マークダウンノート</string>
+    <string name="app_name">マークダウン ノート</string>
     <string name="add_button">追加ボタン</string>
     <string name="main_menu_draft">ナビゲーションを開く</string>
     <string name="main_menu_tag">タグを編集</string>
@@ -14,4 +14,6 @@
     <string name="bookmarked_notes">お気に入り</string>
     <string name="draft_notes">下書き</string>
     <string name="trash_notes">ごみ箱</string>
+
+    <string name="emoji_string">絵文字</string>
 </resources>

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
+import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.drawer.model.DrawerItem
 import com.kazumaproject.markdownnote.drawer.model.DrawerItemType
@@ -75,7 +76,7 @@ class DrawerChildRecyclerViewAdapter : RecyclerView.Adapter<DrawerChildRecyclerV
                 }
                 is DrawerItemType.CategoryEmoji -> {
                     drawerItem.emojiUnicode?.let { unicode ->
-                        drawerTitle.text = unicode.toString()
+                        drawerTitle.text = unicode.convertUnicode()
                     }
                     drawerIcon.background = null
                     drawerCount.text = if (drawerItem.count >= 100) "99+" else drawerItem.count.toString()
