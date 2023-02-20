@@ -5,6 +5,35 @@ import com.kazumaproject.markdownnote.database.note_bookmark.NoteBookMarkEntity
 import com.kazumaproject.markdownnote.database.note_draft.NoteDraftEntity
 import com.kazumaproject.markdownnote.database.note_trash.NoteTrashEntity
 
+fun NoteEntity.convertNoteBookMarkEntity(): NoteBookMarkEntity{
+    return NoteBookMarkEntity(
+        body = body,
+        emojiUnicode = emojiUnicode,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        id = id
+    )
+}
+
+fun NoteEntity.convertNoteDraftEntity(): NoteDraftEntity{
+    return NoteDraftEntity(
+        body = body,
+        emojiUnicode = emojiUnicode,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        id = id
+    )
+}
+
+fun NoteEntity.convertNoteTrashEntity(): NoteTrashEntity{
+    return NoteTrashEntity(
+        body = body,
+        emojiUnicode = emojiUnicode,
+        createdAt = createdAt,
+        updatedAt = updatedAt,
+        id = id
+    )
+}
 fun NoteBookMarkEntity.convertNoteEntity(): NoteEntity{
     return NoteEntity(
         body = body,

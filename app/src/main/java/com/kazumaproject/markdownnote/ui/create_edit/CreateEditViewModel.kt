@@ -64,7 +64,7 @@ class CreateEditViewModel @Inject constructor(
       Database methods start
      **************************/
 
-    fun insertNote(note: NoteEntity) = CoroutineScope(Dispatchers.IO).launch {
+    fun insertNote(note: NoteEntity) = viewModelScope.launch {
         Timber.d("insert note called")
         noteRepository.insertNote(note)
     }

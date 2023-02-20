@@ -28,6 +28,7 @@ data class DatabaseValues(
 
 data class FilteredNotesValue(
     val currentDrawerSelectedItem: DrawerSelectedItem = DrawerSelectedItem.AllNotes,
+    val allBookmarkNotes: List<NoteBookMarkEntity> = emptyList(),
     val allNotes: List<NoteEntity> = emptyList()
 )
 @HiltViewModel
@@ -102,9 +103,10 @@ class MainViewModel @Inject constructor(
 
     private var _current_selected_drawer_item = MutableStateFlow<DrawerSelectedItem>(DrawerSelectedItem.AllNotes)
 
-    val filteredNotesValue = combine(getAllNotes(),_current_selected_drawer_item){ notes, drawer_item ->
+    val filteredNotesValue = combine(getAllNotes(), getAllBookmarkNotes(),_current_selected_drawer_item){ notes, bookmarkedNotes, drawer_item ->
         FilteredNotesValue(
             currentDrawerSelectedItem = drawer_item,
+            allBookmarkNotes = bookmarkedNotes,
             allNotes = notes
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FilteredNotesValue())

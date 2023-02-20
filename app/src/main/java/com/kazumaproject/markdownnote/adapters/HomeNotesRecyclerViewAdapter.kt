@@ -3,6 +3,7 @@ package com.kazumaproject.markdownnote.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -10,12 +11,15 @@ import com.google.android.material.textview.MaterialTextView
 import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.database.note.NoteEntity
+import com.kazumaproject.markdownnote.database.note_bookmark.NoteBookMarkEntity
 import com.kazumaproject.markdownnote.other.DateAgoCalculator
 import com.kazumaproject.markdownnote.other.getTitleFromNote
 import xyz.hanks.library.bang.SmallBangView
 import java.util.*
 
-class HomeNotesRecyclerViewAdapter: RecyclerView.Adapter<HomeNotesRecyclerViewAdapter.HomeNotesViewHolder>() {
+class HomeNotesRecyclerViewAdapter (
+    private val bookmarkedNotes: List<NoteBookMarkEntity>
+        ): RecyclerView.Adapter<HomeNotesRecyclerViewAdapter.HomeNotesViewHolder>() {
 
     inner class HomeNotesViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
@@ -81,11 +85,13 @@ class HomeNotesRecyclerViewAdapter: RecyclerView.Adapter<HomeNotesRecyclerViewAd
                 context
             )
             likedButton.apply {
+                bookmarkedNotes.forEach {
+                    if (it.id == note.id) isSelected = true
+                }
                 setOnClickListener {
                     onItemLikedClickListener?.let { likedClick ->
-                        isSelected = !this.isSelected
-                        likeAnimation()
                         likedClick(note, position,isSelected)
+                        isSelected = !this.isSelected
                     }
                 }
             }

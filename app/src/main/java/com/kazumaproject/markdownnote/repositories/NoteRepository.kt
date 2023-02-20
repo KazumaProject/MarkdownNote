@@ -21,12 +21,36 @@ class NoteRepository @Inject constructor(
         noteDao.insertNote(note = note)
     }
 
+    suspend fun insertBookmarkedNote(bookmarkedNote: NoteBookMarkEntity){
+        noteBookMarkDao.insertBookmarkNote(note = bookmarkedNote)
+    }
+
+    suspend fun insertDraftNote(draftNote: NoteDraftEntity){
+        noteDraftDao.insertDraftNote(note = draftNote)
+    }
+
+    suspend fun insertTrashNote(trashNote: NoteTrashEntity){
+        noteTrashDao.insertTrashNote(note = trashNote)
+    }
+
     suspend fun insertNotes(notes: List<NoteEntity>){
         notes.forEach { insertNote(it)}
     }
 
     suspend fun deleteNote(noteID: String){
         noteDao.deleteNoteById(noteID = noteID)
+    }
+
+    suspend fun deleteBookmarkedNote(noteID: String){
+        noteBookMarkDao.deleteBookmarkNoteById(noteID = noteID)
+    }
+
+    suspend fun deleteDraftNote(noteID: String){
+        noteDraftDao.deleteDraftNoteById(noteID = noteID)
+    }
+
+    suspend fun deleteTrashNote(noteID: String){
+        noteTrashDao.deleteTrashNoteById(noteID = noteID)
     }
 
     suspend fun getNoteById(noteID: String) = noteDao.getNoteById(noteID = noteID)

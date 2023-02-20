@@ -129,6 +129,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 drawerAdapter.setOnItemClickListener { drawerItem, i ->
                     Timber.d("clicked drawer item: $drawerItem\nindex: $i")
+                    binding.bottomAppBar.performShow()
                     binding.drawerLayout.closeDrawer(GravityCompat.START)
                     when(drawerItem.type){
                         is DrawerItemType.FilterNotes -> {
