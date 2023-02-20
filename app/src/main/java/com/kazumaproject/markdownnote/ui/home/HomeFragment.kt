@@ -94,6 +94,15 @@ class HomeFragment : Fragment() {
         activityViewModel.updateFloatingButtonEnableState(true)
         activityViewModel.updateSaveClicked(false)
     }
+
+    override fun onPause() {
+        super.onPause()
+        binding.homeSearchView.apply {
+            setQuery("",false)
+            clearFocus()
+            isIconified = true
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         homeNotesRecyclerViewAdapter = null
@@ -126,8 +135,8 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setSearchView(notes: List<NoteEntity>, homeNotesAdapter: HomeNotesRecyclerViewAdapter?){
-        binding.homeSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+    private fun setSearchView(notes: List<NoteEntity>, homeNotesAdapter: HomeNotesRecyclerViewAdapter?) = binding.homeSearchView.apply {
+        setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -143,8 +152,10 @@ class HomeFragment : Fragment() {
                 }
                 return false
             }
-
         })
+        setOnQueryTextFocusChangeListener { _, hasFocus ->
+            requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).menu.findItem(R.id.bottom_bar_item_back_arrow).isVisible = !hasFocus
+        }
     }
 
 }
