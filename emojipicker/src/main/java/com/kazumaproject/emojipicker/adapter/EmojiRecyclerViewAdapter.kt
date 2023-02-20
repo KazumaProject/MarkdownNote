@@ -3,13 +3,13 @@ package com.kazumaproject.emojipicker.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.emoji.widget.EmojiTextView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textview.MaterialTextView
 import com.kazumaproject.emojipicker.R
-import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.emojipicker.model.Emoji
+import com.kazumaproject.emojipicker.other.convertUnicode
 
 class EmojiRecyclerViewAdapter : RecyclerView.Adapter<EmojiRecyclerViewAdapter.EmojiListViewHolder>() {
 
@@ -54,7 +54,7 @@ class EmojiRecyclerViewAdapter : RecyclerView.Adapter<EmojiRecyclerViewAdapter.E
     override fun onBindViewHolder(holder: EmojiListViewHolder, position: Int) {
         val emoji = emoji_list[position]
         holder.itemView.apply {
-            findViewById<EmojiTextView>(R.id.emoji_picker_item_text_view).text = emoji.unicode.convertUnicode()
+            findViewById<MaterialTextView>(R.id.emoji_picker_item_text_view).text = emoji.unicode.convertUnicode()
             setOnClickListener {
                 onItemClickListener?.let { click ->
                     click(emoji,position)

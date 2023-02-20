@@ -33,7 +33,7 @@
     </fragment>
     <fragment
         android:id="@+id/draftFragment"
-        android:name="com.kazumaproject.markdownnote.ui.draft.DraftFragment"
+        android:name="com.kazumaproject.markdownnote.ui.show.ShowFragment"
         android:label="fragment_draft"
         tools:layout="@layout/fragment_draft" />
     <fragment

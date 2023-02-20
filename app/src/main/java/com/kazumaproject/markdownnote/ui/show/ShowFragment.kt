@@ -1,4 +1,4 @@
-package com.kazumaproject.markdownnote.ui.draft
+package com.kazumaproject.markdownnote.ui.show
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,15 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.kazumaproject.markdownnote.MainViewModel
-import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.databinding.FragmentDraftBinding
 import com.kazumaproject.markdownnote.other.FragmentType
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DraftFragment : Fragment() {
+class ShowFragment : Fragment() {
 
-    private val draftViewModel: DraftViewModel by viewModels()
+    private val showViewModel: ShowViewModel by viewModels()
     private val activityViewModel: MainViewModel by activityViewModels()
     private var _binding : FragmentDraftBinding? = null
     private val binding get() = _binding!!

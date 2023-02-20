@@ -16,11 +16,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomappbar.BottomAppBar.MENU_ALIGNMENT_MODE_START
-import com.google.android.material.bottomappbar.BottomAppBar.MenuAlignmentMode
 import com.kazumaproject.markdownnote.adapters.DrawerParentRecyclerViewAdapter
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.databinding.ActivityMainBinding
@@ -121,7 +118,7 @@ class MainActivity : AppCompatActivity() {
                 )
                 drawer_parent_items.add(emojiDrawerItems)
                 val navigationDrawerItems = DrawerParentItem(
-                    parentTitle = "",
+                    parentTitle = getString(R.string.general_string),
                     childList = getNavigationDrawerItem()
                 )
                 drawer_parent_items.add(navigationDrawerItems)

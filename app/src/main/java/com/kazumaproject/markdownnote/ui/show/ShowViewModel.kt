@@ -1,9 +1,9 @@
-package com.kazumaproject.markdownnote.ui.draft
+package com.kazumaproject.markdownnote.ui.show
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class DraftViewModel @Inject constructor(): ViewModel() {
+class ShowViewModel @Inject constructor(): ViewModel() {
 }

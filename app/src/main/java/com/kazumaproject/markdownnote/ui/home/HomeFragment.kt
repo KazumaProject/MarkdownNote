@@ -8,7 +8,9 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomappbar.BottomAppBar
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.adapters.HomeNotesRecyclerViewAdapter
@@ -99,6 +101,12 @@ class HomeFragment : Fragment() {
         homeNotesAdapter?.let { noteAdapter ->
             noteAdapter.filtered_notes = notes
             this.adapter = noteAdapter
+            noteAdapter.setOnItemClickListener { noteEntity, i ->
+                requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).performShow()
+                requireActivity().findNavController(R.id.navHostFragment).navigate(
+                    HomeFragmentDirections.actionHomeFragmentToDraftFragment()
+                )
+            }
         }
         this.layoutManager = LinearLayoutManager(requireContext())
     }
