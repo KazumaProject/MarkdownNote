@@ -14,10 +14,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomappbar.BottomAppBar.MENU_ALIGNMENT_MODE_START
+import com.google.android.material.bottomappbar.BottomAppBar.MenuAlignmentMode
 import com.kazumaproject.markdownnote.adapters.DrawerParentRecyclerViewAdapter
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.databinding.ActivityMainBinding
@@ -240,6 +243,7 @@ class MainActivity : AppCompatActivity() {
     private fun setFloatingButton(fragmentType: FragmentType) = binding.addFloatingButton.apply {
         when(fragmentType){
             is FragmentType.HomeFragment ->{
+                isVisible = true
                 setOnClickListener {
                     findNavController(R.id.navHostFragment).navigate(
                         HomeFragmentDirections.actionHomeFragmentToCreateEditFragment()
@@ -247,6 +251,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             is FragmentType.CreateEditFragment ->{
+                isVisible = true
                 setOnClickListener {
                     viewModel.updateSaveClicked(true)
                     findNavController(R.id.navHostFragment).navigate(
@@ -255,10 +260,10 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             is FragmentType.DraftFragment ->{
-
+                isVisible = false
             }
             is FragmentType.SettingFragment ->{
-
+                isVisible = false
             }
         }
     }
