@@ -8,6 +8,7 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.databinding.FragmentHomeBinding
@@ -44,9 +45,7 @@ class HomeFragment : Fragment() {
             val filteredNotes: List<NoteEntity> = when(selected_drawer_item){
                 is DrawerSelectedItem.AllNotes -> {
                     delay(150)
-                    activityViewModel.dataBaseValues.value.allNotes.map {
-                        it
-                    }
+                    activityViewModel.dataBaseValues.value.allNotes
                 }
                 is DrawerSelectedItem.BookmarkedNotes -> {
                     activityViewModel.dataBaseValues.value.allBookmarkNotes.map {

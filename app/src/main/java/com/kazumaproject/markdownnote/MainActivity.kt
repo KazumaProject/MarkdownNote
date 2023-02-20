@@ -15,6 +15,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.kazumaproject.markdownnote.adapters.DrawerParentRecyclerViewAdapter
@@ -116,6 +117,11 @@ class MainActivity : AppCompatActivity() {
                     childList = getEmojiDrawerItems(value.allNotes)
                 )
                 drawer_parent_items.add(emojiDrawerItems)
+                val navigationDrawerItems = DrawerParentItem(
+                    parentTitle = "",
+                    childList = getNavigationDrawerItem()
+                )
+                drawer_parent_items.add(navigationDrawerItems)
                 drawerAdapter.parent_drawer_item_list = drawer_parent_items.toList()
                 binding.drawerRecyclerView.apply {
                     this.adapter = drawerAdapter
@@ -142,7 +148,12 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                         is DrawerItemType.Navigation -> {
-
+                            viewModel.updateCurrentSelectedDrawerItem(
+                                DrawerSelectedItem.GoToSettings
+                            )
+                            findNavController(R.id.navHostFragment).navigate(
+                                HomeFragmentDirections.actionHomeFragmentToSettingFragment()
+                            )
                         }
                     }
                 }
@@ -312,4 +323,14 @@ class MainActivity : AppCompatActivity() {
         Timber.d("current all notes in main activity: \nemoji drawer list: $emojiDrawerList\nemoji drawer list size: ${emojiDrawerList.size}")
         return emojiDrawerList.toList()
     }
+
+    private fun getNavigationDrawerItem(): List<DrawerItem> = listOf(
+        DrawerItem(
+            title = getString(R.string.main_menu_setting),
+            count = 0,
+            type = DrawerItemType.Navigation,
+            resID = R.drawable.settings,
+            emojiUnicode = null
+        )
+    )
 }
