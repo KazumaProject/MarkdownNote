@@ -8,7 +8,10 @@ import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.kazumaproject.markdownnote.MainViewModel
+import com.kazumaproject.markdownnote.R
+import com.kazumaproject.markdownnote.adapters.HomeNotesRecyclerViewAdapter
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.databinding.FragmentHomeBinding
 import com.kazumaproject.markdownnote.drawer.model.DrawerSelectedItem
@@ -16,7 +19,6 @@ import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
 import com.kazumaproject.markdownnote.other.convertNoteEntity
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -26,6 +28,7 @@ class HomeFragment : Fragment() {
     private val activityViewModel: MainViewModel by activityViewModels()
     private var _binding : FragmentHomeBinding? = null
     private val binding get() = _binding!!
+    private var homeNotesRecyclerViewAdapter: HomeNotesRecyclerViewAdapter? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,39 +39,49 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        homeNotesRecyclerViewAdapter = HomeNotesRecyclerViewAdapter()
         requireActivity().onBackPressedDispatcher.addCallback {
             requireActivity().finish()
         }
 
         collectLatestLifecycleFlow(activityViewModel.filteredNotesValue){ filtered_notes ->
-            val filteredNotes: List<NoteEntity> = when(filtered_notes.currentDrawerSelectedItem){
+            when(filtered_notes.currentDrawerSelectedItem){
                 is DrawerSelectedItem.AllNotes -> {
-                   filtered_notes.allNotes
+                   binding.currentSelectedItemTitle.text = getString(R.string.all_notes)
                 }
                 is DrawerSelectedItem.BookmarkedNotes -> {
-                    activityViewModel.dataBaseValues.value.allBookmarkNotes.map {
-                        it.convertNoteEntity()
-                    }
+                    binding.currentSelectedItemTitle.text = getString(R.string.bookmarked_notes)
                 }
                 is DrawerSelectedItem.DraftNotes -> {
-                    activityViewModel.dataBaseValues.value.allDraftNotes.map {
-                        it.convertNoteEntity()
-                    }
+                    binding.currentSelectedItemTitle.text = getString(R.string.draft_notes)
                 }
                 is DrawerSelectedItem.TrashNotes -> {
-                    activityViewModel.dataBaseValues.value.allTrashNotes.map {
-                        it.convertNoteEntity()
-                    }
+                    binding.currentSelectedItemTitle.text = getString(R.string.trash_notes)
                 }
                 is DrawerSelectedItem.EmojiCategory ->{
-                    filtered_notes.allNotes.filter {
-                        it.emojiUnicode == filtered_notes.currentDrawerSelectedItem.unicode
-                    }
+                    binding.currentSelectedItemTitle.text = getString(R.string.emoji_string)
                 }
                 is DrawerSelectedItem.GoToSettings -> {
-                    filtered_notes.allNotes
+                    binding.currentSelectedItemTitle.text = getString(R.string.all_notes)
                 }
             }
+            val filteredNotes: List<NoteEntity> = when(filtered_notes.currentDrawerSelectedItem){
+                is DrawerSelectedItem.AllNotes -> filtered_notes.allNotes
+                is DrawerSelectedItem.BookmarkedNotes -> activityViewModel.dataBaseValues.value.allBookmarkNotes.map {
+                    it.convertNoteEntity()
+                }
+                is DrawerSelectedItem.DraftNotes -> activityViewModel.dataBaseValues.value.allDraftNotes.map {
+                    it.convertNoteEntity()
+                }
+                is DrawerSelectedItem.TrashNotes -> activityViewModel.dataBaseValues.value.allTrashNotes.map {
+                    it.convertNoteEntity()
+                }
+                is DrawerSelectedItem.EmojiCategory -> filtered_notes.allNotes.filter {
+                    it.emojiUnicode == filtered_notes.currentDrawerSelectedItem.unicode
+                }
+                is DrawerSelectedItem.GoToSettings -> filtered_notes.allNotes
+            }
+            setRecyclerView(filteredNotes,homeNotesRecyclerViewAdapter)
             Timber.d("current filtered notes: $filteredNotes\ncounts: ${filteredNotes.size}")
         }
 
@@ -78,7 +91,16 @@ class HomeFragment : Fragment() {
     }
     override fun onDestroyView() {
         super.onDestroyView()
+        homeNotesRecyclerViewAdapter = null
         _binding = null
+    }
+
+    private fun setRecyclerView(notes: List<NoteEntity>, homeNotesAdapter: HomeNotesRecyclerViewAdapter?) = binding.homeNotesRecyclerView.apply {
+        homeNotesAdapter?.let { noteAdapter ->
+            noteAdapter.filtered_notes = notes
+            this.adapter = noteAdapter
+        }
+        this.layoutManager = LinearLayoutManager(requireContext())
     }
 
 }
