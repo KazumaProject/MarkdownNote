@@ -70,7 +70,10 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                     when{
                         state.editTextHasFocus -> binding.markdownRawEditText.clearFocus()
                         activityViewModel.markdown_switch_state.value -> activityViewModel.updateMarkdownSwitchState(false)
-                        else -> findNavController().popBackStack()
+                        else -> {
+                            isEnabled = false
+                            findNavController().popBackStack()
+                        }
                     }
                 }
             })
