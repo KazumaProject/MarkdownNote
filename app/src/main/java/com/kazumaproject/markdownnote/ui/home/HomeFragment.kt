@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.activity.addCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -38,7 +39,7 @@ class HomeFragment : Fragment() {
     private var _binding : FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private var homeNotesRecyclerViewAdapter: HomeNotesRecyclerViewAdapter? = null
-
+    private var initialStart = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,9 +56,12 @@ class HomeFragment : Fragment() {
         }
 
         collectLatestLifecycleFlow(activityViewModel.filteredNotesValue){ filtered_notes ->
+            if (initialStart) binding.progressBarHomeFragment.isVisible = true
             binding.homeNotesRecyclerView.isEnabled = false
-            delay(400)
+            delay(800)
             binding.homeNotesRecyclerView.isEnabled = true
+            binding.progressBarHomeFragment.isVisible = false
+            initialStart = false
             Timber.d("all trash notes: ${activityViewModel.dataBaseValues.value.allTrashNotes}\ncount: ${activityViewModel.dataBaseValues.value.allTrashNotes.size}")
             when(filtered_notes.currentDrawerSelectedItem){
                 is DrawerSelectedItem.AllNotes -> {
@@ -154,7 +158,7 @@ class HomeFragment : Fragment() {
                     }
                     CoroutineScope(Dispatchers.Main).launch {
                         val state: Parcelable? = layoutManager?.onSaveInstanceState()
-                        delay(450)
+                        delay(816)
                         layoutManager?.onRestoreInstanceState(state)
                     }
                 }
@@ -174,6 +178,7 @@ class HomeFragment : Fragment() {
             clearFocus()
             isIconified = true
         }
+        initialStart = true
     }
     override fun onDestroyView() {
         super.onDestroyView()
@@ -200,7 +205,7 @@ class HomeFragment : Fragment() {
                 if (!isSelected) homeViewModel.insertBookmarkedNote(noteEntity.convertNoteBookMarkEntity()) else homeViewModel.deleteBookmarkedNote(noteEntity.id)
                 CoroutineScope(Dispatchers.Main).launch {
                     val state: Parcelable? = layoutManager?.onSaveInstanceState()
-                    delay(450)
+                    delay(816)
                     layoutManager?.onRestoreInstanceState(state)
                 }
             }

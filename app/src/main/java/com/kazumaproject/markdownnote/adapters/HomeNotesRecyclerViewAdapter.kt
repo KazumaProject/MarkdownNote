@@ -85,7 +85,7 @@ class HomeNotesRecyclerViewAdapter (
                 is DrawerSelectedItem.EmojiCategory ->  likedButton.isVisible = true
                 is DrawerSelectedItem.TrashNotes -> likedButton.isVisible = false
                 is DrawerSelectedItem.DraftNotes ->  likedButton.isVisible = false
-                is DrawerSelectedItem.GoToSettings ->  likedButton.isVisible = false
+                is DrawerSelectedItem.GoToSettings ->  {}
             }
             emojiText.text = note.emojiUnicode.convertUnicode()
             noteTitleText.text = note.body.getTitleFromNote()
