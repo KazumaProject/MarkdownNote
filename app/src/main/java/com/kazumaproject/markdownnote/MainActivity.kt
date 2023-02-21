@@ -28,6 +28,7 @@ import com.kazumaproject.markdownnote.drawer.model.DrawerSelectedItem
 import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.other.KeyboardHelper
 import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
+import com.kazumaproject.markdownnote.other.convertNoteTrashEntity
 import com.kazumaproject.markdownnote.ui.create_edit.CreateEditFragmentDirections
 import com.kazumaproject.markdownnote.ui.home.HomeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
@@ -282,7 +283,9 @@ class MainActivity : AppCompatActivity() {
     private fun getMainDrawerItems(databaseValues: DatabaseValues): List<DrawerItem> = listOf(
         DrawerItem(
             title = getString(R.string.all_notes),
-            count = databaseValues.allNotes.size,
+            count = databaseValues.allNotes.filter { note ->
+                !viewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
+            }.size,
             type = DrawerItemType.FilterNotes,
             resID = R.drawable.inbox,
             emojiUnicode = null
@@ -310,7 +313,9 @@ class MainActivity : AppCompatActivity() {
         )
     )
     private fun getEmojiDrawerItems(notes: List<NoteEntity>): List<DrawerItem>{
-        val emojiItems = notes.groupingBy {
+        val emojiItems = notes.filter { note ->
+            !viewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
+        }.groupingBy {
             it.emojiUnicode
         }.eachCount()
         val emojiDrawerList: MutableList<DrawerItem> = mutableListOf()

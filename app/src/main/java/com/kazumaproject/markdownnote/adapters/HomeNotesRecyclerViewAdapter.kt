@@ -3,6 +3,7 @@ package com.kazumaproject.markdownnote.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -11,13 +12,15 @@ import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.database.note_bookmark.NoteBookMarkEntity
+import com.kazumaproject.markdownnote.drawer.model.DrawerSelectedItem
 import com.kazumaproject.markdownnote.other.DateAgoCalculator
 import com.kazumaproject.markdownnote.other.getTitleFromNote
 import xyz.hanks.library.bang.SmallBangView
 import java.util.*
 
 class HomeNotesRecyclerViewAdapter (
-    private val bookmarkedNotes: List<NoteBookMarkEntity>
+    private val bookmarkedNotes: List<NoteBookMarkEntity>,
+    private val drawerSelectedItem: DrawerSelectedItem
         ): RecyclerView.Adapter<HomeNotesRecyclerViewAdapter.HomeNotesViewHolder>() {
 
     inner class HomeNotesViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
@@ -76,6 +79,14 @@ class HomeNotesRecyclerViewAdapter (
             val noteTitleText = findViewById<MaterialTextView>(R.id.note_item_title)
             val noteTimeText = findViewById<MaterialTextView>(R.id.note_item_time_text)
             val likedButton = findViewById<SmallBangView>(R.id.note_item_like_heart_parent)
+            when(drawerSelectedItem){
+                is DrawerSelectedItem.AllNotes -> likedButton.isVisible = true
+                is DrawerSelectedItem.BookmarkedNotes ->  likedButton.isVisible = true
+                is DrawerSelectedItem.EmojiCategory ->  likedButton.isVisible = true
+                is DrawerSelectedItem.TrashNotes -> likedButton.isVisible = false
+                is DrawerSelectedItem.DraftNotes ->  likedButton.isVisible = false
+                is DrawerSelectedItem.GoToSettings ->  likedButton.isVisible = false
+            }
             emojiText.text = note.emojiUnicode.convertUnicode()
             noteTitleText.text = note.body.getTitleFromNote()
             noteTimeText.text = DateAgoCalculator.getLabel(

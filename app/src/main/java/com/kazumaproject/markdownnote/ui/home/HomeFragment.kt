@@ -11,8 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.R
@@ -20,10 +21,7 @@ import com.kazumaproject.markdownnote.adapters.HomeNotesRecyclerViewAdapter
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.databinding.FragmentHomeBinding
 import com.kazumaproject.markdownnote.drawer.model.DrawerSelectedItem
-import com.kazumaproject.markdownnote.other.FragmentType
-import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
-import com.kazumaproject.markdownnote.other.convertNoteBookMarkEntity
-import com.kazumaproject.markdownnote.other.convertNoteEntity
+import com.kazumaproject.markdownnote.other.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -58,8 +56,6 @@ class HomeFragment : Fragment() {
 
         collectLatestLifecycleFlow(activityViewModel.filteredNotesValue){ filtered_notes ->
             delay(400)
-            val recyclerViewState: Parcelable? = binding.homeNotesRecyclerView.layoutManager?.onSaveInstanceState()
-            binding.homeNotesRecyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
             when(filtered_notes.currentDrawerSelectedItem){
                 is DrawerSelectedItem.AllNotes -> {
                    binding.currentSelectedItemTitle.text = getString(R.string.all_notes)
@@ -81,7 +77,9 @@ class HomeFragment : Fragment() {
                 }
             }
             val filteredNotes: List<NoteEntity> = when(filtered_notes.currentDrawerSelectedItem){
-                is DrawerSelectedItem.AllNotes -> filtered_notes.allNotes
+                is DrawerSelectedItem.AllNotes -> filtered_notes.allNotes.filter { note ->
+                    !activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
+                }
                 is DrawerSelectedItem.BookmarkedNotes -> activityViewModel.dataBaseValues.value.allBookmarkNotes.map {
                     it.convertNoteEntity()
                 }
@@ -93,14 +91,65 @@ class HomeFragment : Fragment() {
                 }
                 is DrawerSelectedItem.EmojiCategory -> filtered_notes.allNotes.filter {
                     it.emojiUnicode == filtered_notes.currentDrawerSelectedItem.unicode
+                }.filter { note ->
+                    !activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
                 }
-                is DrawerSelectedItem.GoToSettings -> filtered_notes.allNotes
+                is DrawerSelectedItem.GoToSettings -> filtered_notes.allNotes.filter { note ->
+                    !activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
+                }
             }
-            homeNotesRecyclerViewAdapter = HomeNotesRecyclerViewAdapter(filtered_notes.allBookmarkNotes)
+            homeNotesRecyclerViewAdapter = HomeNotesRecyclerViewAdapter(filtered_notes.allBookmarkNotes, filtered_notes.currentDrawerSelectedItem)
             setRecyclerView(filteredNotes, homeNotesRecyclerViewAdapter)
             setSwipeRefreshLayout(filteredNotes, homeNotesRecyclerViewAdapter)
             setSearchView(filteredNotes, homeNotesRecyclerViewAdapter)
             Timber.d("current filtered notes: $filteredNotes\ncounts: ${filteredNotes.size}")
+        }
+
+        binding.homeNotesRecyclerView.apply {
+            val itemTouchHelper = ItemTouchHelper( object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    homeNotesRecyclerViewAdapter?.let { noteAdapter ->
+                        when(activityViewModel.filteredNotesValue.value.currentDrawerSelectedItem){
+                            is DrawerSelectedItem.AllNotes -> {
+                                val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
+                                homeViewModel.insertTrashNote(note.convertNoteTrashEntity())
+                                val bookmarksList = activityViewModel.dataBaseValues.value.allBookmarkNotes.map {
+                                    it.id
+                                }
+                                if (bookmarksList.contains(note.id)) homeViewModel.deleteBookmarkedNote(note.id) else {}
+                            }
+                            is DrawerSelectedItem.TrashNotes -> {
+                                val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
+                                homeViewModel.deleteTrashNote(note.id)
+                                homeViewModel.deleteNote(note.id)
+                            }
+                            is DrawerSelectedItem.EmojiCategory -> {
+                                val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
+                                homeViewModel.insertTrashNote(note.convertNoteTrashEntity())
+                            }
+                            is DrawerSelectedItem.DraftNotes -> {
+
+                            }
+                            is DrawerSelectedItem.BookmarkedNotes -> {
+                                val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
+                                homeViewModel.deleteBookmarkedNote(note.id)
+                            }
+                            is DrawerSelectedItem.GoToSettings -> {
+
+                            }
+                        }
+                    }
+                }
+            })
+            itemTouchHelper.attachToRecyclerView(this)
         }
 
         activityViewModel.updateCurrentFragmentType(FragmentType.HomeFragment)
@@ -145,7 +194,6 @@ class HomeFragment : Fragment() {
                     layoutManager?.onRestoreInstanceState(state)
                 }
             }
-
         }
         this.layoutManager = LinearLayoutManager(requireContext())
     }
