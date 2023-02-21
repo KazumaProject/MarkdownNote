@@ -7,8 +7,6 @@ import com.kazumaproject.markdownnote.database.note_trash.NoteTrashEntity
 
 fun NoteEntity.convertNoteBookMarkEntity(): NoteBookMarkEntity{
     return NoteBookMarkEntity(
-        body = body,
-        emojiUnicode = emojiUnicode,
         createdAt = createdAt,
         updatedAt = updatedAt,
         id = id
@@ -27,17 +25,6 @@ fun NoteEntity.convertNoteDraftEntity(): NoteDraftEntity{
 
 fun NoteEntity.convertNoteTrashEntity(): NoteTrashEntity{
     return NoteTrashEntity(
-        body = body,
-        emojiUnicode = emojiUnicode,
-        createdAt = createdAt,
-        updatedAt = updatedAt,
-        id = id
-    )
-}
-fun NoteBookMarkEntity.convertNoteEntity(): NoteEntity{
-    return NoteEntity(
-        body = body,
-        emojiUnicode = emojiUnicode,
         createdAt = createdAt,
         updatedAt = updatedAt,
         id = id
@@ -45,16 +32,6 @@ fun NoteBookMarkEntity.convertNoteEntity(): NoteEntity{
 }
 
 fun NoteDraftEntity.convertNoteEntity(): NoteEntity{
-    return NoteEntity(
-        body = body,
-        emojiUnicode = emojiUnicode,
-        createdAt = createdAt,
-        updatedAt = updatedAt,
-        id = id
-    )
-}
-
-fun NoteTrashEntity.convertNoteEntity(): NoteEntity{
     return NoteEntity(
         body = body,
         emojiUnicode = emojiUnicode,

@@ -55,7 +55,10 @@ class HomeFragment : Fragment() {
         }
 
         collectLatestLifecycleFlow(activityViewModel.filteredNotesValue){ filtered_notes ->
+            binding.homeNotesRecyclerView.isEnabled = false
             delay(400)
+            binding.homeNotesRecyclerView.isEnabled = true
+            Timber.d("all trash notes: ${activityViewModel.dataBaseValues.value.allTrashNotes}\ncount: ${activityViewModel.dataBaseValues.value.allTrashNotes.size}")
             when(filtered_notes.currentDrawerSelectedItem){
                 is DrawerSelectedItem.AllNotes -> {
                    binding.currentSelectedItemTitle.text = getString(R.string.all_notes)
@@ -78,16 +81,18 @@ class HomeFragment : Fragment() {
             }
             val filteredNotes: List<NoteEntity> = when(filtered_notes.currentDrawerSelectedItem){
                 is DrawerSelectedItem.AllNotes -> filtered_notes.allNotes.filter { note ->
-                    !activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
+                    note.id !in activityViewModel.dataBaseValues.value.allTrashNotes.map {
+                        it.id
+                    }
                 }
-                is DrawerSelectedItem.BookmarkedNotes -> activityViewModel.dataBaseValues.value.allBookmarkNotes.map {
-                    it.convertNoteEntity()
+                is DrawerSelectedItem.BookmarkedNotes -> filtered_notes.allNotes.filter { note ->
+                    activityViewModel.dataBaseValues.value.allBookmarkNotes.contains(note.convertNoteBookMarkEntity())
                 }
                 is DrawerSelectedItem.DraftNotes -> activityViewModel.dataBaseValues.value.allDraftNotes.map {
                     it.convertNoteEntity()
                 }
-                is DrawerSelectedItem.TrashNotes -> activityViewModel.dataBaseValues.value.allTrashNotes.map {
-                    it.convertNoteEntity()
+                is DrawerSelectedItem.TrashNotes -> filtered_notes.allNotes.filter { note ->
+                    activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
                 }
                 is DrawerSelectedItem.EmojiCategory -> filtered_notes.allNotes.filter {
                     it.emojiUnicode == filtered_notes.currentDrawerSelectedItem.unicode
@@ -147,6 +152,11 @@ class HomeFragment : Fragment() {
                             }
                         }
                     }
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val state: Parcelable? = layoutManager?.onSaveInstanceState()
+                        delay(450)
+                        layoutManager?.onRestoreInstanceState(state)
+                    }
                 }
             })
             itemTouchHelper.attachToRecyclerView(this)
@@ -190,7 +200,7 @@ class HomeFragment : Fragment() {
                 if (!isSelected) homeViewModel.insertBookmarkedNote(noteEntity.convertNoteBookMarkEntity()) else homeViewModel.deleteBookmarkedNote(noteEntity.id)
                 CoroutineScope(Dispatchers.Main).launch {
                     val state: Parcelable? = layoutManager?.onSaveInstanceState()
-                    delay(410)
+                    delay(450)
                     layoutManager?.onRestoreInstanceState(state)
                 }
             }
