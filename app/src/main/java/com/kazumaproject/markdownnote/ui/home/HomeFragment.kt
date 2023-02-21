@@ -1,17 +1,18 @@
 package com.kazumaproject.markdownnote.ui.home
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.activity.addCallback
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.R
@@ -24,8 +25,12 @@ import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
 import com.kazumaproject.markdownnote.other.convertNoteBookMarkEntity
 import com.kazumaproject.markdownnote.other.convertNoteEntity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
+
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -35,6 +40,7 @@ class HomeFragment : Fragment() {
     private var _binding : FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private var homeNotesRecyclerViewAdapter: HomeNotesRecyclerViewAdapter? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +57,9 @@ class HomeFragment : Fragment() {
         }
 
         collectLatestLifecycleFlow(activityViewModel.filteredNotesValue){ filtered_notes ->
-            delay(1)
+            delay(800)
+            val recyclerViewState: Parcelable? = binding.homeNotesRecyclerView.layoutManager?.onSaveInstanceState()
+            binding.homeNotesRecyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
             when(filtered_notes.currentDrawerSelectedItem){
                 is DrawerSelectedItem.AllNotes -> {
                    binding.currentSelectedItemTitle.text = getString(R.string.all_notes)
@@ -119,6 +127,8 @@ class HomeFragment : Fragment() {
         homeNotesAdapter: HomeNotesRecyclerViewAdapter?
     ) = binding.homeNotesRecyclerView.apply {
         homeNotesAdapter?.let { noteAdapter ->
+            noteAdapter.filtered_notes = notes
+            this@apply.adapter = noteAdapter
             noteAdapter.setOnItemClickListener { noteEntity, i ->
                 requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).performShow()
                 requireActivity().findNavController(R.id.navHostFragment).navigate(
@@ -128,9 +138,13 @@ class HomeFragment : Fragment() {
             noteAdapter.setOnItemLikedClickListener { noteEntity, i, isSelected ->
                 Timber.d("clicked note: $noteEntity\nindex: $i\nselected: $isSelected")
                 if (!isSelected) homeViewModel.insertBookmarkedNote(noteEntity.convertNoteBookMarkEntity()) else homeViewModel.deleteBookmarkedNote(noteEntity.id)
+                CoroutineScope(Dispatchers.Main).launch {
+                    val state: Parcelable? = layoutManager?.onSaveInstanceState()
+                    delay(804)
+                    layoutManager?.onRestoreInstanceState(state)
+                }
             }
-            noteAdapter.filtered_notes = notes
-            this@apply.adapter = noteAdapter
+
         }
         this.layoutManager = LinearLayoutManager(requireContext())
     }

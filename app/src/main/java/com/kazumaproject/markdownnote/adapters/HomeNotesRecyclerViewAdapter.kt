@@ -3,7 +3,6 @@ package com.kazumaproject.markdownnote.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -91,6 +90,7 @@ class HomeNotesRecyclerViewAdapter (
                 setOnClickListener {
                     onItemLikedClickListener?.let { likedClick ->
                         likedClick(note, position,isSelected)
+                        likeAnimation()
                         isSelected = !this.isSelected
                     }
                 }
