@@ -57,7 +57,7 @@ class HomeFragment : Fragment() {
         }
 
         collectLatestLifecycleFlow(activityViewModel.filteredNotesValue){ filtered_notes ->
-            delay(800)
+            delay(400)
             val recyclerViewState: Parcelable? = binding.homeNotesRecyclerView.layoutManager?.onSaveInstanceState()
             binding.homeNotesRecyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
             when(filtered_notes.currentDrawerSelectedItem){
@@ -137,10 +137,11 @@ class HomeFragment : Fragment() {
             }
             noteAdapter.setOnItemLikedClickListener { noteEntity, i, isSelected ->
                 Timber.d("clicked note: $noteEntity\nindex: $i\nselected: $isSelected")
+                requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).performShow()
                 if (!isSelected) homeViewModel.insertBookmarkedNote(noteEntity.convertNoteBookMarkEntity()) else homeViewModel.deleteBookmarkedNote(noteEntity.id)
                 CoroutineScope(Dispatchers.Main).launch {
                     val state: Parcelable? = layoutManager?.onSaveInstanceState()
-                    delay(804)
+                    delay(410)
                     layoutManager?.onRestoreInstanceState(state)
                 }
             }
