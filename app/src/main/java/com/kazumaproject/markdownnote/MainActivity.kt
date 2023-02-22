@@ -176,28 +176,52 @@ class MainActivity : AppCompatActivity() {
     private fun setAppBottomBarAppearanceByFragmentType(type: FragmentType, isEnable: Boolean, hasFocus: Boolean){
         when(type){
             is FragmentType.HomeFragment -> {
-                setBottomAppBarMenuItemsVisibility(visibility = true, switchVisibility = false, hasFocus)
+                setBottomAppBarMenuItemsVisibility(
+                    visibility = true,
+                    switchVisibility = false,
+                    hasFocus,
+                    unicodeVisibility = false,
+                    switchVisibilityInShow = false
+                )
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.baseline_add_24)
                     isEnabled = isEnable
                 }
             }
             is FragmentType.CreateEditFragment -> {
-                setBottomAppBarMenuItemsVisibility(visibility = false, switchVisibility = true, hasFocus)
+                setBottomAppBarMenuItemsVisibility(
+                    visibility = false,
+                    switchVisibility = true,
+                    hasFocus,
+                    unicodeVisibility = false,
+                    switchVisibilityInShow = false
+                )
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.diskette)
                     isEnabled = isEnable
                 }
             }
             is FragmentType.DraftFragment -> {
-                setBottomAppBarMenuItemsVisibility(visibility = false, switchVisibility = false, hasFocus)
+                setBottomAppBarMenuItemsVisibility(
+                    visibility = false,
+                    switchVisibility = false,
+                    hasFocus,
+                    unicodeVisibility = true,
+                    switchVisibilityInShow = true
+                )
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.inbox)
                     isEnabled = isEnable
                 }
             }
             is FragmentType.SettingFragment -> {
-                setBottomAppBarMenuItemsVisibility(visibility = false, switchVisibility = false, hasFocus)
+                setBottomAppBarMenuItemsVisibility(
+                    visibility = false,
+                    switchVisibility = false,
+                    hasFocus,
+                    unicodeVisibility = false,
+                    switchVisibilityInShow = false
+                )
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.settings)
                     isEnabled = isEnable
@@ -288,13 +312,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setBottomAppBarMenuItemsVisibility(visibility: Boolean, switchVisibility: Boolean, hasFocus: Boolean){
+    private fun setBottomAppBarMenuItemsVisibility(
+        visibility: Boolean,
+        switchVisibility: Boolean,
+        hasFocus: Boolean,
+        unicodeVisibility: Boolean,
+        switchVisibilityInShow: Boolean
+    ){
         binding.bottomAppBar.menu.apply {
             findItem(R.id.bottom_bar_item_draft).isVisible = visibility
             findItem(R.id.bottom_app_bar_item_preview_raw_change).isVisible = switchVisibility && !hasFocus
             if (hasFocus) findItem(R.id.bottom_bar_item_back_arrow).icon =
                 ContextCompat.getDrawable(this@MainActivity,R.drawable.arrow_down) else findItem(R.id.bottom_bar_item_back_arrow).icon =
                 ContextCompat.getDrawable(this@MainActivity,R.drawable.back)
+            findItem(R.id.bottom_app_bar_item_emoji_unicode_text).isVisible = unicodeVisibility
+            findItem(R.id.bottom_app_bar_item_preview_raw_change_in_show_fragment).isVisible = switchVisibilityInShow
         }
         binding.addFloatingButton.isEnabled = visibility
     }

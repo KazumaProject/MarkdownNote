@@ -10,10 +10,22 @@
     <item
         android:id="@+id/bottom_app_bar_item_preview_raw_change"
         android:title="@string/switch_markdown"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom"
+        android:visible="false"/>
+    <item
+        android:id="@+id/bottom_app_bar_item_preview_raw_change_in_show_fragment"
+        android:title="@string/switch_markdown_in_showfragment"
+        app:showAsAction="ifRoom"
+        android:visible="false" />
+    <item
+        android:id="@+id/bottom_app_bar_item_emoji_unicode_text"
+        android:title="@string/choose_emoji"
+        app:showAsAction="ifRoom"
+        android:visible="false"/>
     <item
         android:id="@+id/bottom_bar_item_draft"
         android:icon="@drawable/menu"
         android:title="@string/main_menu_draft"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom"
+        android:visible="true"/>
 </menu>

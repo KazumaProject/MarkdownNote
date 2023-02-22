@@ -17,4 +17,6 @@
 
     <string name="emoji_string">Emoji</string>
     <string name="general_string">General</string>
+    <string name="switch_markdown_in_showfragment">Switch Markdown</string>
+    <string name="choose_emoji">Choose Emoji</string>
 </resources>
