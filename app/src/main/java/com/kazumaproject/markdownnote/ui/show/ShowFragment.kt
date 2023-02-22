@@ -1,16 +1,15 @@
 package com.kazumaproject.markdownnote.ui.show
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
-import com.google.android.material.bottomappbar.BottomAppBar
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.databinding.FragmentDraftBinding
