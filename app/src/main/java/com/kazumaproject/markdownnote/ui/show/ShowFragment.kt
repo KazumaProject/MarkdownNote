@@ -5,12 +5,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
+import com.google.android.material.bottomappbar.BottomAppBar
 import com.kazumaproject.markdownnote.MainViewModel
+import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.databinding.FragmentDraftBinding
 import com.kazumaproject.markdownnote.other.FragmentType
 import dagger.hilt.android.AndroidEntryPoint
+import io.noties.markwon.Markwon
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class ShowFragment : Fragment() {
@@ -19,6 +29,9 @@ class ShowFragment : Fragment() {
     private val activityViewModel: MainViewModel by activityViewModels()
     private var _binding : FragmentDraftBinding? = null
     private val binding get() = _binding!!
+
+    @Inject
+    lateinit var markwon: Markwon
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +48,27 @@ class ShowFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        CoroutineScope(Dispatchers.Main).launch {
+            showViewModel.noteId?.let { id ->
+                val note = showViewModel.getNote(id)
+                note?.let {
+                    markwon.setMarkdown(binding.showFragmentMarkwonText, it.body)
+                }
+            }
+        }
+        requireActivity().onBackPressedDispatcher.addCallback( object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                requireActivity().findNavController(
+                    R.id.navHostFragment
+                ).popBackStack()
+            }
+        })
+        requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(),R.color.markdown_bg_color)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(),R.color.window_bg_color)
         _binding = null
     }
 

@@ -196,7 +196,9 @@ class HomeFragment : Fragment() {
             noteAdapter.setOnItemClickListener { noteEntity, i ->
                 requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).performShow()
                 requireActivity().findNavController(R.id.navHostFragment).navigate(
-                    HomeFragmentDirections.actionHomeFragmentToDraftFragment()
+                    HomeFragmentDirections.actionHomeFragmentToDraftFragment(
+                        noteEntity.id
+                    )
                 )
             }
             noteAdapter.setOnItemLikedClickListener { noteEntity, i, isSelected ->

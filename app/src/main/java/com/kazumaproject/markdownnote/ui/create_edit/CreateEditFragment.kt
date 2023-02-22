@@ -23,7 +23,7 @@ import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.other.KeyboardHelper
 import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
 import dagger.hilt.android.AndroidEntryPoint
-import io.noties.markwon.Markwon
+import io.noties.markwon.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -77,8 +77,7 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                     }
                 }
             })
-
-            markwon.setMarkdown(binding.markdownPreviewText, state.currentText)
+            markwon.setMarkdown(binding.markdownPreviewText,state.currentText)
         }
         collectLatestLifecycleFlow(activityViewModel.markdown_switch_state){ state ->
             binding.markdownRawEditText.isVisible = !state

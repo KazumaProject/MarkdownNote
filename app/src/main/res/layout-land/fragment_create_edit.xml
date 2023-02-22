@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/create_edit_fragment_root_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,114 +8,99 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.create_edit.CreateEditFragment">
 
-    <ScrollView
+    <io.github.florent37.shapeofview.shapes.RoundRectView
+        android:id="@+id/change_emoji_parent_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/createEditFragment_root_view"
-        android:focusable="true"
-        android:focusableInTouchMode="true">
-        <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_height="?attr/actionBarSize"
+        android:elevation="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="20dp"
+        app:shape_roundRect_bottomLeftRadius="10dp"
+        app:shape_roundRect_bottomRightRadius="10dp"
+        app:shape_roundRect_topLeftRadius="10dp"
+        app:shape_roundRect_topRightRadius="10dp"
+        app:shape_roundRect_borderColor="@color/emoji_chooser_boarder_color"
+        app:shape_roundRect_borderWidth="1dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <io.github.florent37.shapeofview.shapes.RoundRectView
-                android:id="@+id/change_emoji_parent_view"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:elevation="4dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginHorizontal="20dp"
-                app:shape_roundRect_bottomLeftRadius="10dp"
-                app:shape_roundRect_bottomRightRadius="10dp"
-                app:shape_roundRect_topLeftRadius="10dp"
-                app:shape_roundRect_topRightRadius="10dp"
-                app:shape_roundRect_borderColor="@color/emoji_chooser_boarder_color"
-                app:shape_roundRect_borderWidth="1dp"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <LinearLayout
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:weightSum="10"
+            android:background="@color/window_bg_color"
+            android:baselineAligned="false">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/choose_emoji_view"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:background="@color/emoji_chooser_bg_color"
+                >
+                <androidx.emoji.widget.EmojiTextView
+                    android:id="@+id/chosen_emoji_text_view"
+                    android:textAlignment="center"
+                    android:gravity="center"
+                    android:textSize="36sp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:weightSum="10"
-                    android:background="@color/window_bg_color"
-                    android:baselineAligned="false">
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/choose_emoji_view"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="3"
-                        android:background="@color/emoji_chooser_bg_color"
-                        >
-                        <androidx.emoji.widget.EmojiTextView
-                            android:id="@+id/chosen_emoji_text_view"
-                            android:textAlignment="center"
-                            android:gravity="center"
-                            android:textSize="36sp"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"/>
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/choose_emoji_description_text_view"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="7"
-                        android:background="@color/emoji_chooser_description_text_bg_color"
-                        >
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/choose_emoji_description_text_view"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="7"
+                android:background="@color/emoji_chooser_description_text_bg_color"
+                >
 
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
-            </io.github.florent37.shapeofview.shapes.RoundRectView>
+    </io.github.florent37.shapeofview.shapes.RoundRectView>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/markdown_raw_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/markwon_text_bg"
-                android:gravity="top"
-                android:hint="@string/markdown_hint"
-                android:minHeight="140dp"
-                android:maxHeight="160dp"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="16dp"
-                android:textColor="@color/text_color_main"
-                android:textColorHint="@color/text_color_sub1"
-                android:textSize="20sp"
-                android:fontFamily="@font/regular"
-                android:scrollbars="vertical"
-                android:isScrollContainer="true"
-                android:inputType="textMultiLine"
-                android:layout_marginBottom="16dp"
-                android:elevation="4dp"
-                android:overScrollMode="always"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="32dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/change_emoji_parent_view"
-                />
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/markdown_raw_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/markwon_text_bg"
+        android:gravity="top"
+        android:hint="@string/markdown_hint"
+        android:minHeight="140dp"
+        android:maxHeight="160dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="16dp"
+        android:textColor="@color/text_color_main"
+        android:textColorHint="@color/text_color_sub1"
+        android:textSize="20sp"
+        android:fontFamily="@font/regular"
+        android:scrollbars="vertical"
+        android:isScrollContainer="true"
+        android:inputType="textMultiLine"
+        android:elevation="4dp"
+        android:overScrollMode="always"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@id/change_emoji_parent_view"
+        />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/markdown_preview_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="256dp"
-                android:background="@drawable/markwon_text_bg"
-                android:gravity="top"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="16dp"
-                android:textColor="@color/text_color_main"
-                android:textSize="20sp"
-                android:fontFamily="@font/regular"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="32dp"
-                android:layout_weight="16"
-                android:layout_marginBottom="32dp"
-                android:elevation="4dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/change_emoji_parent_view"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/markdown_preview_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="140dp"
+        android:maxHeight="160dp"
+        android:textIsSelectable="true"
+        android:background="@drawable/markwon_text_bg"
+        android:gravity="top"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="16dp"
+        android:textColor="@color/text_color_main"
+        android:textSize="20sp"
+        android:fontFamily="@font/regular"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="32dp"
+        android:layout_weight="16"
+        android:elevation="4dp"
+        app:layout_constraintTop_toBottomOf="@id/change_emoji_parent_view"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

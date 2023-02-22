@@ -35,7 +35,11 @@
         android:id="@+id/draftFragment"
         android:name="com.kazumaproject.markdownnote.ui.show.ShowFragment"
         android:label="fragment_draft"
-        tools:layout="@layout/fragment_draft" />
+        tools:layout="@layout/fragment_draft" >
+        <argument
+            android:name="note_id"
+            app:argType="string" />
+    </fragment>
     <fragment
         android:id="@+id/settingFragment"
         android:name="com.kazumaproject.markdownnote.ui.setting.SettingFragment"
