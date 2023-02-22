@@ -27,4 +27,6 @@
     <color name="emoji_chooser_description_text_bg_color">#FF000000</color>
 
     <color name="keyboard_helper_bg_color">#edf2f7</color>
+
+    <color name="markwon_show_bg_color">#000000</color>
 </resources>

@@ -32,6 +32,8 @@ class ShowFragment : Fragment() {
     @Inject
     lateinit var markwon: Markwon
 
+    private var onBackPressedCallback: OnBackPressedCallback? =null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityViewModel.updateCurrentFragmentType(FragmentType.DraftFragment)
@@ -47,6 +49,13 @@ class ShowFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        onBackPressedCallback = object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                requireActivity().findNavController(
+                    R.id.navHostFragment
+                ).popBackStack()
+            }
+        }
         CoroutineScope(Dispatchers.Main).launch {
             showViewModel.noteId?.let { id ->
                 val note = showViewModel.getNote(id)
@@ -55,18 +64,15 @@ class ShowFragment : Fragment() {
                 }
             }
         }
-        requireActivity().onBackPressedDispatcher.addCallback( object : OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-                requireActivity().findNavController(
-                    R.id.navHostFragment
-                ).popBackStack()
-            }
-        })
+        onBackPressedCallback?.let { backPressed ->
+            requireActivity().onBackPressedDispatcher.addCallback(backPressed)
+        }
         requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(),R.color.markdown_bg_color)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        onBackPressedCallback = null
         requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(),R.color.window_bg_color)
         _binding = null
     }

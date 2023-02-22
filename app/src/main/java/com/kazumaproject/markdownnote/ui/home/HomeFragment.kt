@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -41,6 +42,7 @@ class HomeFragment : Fragment() {
     private var homeNotesRecyclerViewAdapter: HomeNotesRecyclerViewAdapter? = null
     private var initialStart = true
     private var requestSwipeItem = false
+    private var onBackPressedCallback: OnBackPressedCallback? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,36 +64,46 @@ class HomeFragment : Fragment() {
             initialStart = false
             requestSwipeItem = false
             Timber.d("all trash notes: ${activityViewModel.dataBaseValues.value.allTrashNotes}\ncount: ${activityViewModel.dataBaseValues.value.allTrashNotes.size}")
+
+
+            onBackPressedCallback = object: OnBackPressedCallback(true){
+                override fun handleOnBackPressed() {
+                    when(filtered_notes.currentDrawerSelectedItem){
+                        is DrawerSelectedItem.AllNotes -> {
+                            requireActivity().finish()
+                        }
+                        is DrawerSelectedItem.BookmarkedNotes -> {
+                            activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
+                        }
+                        is DrawerSelectedItem.DraftNotes -> {
+                            activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
+                        }
+                        is DrawerSelectedItem.TrashNotes -> {
+                            activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
+                        }
+                        is DrawerSelectedItem.EmojiCategory ->{
+                            activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
+                        }
+                        is DrawerSelectedItem.GoToSettings -> {}
+                    }
+                }
+            }
+
             when(filtered_notes.currentDrawerSelectedItem){
                 is DrawerSelectedItem.AllNotes -> {
                    binding.currentSelectedItemTitle.text = getString(R.string.all_notes)
-                    requireActivity().onBackPressedDispatcher.addCallback {
-                        requireActivity().finish()
-                    }
                 }
                 is DrawerSelectedItem.BookmarkedNotes -> {
                     binding.currentSelectedItemTitle.text = getString(R.string.bookmarked_notes)
-                    requireActivity().onBackPressedDispatcher.addCallback {
-                        activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
-                    }
                 }
                 is DrawerSelectedItem.DraftNotes -> {
                     binding.currentSelectedItemTitle.text = getString(R.string.draft_notes)
-                    requireActivity().onBackPressedDispatcher.addCallback {
-                        activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
-                    }
                 }
                 is DrawerSelectedItem.TrashNotes -> {
                     binding.currentSelectedItemTitle.text = getString(R.string.trash_notes)
-                    requireActivity().onBackPressedDispatcher.addCallback {
-                        activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
-                    }
                 }
                 is DrawerSelectedItem.EmojiCategory ->{
                     binding.currentSelectedItemTitle.text = getString(R.string.emoji_string)
-                    requireActivity().onBackPressedDispatcher.addCallback {
-                        activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
-                    }
                 }
                 is DrawerSelectedItem.GoToSettings -> {
                     binding.currentSelectedItemTitle.text = getString(R.string.all_notes)
@@ -125,6 +137,9 @@ class HomeFragment : Fragment() {
             setRecyclerView(filteredNotes, homeNotesRecyclerViewAdapter)
             setSwipeRefreshLayout(filteredNotes, homeNotesRecyclerViewAdapter)
             setSearchView(filteredNotes, homeNotesRecyclerViewAdapter)
+            onBackPressedCallback?.let { backPressed ->
+                requireActivity().onBackPressedDispatcher.addCallback(backPressed)
+            }
             Timber.d("current filtered notes: $filteredNotes\ncounts: ${filteredNotes.size}")
         }
 
@@ -199,6 +214,7 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         homeNotesRecyclerViewAdapter = null
         _binding = null
+        onBackPressedCallback = null
     }
 
     private fun setRecyclerView(

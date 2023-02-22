@@ -23,6 +23,8 @@ class SettingFragment : Fragment() {
     private var _binding : FragmentSettingBinding? = null
     private val binding get() = _binding!!
 
+    private var onBackPressedCallback: OnBackPressedCallback? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityViewModel.updateCurrentFragmentType(FragmentType.SettingFragment)
@@ -38,17 +40,20 @@ class SettingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(object: OnBackPressedCallback(true){
+        onBackPressedCallback = object : OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
                 requireActivity().findNavController(R.id.navHostFragment).popBackStack()
             }
-
-        })
+        }
+        onBackPressedCallback?.let { backPressed ->
+            requireActivity().onBackPressedDispatcher.addCallback(backPressed)
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        onBackPressedCallback = null
     }
 
 }

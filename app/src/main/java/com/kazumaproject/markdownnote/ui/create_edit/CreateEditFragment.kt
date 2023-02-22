@@ -37,6 +37,8 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
     @Inject
     lateinit var markwon: Markwon
 
+    private var onBackPressedCallback: OnBackPressedCallback? =null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityViewModel.updateFloatingButtonEnableState(false)
@@ -52,6 +54,7 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         activityViewModel.updateCurrentFragmentType(FragmentType.CreateEditFragment)
         setChooseEmojiView()
         collectLatestLifecycleFlow(createEditViewModel.createEditState){ state ->
@@ -65,18 +68,10 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                 }
             }
             activityViewModel.updateFloatingButtonEnableState(state.currentText.isNotBlank())
-            requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true){
-                override fun handleOnBackPressed() {
-                    when{
-                        state.editTextHasFocus -> binding.markdownRawEditText.clearFocus()
-                        activityViewModel.markdown_switch_state.value -> activityViewModel.updateMarkdownSwitchState(false)
-                        else -> {
-                            isEnabled = false
-                            findNavController().popBackStack()
-                        }
-                    }
-                }
-            })
+            onBackPressedCallback = getOnBackPressCallback(state.editTextHasFocus)
+            onBackPressedCallback?.let { backPressed ->
+                requireActivity().onBackPressedDispatcher.addCallback(backPressed)
+            }
             markwon.setMarkdown(binding.markdownPreviewText,state.currentText)
         }
         collectLatestLifecycleFlow(activityViewModel.markdown_switch_state){ state ->
@@ -122,6 +117,7 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        onBackPressedCallback = null
     }
 
     private fun setChooseEmojiView() = binding.changeEmojiParentView.apply {
@@ -135,6 +131,21 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
 
     override fun onEmojiClicked(emoji: Emoji) {
         createEditViewModel.updateCurrentEmoji(emoji)
+    }
+
+    private fun getOnBackPressCallback(hasFocus: Boolean): OnBackPressedCallback {
+        return object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                when{
+                    hasFocus -> binding.markdownRawEditText.clearFocus()
+                    activityViewModel.markdown_switch_state.value -> activityViewModel.updateMarkdownSwitchState(false)
+                    else -> {
+                        isEnabled = false
+                        findNavController().popBackStack()
+                    }
+                }
+            }
+        }
     }
 
 }
