@@ -40,6 +40,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private var homeNotesRecyclerViewAdapter: HomeNotesRecyclerViewAdapter? = null
     private var initialStart = true
+    private var requestSwipeItem = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,12 +57,13 @@ class HomeFragment : Fragment() {
         }
 
         collectLatestLifecycleFlow(activityViewModel.filteredNotesValue){ filtered_notes ->
-            if (initialStart) binding.progressBarHomeFragment.isVisible = true
+            if (initialStart || requestSwipeItem) binding.progressBarHomeFragment.isVisible = true
             binding.homeNotesRecyclerView.isEnabled = false
             delay(800)
             binding.homeNotesRecyclerView.isEnabled = true
             binding.progressBarHomeFragment.isVisible = false
             initialStart = false
+            requestSwipeItem = false
             Timber.d("all trash notes: ${activityViewModel.dataBaseValues.value.allTrashNotes}\ncount: ${activityViewModel.dataBaseValues.value.allTrashNotes.size}")
             when(filtered_notes.currentDrawerSelectedItem){
                 is DrawerSelectedItem.AllNotes -> {
@@ -161,6 +163,7 @@ class HomeFragment : Fragment() {
                         delay(816)
                         layoutManager?.onRestoreInstanceState(state)
                     }
+                    requestSwipeItem = true
                 }
             })
             itemTouchHelper.attachToRecyclerView(this)
