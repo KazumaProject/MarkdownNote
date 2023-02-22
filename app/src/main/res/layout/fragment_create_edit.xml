@@ -92,7 +92,6 @@
         android:maxHeight="512dp"
         android:background="@drawable/markwon_text_bg"
         android:gravity="top"
-        android:textIsSelectable="true"
         android:paddingHorizontal="16dp"
         android:paddingVertical="16dp"
         android:textColor="@color/text_color_main"

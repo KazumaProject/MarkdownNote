@@ -90,7 +90,6 @@
         android:layout_height="wrap_content"
         android:minHeight="140dp"
         android:maxHeight="160dp"
-        android:textIsSelectable="true"
         android:background="@drawable/markwon_text_bg"
         android:gravity="top"
         android:paddingHorizontal="16dp"

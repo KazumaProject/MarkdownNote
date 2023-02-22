@@ -13,7 +13,6 @@
         android:layout_marginBottom="?attr/actionBarSize"
         android:background="@color/markdown_bg_color"
         android:elevation="4dp"
-        android:textIsSelectable="true"
         android:fontFamily="@font/regular"
         android:gravity="top"
         android:minHeight="256dp"

@@ -20,7 +20,7 @@ import java.util.*
 
 class HomeNotesRecyclerViewAdapter (
     private val bookmarkedNotes: List<NoteBookMarkEntity>,
-    private val drawerSelectedItem: DrawerSelectedItem
+    private val drawerSelectedItem: DrawerSelectedItem,
         ): RecyclerView.Adapter<HomeNotesRecyclerViewAdapter.HomeNotesViewHolder>() {
 
     inner class HomeNotesViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
