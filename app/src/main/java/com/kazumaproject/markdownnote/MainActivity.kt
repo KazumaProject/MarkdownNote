@@ -217,7 +217,26 @@ class MainActivity : AppCompatActivity() {
                 R.id.bottom_bar_item_back_arrow ->{
                     when(fragmentType){
                         is FragmentType.HomeFragment -> {
-                            this@MainActivity.finish()
+                            when(viewModel.filteredNotesValue.value.currentDrawerSelectedItem){
+                                is DrawerSelectedItem.AllNotes ->{
+                                    this@MainActivity.finish()
+                                }
+                                is DrawerSelectedItem.DraftNotes -> {
+                                    viewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
+                                }
+                                is DrawerSelectedItem.TrashNotes -> {
+                                    viewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
+                                }
+                                is DrawerSelectedItem.EmojiCategory -> {
+                                    viewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
+                                }
+                                is DrawerSelectedItem.BookmarkedNotes -> {
+                                    viewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
+                                }
+                                is DrawerSelectedItem.GoToSettings -> {
+                                    this@MainActivity.finish()
+                                }
+                            }
                         }
                         is FragmentType.CreateEditFragment -> {
                             when{

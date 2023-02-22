@@ -52,9 +52,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback {
-            requireActivity().finish()
-        }
 
         collectLatestLifecycleFlow(activityViewModel.filteredNotesValue){ filtered_notes ->
             if (initialStart || requestSwipeItem) binding.progressBarHomeFragment.isVisible = true
@@ -68,18 +65,33 @@ class HomeFragment : Fragment() {
             when(filtered_notes.currentDrawerSelectedItem){
                 is DrawerSelectedItem.AllNotes -> {
                    binding.currentSelectedItemTitle.text = getString(R.string.all_notes)
+                    requireActivity().onBackPressedDispatcher.addCallback {
+                        requireActivity().finish()
+                    }
                 }
                 is DrawerSelectedItem.BookmarkedNotes -> {
                     binding.currentSelectedItemTitle.text = getString(R.string.bookmarked_notes)
+                    requireActivity().onBackPressedDispatcher.addCallback {
+                        activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
+                    }
                 }
                 is DrawerSelectedItem.DraftNotes -> {
                     binding.currentSelectedItemTitle.text = getString(R.string.draft_notes)
+                    requireActivity().onBackPressedDispatcher.addCallback {
+                        activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
+                    }
                 }
                 is DrawerSelectedItem.TrashNotes -> {
                     binding.currentSelectedItemTitle.text = getString(R.string.trash_notes)
+                    requireActivity().onBackPressedDispatcher.addCallback {
+                        activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
+                    }
                 }
                 is DrawerSelectedItem.EmojiCategory ->{
                     binding.currentSelectedItemTitle.text = getString(R.string.emoji_string)
+                    requireActivity().onBackPressedDispatcher.addCallback {
+                        activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
+                    }
                 }
                 is DrawerSelectedItem.GoToSettings -> {
                     binding.currentSelectedItemTitle.text = getString(R.string.all_notes)
