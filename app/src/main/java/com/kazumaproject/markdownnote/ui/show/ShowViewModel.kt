@@ -16,8 +16,8 @@ import javax.inject.Inject
 data class ShowNoteState(
     val currentText: String = "",
     val currentUnicode: Int = 0,
-    val switchState: Boolean = false,
-    val originalText: String = ""
+    val originalText: String = "",
+    val originalUnicode: Int = 0
 )
 
 data class NoteDataBaseData(
@@ -35,8 +35,8 @@ class ShowViewModel @Inject constructor(
 
     private val _currentText = MutableStateFlow("")
     private val _currentUnicode = MutableStateFlow(0)
-    private val _switchState = MutableStateFlow(false)
     private val _originalNoteText = MutableStateFlow("")
+    private val _originalNoteUnicode = MutableStateFlow(0)
 
     private val _current_note_id = MutableStateFlow("")
     private val _note_create_at = MutableStateFlow(0L)
@@ -44,14 +44,14 @@ class ShowViewModel @Inject constructor(
     val showNoteState = combine(
         _currentText,
         _currentUnicode,
-        _switchState,
-        _originalNoteText
-    ){ text, unicode, switch, note ->
+        _originalNoteText,
+        _originalNoteUnicode
+    ){ text, unicode, note, original_unicode ->
         ShowNoteState(
             text,
             unicode,
-            switch,
-            note
+            note,
+            original_unicode
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ShowNoteState())
 
@@ -65,6 +65,9 @@ class ShowViewModel @Inject constructor(
             createdAt = createAt,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), NoteDataBaseData())
+
+    private val _switchState = MutableStateFlow(false)
+    val switchState = _switchState.asStateFlow()
 
     fun updateCurrentText(value: String){
         _currentText.value = value
@@ -88,6 +91,10 @@ class ShowViewModel @Inject constructor(
 
     fun updateNoteCreatedAt(value: Long){
         _note_create_at.value = value
+    }
+
+    fun updateOriginUnicode(value: Int){
+        _originalNoteUnicode.value = value
     }
 
     fun insertNote(noteEntity: NoteEntity) = viewModelScope.launch {
