@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.show.ShowFragment">
+    tools:context=".ui.show.ShowFragment"
+    android:background="@color/markwon_show_bg_color">
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/show_fragment_markwon_text"
         android:layout_width="match_parent"
@@ -21,6 +22,25 @@
         android:paddingBottom="16dp"
         android:textColor="@color/text_color_main"
         android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.kazumaproject.markdownnote.other.NumberedEditText
+        android:id="@+id/show_fragment_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="?attr/actionBarSize"
+        android:visibility="gone"
+        android:elevation="4dp"
+        android:fontFamily="@font/regular"
+        android:gravity="top"
+        android:minHeight="256dp"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:textColor="@color/text_color_main"
+        android:textSize="20sp"
+        android:background="@color/markwon_show_bg_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -39,6 +39,14 @@
         <argument
             android:name="note_id"
             app:argType="string" />
+        <argument
+            android:name="drawer_selected_item"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_draftFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/homeFragment"/>
     </fragment>
     <fragment
         android:id="@+id/settingFragment"

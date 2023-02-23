@@ -25,12 +25,10 @@ import com.kazumaproject.markdownnote.drawer.model.DrawerItem
 import com.kazumaproject.markdownnote.drawer.model.DrawerItemType
 import com.kazumaproject.markdownnote.drawer.model.DrawerParentItem
 import com.kazumaproject.markdownnote.drawer.model.DrawerSelectedItem
-import com.kazumaproject.markdownnote.other.FragmentType
-import com.kazumaproject.markdownnote.other.KeyboardHelper
-import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
-import com.kazumaproject.markdownnote.other.convertNoteTrashEntity
+import com.kazumaproject.markdownnote.other.*
 import com.kazumaproject.markdownnote.ui.create_edit.CreateEditFragmentDirections
 import com.kazumaproject.markdownnote.ui.home.HomeFragmentDirections
+import com.kazumaproject.markdownnote.ui.show.ShowFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -86,7 +84,11 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(findNavController(R.id.navHostFragment))
 
         collectLatestLifecycleFlow(viewModel.fragmentAndFloatingButtonState){ fragmentAndFloatingButtonState ->
-            setAppBottomBarAppearanceByFragmentType(fragmentAndFloatingButtonState.currentFragmentType, fragmentAndFloatingButtonState.floatingButtonState, fragmentAndFloatingButtonState.hasFocus)
+            setAppBottomBarAppearanceByFragmentType(
+                fragmentAndFloatingButtonState.currentFragmentType,
+                fragmentAndFloatingButtonState.floatingButtonState,
+                fragmentAndFloatingButtonState.hasFocus,
+            )
             setFloatingButton(fragmentAndFloatingButtonState.currentFragmentType)
             binding.addFloatingButton.alpha = if (fragmentAndFloatingButtonState.floatingButtonState) 1.0f else 0.5f
             setBottomAppBar(
@@ -173,7 +175,11 @@ class MainActivity : AppCompatActivity() {
     private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
         ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
     }
-    private fun setAppBottomBarAppearanceByFragmentType(type: FragmentType, isEnable: Boolean, hasFocus: Boolean){
+    private fun setAppBottomBarAppearanceByFragmentType(
+        type: FragmentType,
+        isEnable: Boolean,
+        hasFocus: Boolean,
+    ){
         when(type){
             is FragmentType.HomeFragment -> {
                 setBottomAppBarMenuItemsVisibility(
@@ -210,7 +216,7 @@ class MainActivity : AppCompatActivity() {
                     switchVisibilityInShow = true
                 )
                 binding.addFloatingButton.apply {
-                    setImageResource(R.drawable.inbox)
+                    setImageResource(R.drawable.edit)
                     isEnabled = isEnable
                 }
             }
@@ -282,7 +288,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setFloatingButton(fragmentType: FragmentType) = binding.addFloatingButton.apply {
+    private fun setFloatingButton(
+        fragmentType: FragmentType,
+    ) = binding.addFloatingButton.apply {
         when(fragmentType){
             is FragmentType.HomeFragment ->{
                 isVisible = true
@@ -305,6 +313,13 @@ class MainActivity : AppCompatActivity() {
             }
             is FragmentType.DraftFragment ->{
                 isVisible = false
+                setOnClickListener {
+                    binding.bottomAppBar.performShow()
+                    viewModel.updateSaveClickedInShow(true)
+                    findNavController(R.id.navHostFragment).navigate(
+                        ShowFragmentDirections.actionDraftFragmentToHomeFragment()
+                    )
+                }
             }
             is FragmentType.SettingFragment ->{
                 isVisible = false

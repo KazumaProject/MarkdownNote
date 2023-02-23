@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="@color/markdown_bg_color"/>
+    <stroke android:width="4dp" android:color="@color/emoji_chooser_boarder_color" />
+    <corners android:topLeftRadius="12dp" android:topRightRadius="12dp"/>
+</shape>

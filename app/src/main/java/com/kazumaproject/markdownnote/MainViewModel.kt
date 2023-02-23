@@ -7,6 +7,7 @@ import com.kazumaproject.markdownnote.database.note_bookmark.NoteBookMarkEntity
 import com.kazumaproject.markdownnote.database.note_draft.NoteDraftEntity
 import com.kazumaproject.markdownnote.database.note_trash.NoteTrashEntity
 import com.kazumaproject.markdownnote.drawer.model.DrawerSelectedItem
+import com.kazumaproject.markdownnote.other.DrawerSelectedItemInShow
 import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.repositories.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +17,8 @@ import javax.inject.Inject
 data class FragmentAndFloatingButtonState(
     val currentFragmentType: FragmentType = FragmentType.HomeFragment,
     val floatingButtonState: Boolean = true,
-    val hasFocus: Boolean = false
+    val hasFocus: Boolean = false,
+    val drawerItemInShow: String = DrawerSelectedItemInShow.ALL_NOTE.name
 )
 
 data class DatabaseValues(
@@ -32,6 +34,9 @@ data class FilteredNotesValue(
     val allTrashNotes: List<NoteTrashEntity> = emptyList(),
     val allNotes: List<NoteEntity> = emptyList()
 )
+
+
+
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val noteRepository: NoteRepository
@@ -39,12 +44,14 @@ class MainViewModel @Inject constructor(
     private val _current_fragment_type = MutableStateFlow<FragmentType>(FragmentType.HomeFragment)
     private val _floating_button_enable_state = MutableStateFlow(true)
     private val _hasFocus = MutableStateFlow(false)
+    private val _currentDrawerSelectedItemInShow = MutableStateFlow(DrawerSelectedItemInShow.ALL_NOTE.name)
 
-    val fragmentAndFloatingButtonState = combine(_current_fragment_type, _floating_button_enable_state, _hasFocus) { fragmentType, floatingButtonState, editTextHasFocus ->
+    val fragmentAndFloatingButtonState = combine(_current_fragment_type, _floating_button_enable_state, _hasFocus, _currentDrawerSelectedItemInShow) { fragmentType, floatingButtonState, editTextHasFocus, drawerItemInShow ->
         FragmentAndFloatingButtonState(
             currentFragmentType = fragmentType,
             floatingButtonState = floatingButtonState,
-            hasFocus = editTextHasFocus
+            hasFocus = editTextHasFocus,
+            drawerItemInShow
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FragmentAndFloatingButtonState())
 
@@ -115,4 +122,15 @@ class MainViewModel @Inject constructor(
     fun updateCurrentSelectedDrawerItem(value: DrawerSelectedItem){
         _current_selected_drawer_item.value = value
     }
+    fun updateCurrentDrawerSelectedItemInShow(value: String){
+        _currentDrawerSelectedItemInShow.value = value
+    }
+
+    private val _save_clicked_in_show = MutableStateFlow(false)
+    val save_clicked_in_show = _save_clicked_in_show.asStateFlow()
+
+    fun updateSaveClickedInShow (value: Boolean){
+        _save_clicked_in_show.value = value
+    }
+
 }

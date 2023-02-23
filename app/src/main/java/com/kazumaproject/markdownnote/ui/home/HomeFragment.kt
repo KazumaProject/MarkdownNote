@@ -134,7 +134,7 @@ class HomeFragment : Fragment() {
                 }
             }
             homeNotesRecyclerViewAdapter = HomeNotesRecyclerViewAdapter(filtered_notes.allBookmarkNotes, filtered_notes.currentDrawerSelectedItem)
-            setRecyclerView(filteredNotes, homeNotesRecyclerViewAdapter)
+            setRecyclerView(filteredNotes, homeNotesRecyclerViewAdapter, filtered_notes.currentDrawerSelectedItem)
             setSwipeRefreshLayout(filteredNotes, homeNotesRecyclerViewAdapter)
             setSearchView(filteredNotes, homeNotesRecyclerViewAdapter)
             onBackPressedCallback?.let { backPressed ->
@@ -219,18 +219,47 @@ class HomeFragment : Fragment() {
 
     private fun setRecyclerView(
         notes: List<NoteEntity>,
-        homeNotesAdapter: HomeNotesRecyclerViewAdapter?
+        homeNotesAdapter: HomeNotesRecyclerViewAdapter?,
+        drawerSelectedItem: DrawerSelectedItem
     ) = binding.homeNotesRecyclerView.apply {
         homeNotesAdapter?.let { noteAdapter ->
             noteAdapter.filtered_notes = notes
             this@apply.adapter = noteAdapter
             noteAdapter.setOnItemClickListener { noteEntity, i ->
                 requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).performShow()
-                requireActivity().findNavController(R.id.navHostFragment).navigate(
-                    HomeFragmentDirections.actionHomeFragmentToDraftFragment(
-                        noteEntity.id
+                when(drawerSelectedItem){
+                    is DrawerSelectedItem.AllNotes -> requireActivity().findNavController(R.id.navHostFragment).navigate(
+                        HomeFragmentDirections.actionHomeFragmentToDraftFragment(
+                            noteEntity.id,
+                            DrawerSelectedItemInShow.ALL_NOTE.name
+                        )
                     )
-                )
+                    is DrawerSelectedItem.BookmarkedNotes -> requireActivity().findNavController(R.id.navHostFragment).navigate(
+                        HomeFragmentDirections.actionHomeFragmentToDraftFragment(
+                            noteEntity.id,
+                            DrawerSelectedItemInShow.BOOKMARKED.name
+                        )
+                    )
+                    is DrawerSelectedItem.DraftNotes -> requireActivity().findNavController(R.id.navHostFragment).navigate(
+                        HomeFragmentDirections.actionHomeFragmentToDraftFragment(
+                            noteEntity.id,
+                            DrawerSelectedItemInShow.DRAFTS.name
+                        )
+                    )
+                    is DrawerSelectedItem.TrashNotes -> requireActivity().findNavController(R.id.navHostFragment).navigate(
+                        HomeFragmentDirections.actionHomeFragmentToDraftFragment(
+                            noteEntity.id,
+                            DrawerSelectedItemInShow.TRASH.name
+                        )
+                    )
+                    is DrawerSelectedItem.EmojiCategory -> requireActivity().findNavController(R.id.navHostFragment).navigate(
+                        HomeFragmentDirections.actionHomeFragmentToDraftFragment(
+                            noteEntity.id,
+                            DrawerSelectedItemInShow.EMOJI.name
+                        )
+                    )
+                    is DrawerSelectedItem.GoToSettings ->{}
+                }
             }
             noteAdapter.setOnItemLikedClickListener { noteEntity, i, isSelected ->
                 Timber.d("clicked note: $noteEntity\nindex: $i\nselected: $isSelected")
