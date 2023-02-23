@@ -21,14 +21,17 @@ import com.google.android.material.textview.MaterialTextView
 import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.R
+import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.databinding.FragmentDraftBinding
 import com.kazumaproject.markdownnote.other.DrawerSelectedItemInShow
 import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
+import com.kazumaproject.markdownnote.other.convertNoteBookMarkEntity
 import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -75,6 +78,8 @@ class ShowFragment : Fragment() {
                     showViewModel.updateCurrentText(note.body)
                     showViewModel.updateOriginalNoteText(note.body)
                     showViewModel.updateCurrentUnicode(note.emojiUnicode)
+                    showViewModel.updateNoteId(note.id)
+                    showViewModel.updateNoteCreatedAt(note.createdAt)
 
                     showViewModel.drawerSelectedItem?.let { drawerItem ->
                         Timber.d("drawer item: $drawerItem")
@@ -118,9 +123,43 @@ class ShowFragment : Fragment() {
                     fabAnchorMode = BottomAppBar.FAB_ANCHOR_MODE_EMBED
                 }
             }
+        }
+
+        collectLatestLifecycleFlow(showViewModel.noteDataBaseData){ data ->
 
         }
 
+        collectLatestLifecycleFlow(activityViewModel.save_clicked_in_show){ editSaveClick ->
+            if (editSaveClick){
+                val bookmarkedNote = showViewModel.getBookmarkNote(showViewModel.noteDataBaseData.value.noteId)
+                val note = NoteEntity(
+                    body = showViewModel.showNoteState.value.currentText,
+                    emojiUnicode = showViewModel.showNoteState.value.currentUnicode,
+                    createdAt = showViewModel.noteDataBaseData.value.createdAt,
+                    updatedAt = System.currentTimeMillis(),
+                    id = showViewModel.noteDataBaseData.value.noteId
+                )
+                delay(1)
+                if (bookmarkedNote == null){
+                    showViewModel.insertNote(note)
+                } else {
+                    showViewModel.insertNote(note)
+                    showViewModel.insertBookmarkNote(
+                        note.convertNoteBookMarkEntity()
+                    )
+                }
+                Timber.d("save note: $note")
+                delay(1)
+                requireActivity().findNavController(R.id.navHostFragment).navigate(
+                    ShowFragmentDirections.actionDraftFragmentToHomeFragment()
+                )
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        activityViewModel.updateSaveClickedInShow(false)
     }
 
     override fun onDestroyView() {
@@ -147,28 +186,11 @@ class ShowFragment : Fragment() {
             text = unicode.convertUnicode()
         }
 
-        when(drawerItem){
-            DrawerSelectedItemInShow.ALL_NOTE.name ->{
-                requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).apply {
-                    menu.findItem(R.id.bottom_app_bar_item_emoji_unicode_text).actionView = emojiText
-                    menu.findItem(R.id.bottom_app_bar_item_preview_raw_change_in_show_fragment).actionView =
-                        markdownSwitch
-                }
-            }
-            DrawerSelectedItemInShow.TRASH.name ->{
-                requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).apply {
-                    menu.findItem(R.id.bottom_app_bar_item_emoji_unicode_text).apply {
-                        actionView = emojiText
-                        isEnabled = false
-                    }
-                    menu.findItem(R.id.bottom_app_bar_item_preview_raw_change_in_show_fragment).apply {
-                        isVisible = false
-                        isEnabled = false
-                    }
-                }
-            }
+        requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).apply {
+            menu.findItem(R.id.bottom_app_bar_item_emoji_unicode_text).actionView = emojiText
+            menu.findItem(R.id.bottom_app_bar_item_preview_raw_change_in_show_fragment).actionView =
+                markdownSwitch
         }
-
     }
 
 }

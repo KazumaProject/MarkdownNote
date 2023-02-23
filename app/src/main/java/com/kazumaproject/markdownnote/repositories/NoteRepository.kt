@@ -55,6 +55,8 @@ class NoteRepository @Inject constructor(
 
     suspend fun getNoteById(noteID: String) = noteDao.getNoteById(noteID = noteID)
 
+    suspend fun getBookmarkedNoteById(noteID: String) = noteBookMarkDao.getBookmarkNoteById(noteID = noteID)
+
     fun getAllNotes(): Flow<List<NoteEntity>> {
         return noteDao.getAllNotes()
     }

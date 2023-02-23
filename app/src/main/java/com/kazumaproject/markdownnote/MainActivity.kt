@@ -88,8 +88,9 @@ class MainActivity : AppCompatActivity() {
                 fragmentAndFloatingButtonState.currentFragmentType,
                 fragmentAndFloatingButtonState.floatingButtonState,
                 fragmentAndFloatingButtonState.hasFocus,
+                fragmentAndFloatingButtonState.drawerItemInShow
             )
-            setFloatingButton(fragmentAndFloatingButtonState.currentFragmentType)
+            setFloatingButton(fragmentAndFloatingButtonState.currentFragmentType, fragmentAndFloatingButtonState.drawerItemInShow)
             binding.addFloatingButton.alpha = if (fragmentAndFloatingButtonState.floatingButtonState) 1.0f else 0.5f
             setBottomAppBar(
                 fragmentAndFloatingButtonState.currentFragmentType,
@@ -179,6 +180,7 @@ class MainActivity : AppCompatActivity() {
         type: FragmentType,
         isEnable: Boolean,
         hasFocus: Boolean,
+        drawerSelectedItemInShow: String
     ){
         when(type){
             is FragmentType.HomeFragment -> {
@@ -187,7 +189,8 @@ class MainActivity : AppCompatActivity() {
                     switchVisibility = false,
                     hasFocus,
                     unicodeVisibility = false,
-                    switchVisibilityInShow = false
+                    switchVisibilityInShow = false,
+                    drawerSelectedItemInShow = drawerSelectedItemInShow
                 )
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.baseline_add_24)
@@ -200,7 +203,8 @@ class MainActivity : AppCompatActivity() {
                     switchVisibility = true,
                     hasFocus,
                     unicodeVisibility = false,
-                    switchVisibilityInShow = false
+                    switchVisibilityInShow = false,
+                    drawerSelectedItemInShow = drawerSelectedItemInShow
                 )
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.diskette)
@@ -213,7 +217,8 @@ class MainActivity : AppCompatActivity() {
                     switchVisibility = false,
                     hasFocus,
                     unicodeVisibility = true,
-                    switchVisibilityInShow = true
+                    switchVisibilityInShow = true,
+                    drawerSelectedItemInShow = drawerSelectedItemInShow
                 )
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.edit)
@@ -226,7 +231,8 @@ class MainActivity : AppCompatActivity() {
                     switchVisibility = false,
                     hasFocus,
                     unicodeVisibility = false,
-                    switchVisibilityInShow = false
+                    switchVisibilityInShow = false,
+                    drawerSelectedItemInShow = drawerSelectedItemInShow
                 )
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.settings)
@@ -290,6 +296,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setFloatingButton(
         fragmentType: FragmentType,
+        selectedItemInShow: String
     ) = binding.addFloatingButton.apply {
         when(fragmentType){
             is FragmentType.HomeFragment ->{
@@ -312,13 +319,41 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             is FragmentType.DraftFragment ->{
-                isVisible = false
-                setOnClickListener {
-                    binding.bottomAppBar.performShow()
-                    viewModel.updateSaveClickedInShow(true)
-                    findNavController(R.id.navHostFragment).navigate(
-                        ShowFragmentDirections.actionDraftFragmentToHomeFragment()
-                    )
+                when(selectedItemInShow){
+                    DrawerSelectedItemInShow.ALL_NOTE.name ->{
+                        isVisible = false
+                        setOnClickListener {
+                            binding.bottomAppBar.performShow()
+                            viewModel.updateSaveClickedInShow(true)
+                        }
+                    }
+                    DrawerSelectedItemInShow.BOOKMARKED.name ->{
+                        isVisible = false
+                        setOnClickListener {
+                            binding.bottomAppBar.performShow()
+                            viewModel.updateSaveClickedInShow(true)
+                        }
+                    }
+                    DrawerSelectedItemInShow.DRAFTS.name ->{
+                        isVisible = false
+                        setOnClickListener {
+                            binding.bottomAppBar.performShow()
+                            viewModel.updateSaveClickedInShow(true)
+                        }
+                    }
+                    DrawerSelectedItemInShow.TRASH.name ->{
+                        isVisible = false
+                        setOnClickListener {
+
+                        }
+                    }
+                    DrawerSelectedItemInShow.EMOJI.name ->{
+                        isVisible = false
+                        setOnClickListener {
+                            binding.bottomAppBar.performShow()
+                            viewModel.updateSaveClickedInShow(true)
+                        }
+                    }
                 }
             }
             is FragmentType.SettingFragment ->{
@@ -332,7 +367,8 @@ class MainActivity : AppCompatActivity() {
         switchVisibility: Boolean,
         hasFocus: Boolean,
         unicodeVisibility: Boolean,
-        switchVisibilityInShow: Boolean
+        switchVisibilityInShow: Boolean,
+        drawerSelectedItemInShow: String
     ){
         binding.bottomAppBar.menu.apply {
             findItem(R.id.bottom_bar_item_draft).isVisible = visibility
@@ -341,7 +377,7 @@ class MainActivity : AppCompatActivity() {
                 ContextCompat.getDrawable(this@MainActivity,R.drawable.arrow_down) else findItem(R.id.bottom_bar_item_back_arrow).icon =
                 ContextCompat.getDrawable(this@MainActivity,R.drawable.back)
             findItem(R.id.bottom_app_bar_item_emoji_unicode_text).isVisible = unicodeVisibility
-            findItem(R.id.bottom_app_bar_item_preview_raw_change_in_show_fragment).isVisible = switchVisibilityInShow
+            findItem(R.id.bottom_app_bar_item_preview_raw_change_in_show_fragment).isVisible = switchVisibilityInShow && drawerSelectedItemInShow != DrawerSelectedItemInShow.TRASH.name
         }
         binding.addFloatingButton.isEnabled = visibility
     }

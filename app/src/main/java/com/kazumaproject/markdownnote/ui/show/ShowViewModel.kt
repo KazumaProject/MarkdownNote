@@ -4,11 +4,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazumaproject.markdownnote.database.note.NoteEntity
+import com.kazumaproject.markdownnote.database.note_bookmark.NoteBookMarkEntity
 import com.kazumaproject.markdownnote.other.Constants.HOME_TO_SHOW_ARGUMENT
 import com.kazumaproject.markdownnote.other.Constants.HOME_TO_SHOW_DRAWER_ITEM
 import com.kazumaproject.markdownnote.repositories.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class ShowNoteState(
@@ -16,6 +18,11 @@ data class ShowNoteState(
     val currentUnicode: Int = 0,
     val switchState: Boolean = false,
     val originalText: String = ""
+)
+
+data class NoteDataBaseData(
+    val noteId: String = "",
+    val createdAt: Long = 0L,
 )
 @HiltViewModel
 class ShowViewModel @Inject constructor(
@@ -31,6 +38,9 @@ class ShowViewModel @Inject constructor(
     private val _switchState = MutableStateFlow(false)
     private val _originalNoteText = MutableStateFlow("")
 
+    private val _current_note_id = MutableStateFlow("")
+    private val _note_create_at = MutableStateFlow(0L)
+
     val showNoteState = combine(
         _currentText,
         _currentUnicode,
@@ -44,6 +54,17 @@ class ShowViewModel @Inject constructor(
             note
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ShowNoteState())
+
+
+    val noteDataBaseData = combine(
+        _current_note_id,
+        _note_create_at,
+    ){ noteId, createAt ->
+        NoteDataBaseData(
+            noteId = noteId,
+            createdAt = createAt,
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), NoteDataBaseData())
 
     fun updateCurrentText(value: String){
         _currentText.value = value
@@ -59,6 +80,25 @@ class ShowViewModel @Inject constructor(
 
     fun updateOriginalNoteText(value: String){
         _originalNoteText.value = value
+    }
+
+    fun updateNoteId(value: String){
+        _current_note_id.value = value
+    }
+
+    fun updateNoteCreatedAt(value: Long){
+        _note_create_at.value = value
+    }
+
+    fun insertNote(noteEntity: NoteEntity) = viewModelScope.launch {
+        noteRepository.insertNote(noteEntity)
+    }
+
+    fun insertBookmarkNote(noteNookMarkEntity: NoteBookMarkEntity) = viewModelScope.launch {
+        noteRepository.insertBookmarkedNote(noteNookMarkEntity)
+    }
+    suspend fun getBookmarkNote(noteId: String): NoteBookMarkEntity?{
+        return noteRepository.getBookmarkedNoteById(noteId)
     }
 
 }
