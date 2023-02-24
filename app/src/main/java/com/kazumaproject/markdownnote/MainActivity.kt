@@ -191,7 +191,8 @@ class MainActivity : AppCompatActivity() {
                     switchVisibilityInShow = false,
                     drawerSelectedItemInShow = drawerSelectedItemInShow,
                     deleteNoteVisibility = false,
-                    restoreNoteVisibility = false
+                    restoreNoteVisibility = false,
+                    type
                 )
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.baseline_add_24)
@@ -207,7 +208,8 @@ class MainActivity : AppCompatActivity() {
                     switchVisibilityInShow = false,
                     drawerSelectedItemInShow = drawerSelectedItemInShow,
                     deleteNoteVisibility = false,
-                    restoreNoteVisibility = false
+                    restoreNoteVisibility = false,
+                    type
                 )
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.diskette)
@@ -223,7 +225,8 @@ class MainActivity : AppCompatActivity() {
                     switchVisibilityInShow = true,
                     drawerSelectedItemInShow = drawerSelectedItemInShow,
                     deleteNoteVisibility = true,
-                    restoreNoteVisibility = false
+                    restoreNoteVisibility = false,
+                    type
                 )
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.diskette)
@@ -239,7 +242,8 @@ class MainActivity : AppCompatActivity() {
                     switchVisibilityInShow = false,
                     drawerSelectedItemInShow = drawerSelectedItemInShow,
                     deleteNoteVisibility = false,
-                    restoreNoteVisibility = false
+                    restoreNoteVisibility = false,
+                    type
                 )
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.settings)
@@ -377,7 +381,8 @@ class MainActivity : AppCompatActivity() {
         switchVisibilityInShow: Boolean,
         drawerSelectedItemInShow: String,
         deleteNoteVisibility: Boolean,
-        restoreNoteVisibility: Boolean
+        restoreNoteVisibility: Boolean,
+        fragmentType: FragmentType
     ){
         binding.bottomAppBar.menu.apply {
             findItem(R.id.bottom_bar_item_draft).isVisible = visibility
@@ -385,16 +390,25 @@ class MainActivity : AppCompatActivity() {
             if (hasFocus) findItem(R.id.bottom_bar_item_back_arrow).icon =
                 ContextCompat.getDrawable(this@MainActivity,R.drawable.arrow_down) else findItem(R.id.bottom_bar_item_back_arrow).icon =
                 ContextCompat.getDrawable(this@MainActivity,R.drawable.back)
-            when(drawerSelectedItemInShow){
-                DrawerSelectedItemInShow.TRASH.name -> {
-                    findItem(R.id.bottom_app_bar_item_emoji_unicode_text).isVisible = false
-                    findItem(R.id.bottom_app_bar_item_export_note).isVisible = false
-                    findItem(R.id.bottom_app_bar_item_restore_note).isVisible = true
-                }
-                DrawerSelectedItemInShow.DRAFTS.name ->{
-                    findItem(R.id.bottom_app_bar_item_emoji_unicode_text).isVisible = true
-                    findItem(R.id.bottom_app_bar_item_export_note).isVisible = false
-                    findItem(R.id.bottom_app_bar_item_restore_note).isVisible = false
+            when(fragmentType){
+                is FragmentType.DraftFragment ->{
+                    when(drawerSelectedItemInShow){
+                        DrawerSelectedItemInShow.TRASH.name -> {
+                            findItem(R.id.bottom_app_bar_item_emoji_unicode_text).isVisible = false
+                            findItem(R.id.bottom_app_bar_item_export_note).isVisible = false
+                            findItem(R.id.bottom_app_bar_item_restore_note).isVisible = true
+                        }
+                        DrawerSelectedItemInShow.DRAFTS.name ->{
+                            findItem(R.id.bottom_app_bar_item_emoji_unicode_text).isVisible = true
+                            findItem(R.id.bottom_app_bar_item_export_note).isVisible = false
+                            findItem(R.id.bottom_app_bar_item_restore_note).isVisible = false
+                        }
+                        else -> {
+                            findItem(R.id.bottom_app_bar_item_emoji_unicode_text).isVisible = unicodeVisibility
+                            findItem(R.id.bottom_app_bar_item_export_note).isVisible = unicodeVisibility
+                            findItem(R.id.bottom_app_bar_item_restore_note).isVisible = restoreNoteVisibility
+                        }
+                    }
                 }
                 else -> {
                     findItem(R.id.bottom_app_bar_item_emoji_unicode_text).isVisible = unicodeVisibility

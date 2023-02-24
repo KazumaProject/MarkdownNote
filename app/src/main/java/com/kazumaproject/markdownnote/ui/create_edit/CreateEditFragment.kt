@@ -112,20 +112,6 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).apply {
-            menu.apply {
-                findItem(R.id.bottom_app_bar_item_restore_note).isVisible = false
-                findItem(R.id.bottom_app_bar_item_emoji_unicode_text).isVisible = true
-                findItem(R.id.bottom_app_bar_item_export_note).isVisible = false
-                findItem(R.id.bottom_app_bar_item_delete_note).isVisible =  false
-                findItem(R.id.bottom_app_bar_item_preview_raw_change).isVisible = true
-                findItem(R.id.bottom_app_bar_item_preview_raw_change_in_show_fragment).isVisible = false
-            }
-        }
-    }
-
     override fun onPause() {
         super.onPause()
         activityViewModel.updateMarkdownSwitchState(false)
