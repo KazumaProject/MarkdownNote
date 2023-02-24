@@ -50,10 +50,14 @@ class SettingFragment : Fragment() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        onBackPressedCallback = null
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        onBackPressedCallback = null
     }
 
 }

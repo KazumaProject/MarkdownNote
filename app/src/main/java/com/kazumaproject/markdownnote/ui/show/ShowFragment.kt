@@ -213,13 +213,16 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         activityViewModel.updateSaveClickedInShow(false)
     }
 
+    override fun onStop() {
+        super.onStop()
+        requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).apply {
+            fabAnchorMode = BottomAppBar.FAB_ANCHOR_MODE_CRADLE
+            onBackPressedCallback = null
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).apply {
-            fabAnchorMode = BottomAppBar.FAB_ANCHOR_MODE_CRADLE
-        }
-        onBackPressedCallback = null
         requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(),R.color.window_bg_color)
         _binding = null
     }

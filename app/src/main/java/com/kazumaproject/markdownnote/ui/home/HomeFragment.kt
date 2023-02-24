@@ -267,11 +267,17 @@ class HomeFragment : Fragment() {
         }
         initialStart = true
     }
+
+
+    override fun onStop() {
+        super.onStop()
+        onBackPressedCallback = null
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         homeNotesRecyclerViewAdapter = null
         _binding = null
-        onBackPressedCallback = null
     }
 
     private fun setRecyclerView(

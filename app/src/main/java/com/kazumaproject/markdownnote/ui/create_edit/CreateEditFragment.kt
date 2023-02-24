@@ -119,6 +119,7 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
 
     override fun onStop() {
         super.onStop()
+        onBackPressedCallback = null
         if (!requireActivity().isChangingConfigurations &&
             !binding.markdownRawEditText.text.isNullOrBlank() &&
             !activityViewModel.saveClicked.value
@@ -137,7 +138,6 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        onBackPressedCallback = null
     }
 
     private fun setChooseEmojiView() = binding.changeEmojiParentView.apply {
