@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -64,7 +63,6 @@ class HomeFragment : Fragment() {
             initialStart = false
             requestSwipeItem = false
             Timber.d("all trash notes: ${activityViewModel.dataBaseValues.value.allTrashNotes}\ncount: ${activityViewModel.dataBaseValues.value.allTrashNotes.size}")
-
 
             onBackPressedCallback = object: OnBackPressedCallback(true){
                 override fun handleOnBackPressed() {
@@ -174,7 +172,8 @@ class HomeFragment : Fragment() {
                                 homeViewModel.insertTrashNote(note.convertNoteTrashEntity())
                             }
                             is DrawerSelectedItem.DraftNotes -> {
-
+                                val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
+                                homeViewModel.deleteDraftNote(note.id)
                             }
                             is DrawerSelectedItem.BookmarkedNotes -> {
                                 val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
@@ -231,31 +230,36 @@ class HomeFragment : Fragment() {
                     is DrawerSelectedItem.AllNotes -> requireActivity().findNavController(R.id.navHostFragment).navigate(
                         HomeFragmentDirections.actionHomeFragmentToDraftFragment(
                             noteEntity.id,
-                            DrawerSelectedItemInShow.ALL_NOTE.name
+                            DrawerSelectedItemInShow.ALL_NOTE.name,
+                            NoteType.NORMAL.name
                         )
                     )
                     is DrawerSelectedItem.BookmarkedNotes -> requireActivity().findNavController(R.id.navHostFragment).navigate(
                         HomeFragmentDirections.actionHomeFragmentToDraftFragment(
                             noteEntity.id,
-                            DrawerSelectedItemInShow.BOOKMARKED.name
+                            DrawerSelectedItemInShow.BOOKMARKED.name,
+                            NoteType.NORMAL.name
                         )
                     )
                     is DrawerSelectedItem.DraftNotes -> requireActivity().findNavController(R.id.navHostFragment).navigate(
                         HomeFragmentDirections.actionHomeFragmentToDraftFragment(
                             noteEntity.id,
-                            DrawerSelectedItemInShow.DRAFTS.name
+                            DrawerSelectedItemInShow.DRAFTS.name,
+                            NoteType.DRAFT.name
                         )
                     )
                     is DrawerSelectedItem.TrashNotes -> requireActivity().findNavController(R.id.navHostFragment).navigate(
                         HomeFragmentDirections.actionHomeFragmentToDraftFragment(
                             noteEntity.id,
-                            DrawerSelectedItemInShow.TRASH.name
+                            DrawerSelectedItemInShow.TRASH.name,
+                            NoteType.NORMAL.name
                         )
                     )
                     is DrawerSelectedItem.EmojiCategory -> requireActivity().findNavController(R.id.navHostFragment).navigate(
                         HomeFragmentDirections.actionHomeFragmentToDraftFragment(
                             noteEntity.id,
-                            DrawerSelectedItemInShow.EMOJI.name
+                            DrawerSelectedItemInShow.EMOJI.name,
+                            NoteType.NORMAL.name
                         )
                     )
                     is DrawerSelectedItem.GoToSettings ->{}

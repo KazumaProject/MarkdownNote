@@ -31,6 +31,10 @@ class HomeViewModel @Inject constructor(
         noteRepository.deleteBookmarkedNote(id)
     }
 
+    fun deleteDraftNote(id: String) = viewModelScope.launch {
+        noteRepository.deleteDraftNote(id)
+    }
+
     fun insertTrashNote(trashNote: NoteTrashEntity) = viewModelScope.launch {
         noteRepository.insertTrashNote(trashNote)
     }

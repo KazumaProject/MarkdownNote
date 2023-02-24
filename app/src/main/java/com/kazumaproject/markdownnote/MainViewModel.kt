@@ -32,7 +32,8 @@ data class FilteredNotesValue(
     val currentDrawerSelectedItem: DrawerSelectedItem = DrawerSelectedItem.AllNotes,
     val allBookmarkNotes: List<NoteBookMarkEntity> = emptyList(),
     val allTrashNotes: List<NoteTrashEntity> = emptyList(),
-    val allNotes: List<NoteEntity> = emptyList()
+    val allNotes: List<NoteEntity> = emptyList(),
+    val allDraftNotes: List<NoteDraftEntity> = emptyList()
 )
 
 
@@ -51,7 +52,7 @@ class MainViewModel @Inject constructor(
             currentFragmentType = fragmentType,
             floatingButtonState = floatingButtonState,
             hasFocus = editTextHasFocus,
-            drawerItemInShow
+            drawerItemInShow,
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FragmentAndFloatingButtonState())
 
@@ -111,12 +112,13 @@ class MainViewModel @Inject constructor(
 
     private var _current_selected_drawer_item = MutableStateFlow<DrawerSelectedItem>(DrawerSelectedItem.AllNotes)
 
-    val filteredNotesValue = combine(getAllNotes(), getAllBookmarkNotes(), getAllTrashNotes(),_current_selected_drawer_item){ notes, bookmarkedNotes, trashNotes, drawer_item ->
+    val filteredNotesValue = combine(getAllNotes(), getAllBookmarkNotes(), getAllTrashNotes(),_current_selected_drawer_item, getAllDraftNotes()){ notes, bookmarkedNotes, trashNotes, drawer_item, draft_notes ->
         FilteredNotesValue(
             currentDrawerSelectedItem = drawer_item,
             allBookmarkNotes = bookmarkedNotes,
             allTrashNotes = trashNotes,
-            allNotes = notes
+            allNotes = notes,
+            allDraftNotes = draft_notes
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), FilteredNotesValue())
     fun updateCurrentSelectedDrawerItem(value: DrawerSelectedItem){

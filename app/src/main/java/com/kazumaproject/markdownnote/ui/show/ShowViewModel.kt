@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.database.note_bookmark.NoteBookMarkEntity
+import com.kazumaproject.markdownnote.database.note_draft.NoteDraftEntity
 import com.kazumaproject.markdownnote.database.note_trash.NoteTrashEntity
 import com.kazumaproject.markdownnote.other.Constants.HOME_TO_SHOW_ARGUMENT
 import com.kazumaproject.markdownnote.other.Constants.HOME_TO_SHOW_DRAWER_ITEM
+import com.kazumaproject.markdownnote.other.Constants.HOME_TO_SHOW_NOTE_TYPE
 import com.kazumaproject.markdownnote.repositories.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -32,7 +34,9 @@ class ShowViewModel @Inject constructor(
 ): ViewModel() {
     val noteId = savedStateHandle.get<String>(HOME_TO_SHOW_ARGUMENT)
     val drawerSelectedItem = savedStateHandle.get<String>(HOME_TO_SHOW_DRAWER_ITEM)
+    val noteType = savedStateHandle.get<String>(HOME_TO_SHOW_NOTE_TYPE)
     suspend fun getNote(noteId: String): NoteEntity? = noteRepository.getNoteById(noteId)
+    suspend fun getDraftNote(noteId: String): NoteDraftEntity? = noteRepository.getDraftNoteById(noteId)
 
     private val _currentText = MutableStateFlow("")
     private val _currentUnicode = MutableStateFlow(0)

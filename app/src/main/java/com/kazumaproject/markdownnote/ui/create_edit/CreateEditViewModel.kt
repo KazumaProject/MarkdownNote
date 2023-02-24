@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazumaproject.emojipicker.model.Emoji
 import com.kazumaproject.markdownnote.database.note.NoteEntity
+import com.kazumaproject.markdownnote.database.note_draft.NoteDraftEntity
 import com.kazumaproject.markdownnote.repositories.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -67,6 +68,10 @@ class CreateEditViewModel @Inject constructor(
     fun insertNote(note: NoteEntity) = viewModelScope.launch {
         Timber.d("insert note called")
         noteRepository.insertNote(note)
+    }
+
+    fun insertDraftNote(noteDraftEntity: NoteDraftEntity) = viewModelScope.launch {
+        noteRepository.insertDraftNote(noteDraftEntity)
     }
 
 }

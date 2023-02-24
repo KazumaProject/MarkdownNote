@@ -72,22 +72,39 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
             }
         }
         CoroutineScope(Dispatchers.Main).launch {
-            showViewModel.noteId?.let { id ->
-                val note = showViewModel.getNote(id)
-                note?.let {
-                    showViewModel.updateCurrentText(note.body)
-                    showViewModel.updateOriginalNoteText(note.body)
-                    showViewModel.updateCurrentUnicode(note.emojiUnicode)
-                    showViewModel.updateNoteId(note.id)
-                    showViewModel.updateNoteCreatedAt(note.createdAt)
-                    showViewModel.updateOriginUnicode(note.emojiUnicode)
-
-                    showViewModel.drawerSelectedItem?.let { drawerItem ->
-                        Timber.d("drawer item: $drawerItem")
-                        activityViewModel.updateCurrentDrawerSelectedItemInShow(drawerItem)
-                        createMenuItemsInBottomAppBarInMainActivity(drawerItem)
+            showViewModel.drawerSelectedItem?.let { drawerItem ->
+                Timber.d("drawer item: $drawerItem")
+                activityViewModel.updateCurrentDrawerSelectedItemInShow(drawerItem)
+                createMenuItemsInBottomAppBarInMainActivity(drawerItem)
+            }
+            showViewModel.noteType?.let { type ->
+                when(type){
+                    NoteType.NORMAL.name ->{
+                        showViewModel.noteId?.let { id ->
+                            val note = showViewModel.getNote(id)
+                            note?.let {
+                                showViewModel.updateCurrentText(note.body)
+                                showViewModel.updateOriginalNoteText(note.body)
+                                showViewModel.updateCurrentUnicode(note.emojiUnicode)
+                                showViewModel.updateNoteId(note.id)
+                                showViewModel.updateNoteCreatedAt(note.createdAt)
+                                showViewModel.updateOriginUnicode(note.emojiUnicode)
+                            }
+                        }
                     }
-
+                    NoteType.DRAFT.name ->{
+                        showViewModel.noteId?.let { id ->
+                            val note = showViewModel.getDraftNote(id)
+                            note?.let {
+                                showViewModel.updateCurrentText(note.body)
+                                showViewModel.updateOriginalNoteText(note.body)
+                                showViewModel.updateCurrentUnicode(note.emojiUnicode)
+                                showViewModel.updateNoteId(note.id)
+                                showViewModel.updateNoteCreatedAt(note.createdAt)
+                                showViewModel.updateOriginUnicode(note.emojiUnicode)
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -241,7 +258,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
                         }
                     }
                     DrawerSelectedItemInShow.DRAFTS.name ->{
-
+                        showViewModel.deleteDraftNote(showViewModel.noteDataBaseData.value.noteId)
                     }
                     DrawerSelectedItemInShow.TRASH.name ->{
                         CoroutineScope(Dispatchers.IO).launch {

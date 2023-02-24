@@ -18,6 +18,7 @@ import com.kazumaproject.emojipicker.model.Emoji
 import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.database.note.NoteEntity
+import com.kazumaproject.markdownnote.database.note_draft.NoteDraftEntity
 import com.kazumaproject.markdownnote.databinding.FragmentCreateEditBinding
 import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.other.KeyboardHelper
@@ -112,6 +113,19 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
     override fun onPause() {
         super.onPause()
         activityViewModel.updateMarkdownSwitchState(false)
+        if (!requireActivity().isChangingConfigurations &&
+            !binding.markdownRawEditText.text.isNullOrBlank() &&
+            !activityViewModel.saveClicked.value
+        ){
+            createEditViewModel.insertDraftNote(
+                NoteDraftEntity(
+                    binding.markdownRawEditText.text.toString(),
+                    createEditViewModel.createEditState.value.emoji.unicode,
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis()
+                )
+            )
+        }
     }
 
     override fun onDestroyView() {

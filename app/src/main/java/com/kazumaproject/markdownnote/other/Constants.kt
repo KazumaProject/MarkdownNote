@@ -7,4 +7,5 @@ object Constants {
     const val NOTE_BOOKMARK_DATABASE_NAME = "note_bookmark_table"
     const val HOME_TO_SHOW_ARGUMENT = "note_id"
     const val HOME_TO_SHOW_DRAWER_ITEM = "drawer_selected_item"
+    const val HOME_TO_SHOW_NOTE_TYPE = "note_type"
 }
