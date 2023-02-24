@@ -192,6 +192,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).apply {
             fabAnchorMode = BottomAppBar.FAB_ANCHOR_MODE_CRADLE
             menu.findItem(R.id.bottom_app_bar_item_restore_note).isVisible = false
+            menu.findItem(R.id.bottom_app_bar_item_emoji_unicode_text).isVisible = false
         }
         onBackPressedCallback = null
         requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(),R.color.window_bg_color)
