@@ -25,7 +25,6 @@ import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.database.note.NoteEntity
-import com.kazumaproject.markdownnote.database.note_trash.NoteTrashEntity
 import com.kazumaproject.markdownnote.databinding.FragmentDraftBinding
 import com.kazumaproject.markdownnote.other.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -258,7 +257,14 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
                         }
                     }
                     DrawerSelectedItemInShow.DRAFTS.name ->{
-                        showViewModel.deleteDraftNote(showViewModel.noteDataBaseData.value.noteId)
+                        CoroutineScope(Dispatchers.IO).launch {
+                            showViewModel.deleteDraftNote(showViewModel.noteDataBaseData.value.noteId)
+                            withContext(Dispatchers.Main){
+                                requireActivity().findNavController(R.id.navHostFragment).navigate(
+                                    ShowFragmentDirections.actionDraftFragmentToHomeFragment()
+                                )
+                            }
+                        }
                     }
                     DrawerSelectedItemInShow.TRASH.name ->{
                         CoroutineScope(Dispatchers.IO).launch {

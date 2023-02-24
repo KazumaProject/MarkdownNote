@@ -21,4 +21,7 @@
     <string name="choose_emoji">絵文字を選択</string>
     <string name="delete_note">ノートを削除する</string>
     <string name="restore_note">元に戻す</string>
+    <string name="export_note">ノートを変換する</string>
+    <string name="deleted_message">は正常に削除されました。</string>
+    <string name="undo_message">元に戻す</string>
 </resources>

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomappbar.BottomAppBar
+import com.google.android.material.snackbar.Snackbar
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.adapters.HomeNotesRecyclerViewAdapter
@@ -160,7 +161,29 @@ class HomeFragment : Fragment() {
                                 val bookmarksList = activityViewModel.dataBaseValues.value.allBookmarkNotes.map {
                                     it.id
                                 }
-                                if (bookmarksList.contains(note.id)) homeViewModel.deleteBookmarkedNote(note.id) else {}
+                                if (bookmarksList.contains(note.id)) {
+                                    homeViewModel.deleteBookmarkedNote(note.id)
+                                    Snackbar.make(
+                                        requireView(),
+                                        "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                        Snackbar.LENGTH_LONG
+                                    ).apply {
+                                        setAction(getString(R.string.undo_message)){
+                                            homeViewModel.deleteTrashNote(note.id)
+                                            homeViewModel.insertBookmarkedNote(note.convertNoteBookMarkEntity())
+                                        }
+                                    }.show()
+                                } else {
+                                    Snackbar.make(
+                                        requireView(),
+                                        "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                        Snackbar.LENGTH_LONG
+                                    ).apply {
+                                        setAction(getString(R.string.undo_message)){
+                                            homeViewModel.deleteTrashNote(note.id)
+                                        }
+                                    }.show()
+                                }
                             }
                             is DrawerSelectedItem.TrashNotes -> {
                                 val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
@@ -169,7 +192,33 @@ class HomeFragment : Fragment() {
                             }
                             is DrawerSelectedItem.EmojiCategory -> {
                                 val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
+                                val bookmarksList = activityViewModel.dataBaseValues.value.allBookmarkNotes.map {
+                                    it.id
+                                }
                                 homeViewModel.insertTrashNote(note.convertNoteTrashEntity())
+                                if (bookmarksList.contains(note.id)) {
+                                    homeViewModel.deleteBookmarkedNote(note.id)
+                                    Snackbar.make(
+                                        requireView(),
+                                        "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                        Snackbar.LENGTH_LONG
+                                    ).apply {
+                                        setAction(getString(R.string.undo_message)){
+                                            homeViewModel.deleteTrashNote(note.id)
+                                            homeViewModel.insertBookmarkedNote(note.convertNoteBookMarkEntity())
+                                        }
+                                    }.show()
+                                } else {
+                                    Snackbar.make(
+                                        requireView(),
+                                        "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                        Snackbar.LENGTH_LONG
+                                    ).apply {
+                                        setAction(getString(R.string.undo_message)){
+                                            homeViewModel.deleteTrashNote(note.id)
+                                        }
+                                    }.show()
+                                }
                             }
                             is DrawerSelectedItem.DraftNotes -> {
                                 val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
@@ -178,6 +227,15 @@ class HomeFragment : Fragment() {
                             is DrawerSelectedItem.BookmarkedNotes -> {
                                 val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
                                 homeViewModel.deleteBookmarkedNote(note.id)
+                                Snackbar.make(
+                                    requireView(),
+                                    "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                    Snackbar.LENGTH_LONG
+                                ).apply {
+                                    setAction(getString(R.string.undo_message)){
+                                        homeViewModel.insertBookmarkedNote(note.convertNoteBookMarkEntity())
+                                    }
+                                }.show()
                             }
                             is DrawerSelectedItem.GoToSettings -> {
 

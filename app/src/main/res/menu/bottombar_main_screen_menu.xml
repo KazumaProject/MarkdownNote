@@ -23,6 +23,11 @@
         app:showAsAction="ifRoom"
         android:visible="false"/>
     <item
+        android:id="@+id/bottom_app_bar_item_export_note"
+        android:title="@string/export_note"
+        app:showAsAction="ifRoom"
+        android:visible="false"/>
+    <item
         android:id="@+id/bottom_app_bar_item_delete_note"
         android:title="@string/delete_note"
         app:showAsAction="never"

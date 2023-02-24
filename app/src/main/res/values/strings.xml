@@ -21,4 +21,7 @@
     <string name="choose_emoji">Choose Emoji</string>
     <string name="delete_note">Delete note</string>
     <string name="restore_note">Restore note</string>
+    <string name="export_note">Export note</string>
+    <string name="deleted_message">was successfully deleted</string>
+    <string name="undo_message">Undo</string>
 </resources>

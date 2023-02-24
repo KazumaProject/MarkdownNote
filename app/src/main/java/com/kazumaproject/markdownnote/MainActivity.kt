@@ -388,10 +388,12 @@ class MainActivity : AppCompatActivity() {
             when(drawerSelectedItemInShow){
                 DrawerSelectedItemInShow.TRASH.name -> {
                     findItem(R.id.bottom_app_bar_item_emoji_unicode_text).isVisible = false
+                    findItem(R.id.bottom_app_bar_item_export_note).isVisible = false
                     findItem(R.id.bottom_app_bar_item_restore_note).isVisible = true
                 }
                 else -> {
                     findItem(R.id.bottom_app_bar_item_emoji_unicode_text).isVisible = unicodeVisibility
+                    findItem(R.id.bottom_app_bar_item_export_note).isVisible = unicodeVisibility
                     findItem(R.id.bottom_app_bar_item_restore_note).isVisible = restoreNoteVisibility
                 }
             }
