@@ -113,6 +113,10 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
     override fun onPause() {
         super.onPause()
         activityViewModel.updateMarkdownSwitchState(false)
+    }
+
+    override fun onDestroyView() {
+
         if (!requireActivity().isChangingConfigurations &&
             !binding.markdownRawEditText.text.isNullOrBlank() &&
             !activityViewModel.saveClicked.value
@@ -126,9 +130,7 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                 )
             )
         }
-    }
 
-    override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
         onBackPressedCallback = null
