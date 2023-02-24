@@ -13,10 +13,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomappbar.BottomAppBar
 import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
 import com.kazumaproject.emojipicker.model.Emoji
 import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.markdownnote.MainViewModel
+import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.database.note_draft.NoteDraftEntity
 import com.kazumaproject.markdownnote.databinding.FragmentCreateEditBinding
@@ -106,6 +108,20 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                 isCursorVisible = hasFocus
                 createEditViewModel.updateEditTextHasFocus(hasFocus)
                 activityViewModel.updateHasFocusInEditText(hasFocus)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).apply {
+            menu.apply {
+                findItem(R.id.bottom_app_bar_item_restore_note).isVisible = false
+                findItem(R.id.bottom_app_bar_item_emoji_unicode_text).isVisible = true
+                findItem(R.id.bottom_app_bar_item_export_note).isVisible = false
+                findItem(R.id.bottom_app_bar_item_delete_note).isVisible =  false
+                findItem(R.id.bottom_app_bar_item_preview_raw_change).isVisible = true
+                findItem(R.id.bottom_app_bar_item_preview_raw_change_in_show_fragment).isVisible = false
             }
         }
     }

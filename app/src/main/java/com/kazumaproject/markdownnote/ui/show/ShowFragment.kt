@@ -187,6 +187,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         activityViewModel.updateSaveClickedInShow(false)
     }
 
+
     override fun onDestroyView() {
         super.onDestroyView()
         requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).apply {
