@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.database.note_bookmark.NoteBookMarkEntity
+import com.kazumaproject.markdownnote.database.note_trash.NoteTrashEntity
 import com.kazumaproject.markdownnote.other.Constants.HOME_TO_SHOW_ARGUMENT
 import com.kazumaproject.markdownnote.other.Constants.HOME_TO_SHOW_DRAWER_ITEM
 import com.kazumaproject.markdownnote.repositories.NoteRepository
@@ -106,6 +107,26 @@ class ShowViewModel @Inject constructor(
     }
     suspend fun getBookmarkNote(noteId: String): NoteBookMarkEntity?{
         return noteRepository.getBookmarkedNoteById(noteId)
+    }
+
+    fun insertTrashNote(noteTrashEntity: NoteTrashEntity) = viewModelScope.launch {
+        noteRepository.insertTrashNote(noteTrashEntity)
+    }
+
+    fun deleteNote(noteId: String) = viewModelScope.launch {
+        noteRepository.deleteNote(noteId)
+    }
+
+    fun deleteBookmarkedNote(noteId: String) = viewModelScope.launch {
+        noteRepository.deleteBookmarkedNote(noteId)
+    }
+
+    fun deleteTrashNote(noteId: String) = viewModelScope.launch {
+        noteRepository.deleteTrashNote(noteId)
+    }
+
+    fun deleteDraftNote(noteId: String) = viewModelScope.launch {
+        noteRepository.deleteDraftNote(noteId)
     }
 
 }

@@ -28,7 +28,6 @@ import com.kazumaproject.markdownnote.drawer.model.DrawerSelectedItem
 import com.kazumaproject.markdownnote.other.*
 import com.kazumaproject.markdownnote.ui.create_edit.CreateEditFragmentDirections
 import com.kazumaproject.markdownnote.ui.home.HomeFragmentDirections
-import com.kazumaproject.markdownnote.ui.show.ShowFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -190,7 +189,9 @@ class MainActivity : AppCompatActivity() {
                     hasFocus,
                     unicodeVisibility = false,
                     switchVisibilityInShow = false,
-                    drawerSelectedItemInShow = drawerSelectedItemInShow
+                    drawerSelectedItemInShow = drawerSelectedItemInShow,
+                    deleteNoteVisibility = false,
+                    restoreNoteVisibility = false
                 )
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.baseline_add_24)
@@ -204,7 +205,9 @@ class MainActivity : AppCompatActivity() {
                     hasFocus,
                     unicodeVisibility = false,
                     switchVisibilityInShow = false,
-                    drawerSelectedItemInShow = drawerSelectedItemInShow
+                    drawerSelectedItemInShow = drawerSelectedItemInShow,
+                    deleteNoteVisibility = false,
+                    restoreNoteVisibility = false
                 )
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.diskette)
@@ -218,10 +221,12 @@ class MainActivity : AppCompatActivity() {
                     hasFocus,
                     unicodeVisibility = true,
                     switchVisibilityInShow = true,
-                    drawerSelectedItemInShow = drawerSelectedItemInShow
+                    drawerSelectedItemInShow = drawerSelectedItemInShow,
+                    deleteNoteVisibility = true,
+                    restoreNoteVisibility = false
                 )
                 binding.addFloatingButton.apply {
-                    setImageResource(R.drawable.edit)
+                    setImageResource(R.drawable.diskette)
                     isEnabled = isEnable
                 }
             }
@@ -232,7 +237,9 @@ class MainActivity : AppCompatActivity() {
                     hasFocus,
                     unicodeVisibility = false,
                     switchVisibilityInShow = false,
-                    drawerSelectedItemInShow = drawerSelectedItemInShow
+                    drawerSelectedItemInShow = drawerSelectedItemInShow,
+                    deleteNoteVisibility = false,
+                    restoreNoteVisibility = false
                 )
                 binding.addFloatingButton.apply {
                     setImageResource(R.drawable.settings)
@@ -368,7 +375,9 @@ class MainActivity : AppCompatActivity() {
         hasFocus: Boolean,
         unicodeVisibility: Boolean,
         switchVisibilityInShow: Boolean,
-        drawerSelectedItemInShow: String
+        drawerSelectedItemInShow: String,
+        deleteNoteVisibility: Boolean,
+        restoreNoteVisibility: Boolean
     ){
         binding.bottomAppBar.menu.apply {
             findItem(R.id.bottom_bar_item_draft).isVisible = visibility
@@ -376,8 +385,18 @@ class MainActivity : AppCompatActivity() {
             if (hasFocus) findItem(R.id.bottom_bar_item_back_arrow).icon =
                 ContextCompat.getDrawable(this@MainActivity,R.drawable.arrow_down) else findItem(R.id.bottom_bar_item_back_arrow).icon =
                 ContextCompat.getDrawable(this@MainActivity,R.drawable.back)
-            findItem(R.id.bottom_app_bar_item_emoji_unicode_text).isVisible = unicodeVisibility
+            when(drawerSelectedItemInShow){
+                DrawerSelectedItemInShow.TRASH.name -> {
+                    findItem(R.id.bottom_app_bar_item_emoji_unicode_text).isVisible = false
+                    findItem(R.id.bottom_app_bar_item_restore_note).isVisible = true
+                }
+                else -> {
+                    findItem(R.id.bottom_app_bar_item_emoji_unicode_text).isVisible = unicodeVisibility
+                    findItem(R.id.bottom_app_bar_item_restore_note).isVisible = restoreNoteVisibility
+                }
+            }
             findItem(R.id.bottom_app_bar_item_preview_raw_change_in_show_fragment).isVisible = switchVisibilityInShow && drawerSelectedItemInShow != DrawerSelectedItemInShow.TRASH.name
+            findItem(R.id.bottom_app_bar_item_delete_note).isVisible = deleteNoteVisibility
         }
         binding.addFloatingButton.isEnabled = visibility
     }

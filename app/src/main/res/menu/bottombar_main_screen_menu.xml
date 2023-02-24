@@ -23,6 +23,18 @@
         app:showAsAction="ifRoom"
         android:visible="false"/>
     <item
+        android:id="@+id/bottom_app_bar_item_delete_note"
+        android:title="@string/delete_note"
+        app:showAsAction="never"
+        android:visible="false"
+        />
+    <item
+        android:id="@+id/bottom_app_bar_item_restore_note"
+        android:title="@string/restore_note"
+        app:showAsAction="never"
+        android:visible="false"
+        />
+    <item
         android:id="@+id/bottom_bar_item_draft"
         android:icon="@drawable/menu"
         android:title="@string/main_menu_draft"

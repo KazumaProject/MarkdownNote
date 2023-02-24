@@ -19,4 +19,6 @@
     <string name="general_string">General</string>
     <string name="switch_markdown_in_showfragment">Switch Markdown</string>
     <string name="choose_emoji">Choose Emoji</string>
+    <string name="delete_note">Delete note</string>
+    <string name="restore_note">Restore note</string>
 </resources>

@@ -19,4 +19,6 @@
     <string name="general_string">一般</string>
     <string name="switch_markdown_in_showfragment">切り替え</string>
     <string name="choose_emoji">絵文字を選択</string>
+    <string name="delete_note">ノートを削除する</string>
+    <string name="restore_note">元に戻す</string>
 </resources>

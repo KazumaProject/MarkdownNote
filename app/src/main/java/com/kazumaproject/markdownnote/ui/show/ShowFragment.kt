@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Switch
@@ -24,17 +25,12 @@ import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.database.note.NoteEntity
+import com.kazumaproject.markdownnote.database.note_trash.NoteTrashEntity
 import com.kazumaproject.markdownnote.databinding.FragmentDraftBinding
-import com.kazumaproject.markdownnote.other.DrawerSelectedItemInShow
-import com.kazumaproject.markdownnote.other.FragmentType
-import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
-import com.kazumaproject.markdownnote.other.convertNoteBookMarkEntity
+import com.kazumaproject.markdownnote.other.*
 import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -89,7 +85,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
                     showViewModel.drawerSelectedItem?.let { drawerItem ->
                         Timber.d("drawer item: $drawerItem")
                         activityViewModel.updateCurrentDrawerSelectedItemInShow(drawerItem)
-                        createMenuItemsInBottomAppBarInMainActivity(note.emojiUnicode, drawerItem)
+                        createMenuItemsInBottomAppBarInMainActivity(drawerItem)
                     }
 
                 }
@@ -179,6 +175,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         super.onDestroyView()
         requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).apply {
             fabAnchorMode = BottomAppBar.FAB_ANCHOR_MODE_CRADLE
+            menu.findItem(R.id.bottom_app_bar_item_restore_note).isVisible = false
         }
         onBackPressedCallback = null
         requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(),R.color.window_bg_color)
@@ -186,26 +183,105 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
-    private fun createMenuItemsInBottomAppBarInMainActivity(unicode: Int, drawerItem: String){
+    private fun createMenuItemsInBottomAppBarInMainActivity(drawerItem: String){
         val markdownSwitch = Switch(requireContext())
         markdownSwitch.isChecked = false
         markdownSwitch.setOnCheckedChangeListener { _, isChecked ->
             showViewModel.updateSwitchState(isChecked)
             binding.showFragmentEditText.setText(showViewModel.showNoteState.value.currentText)
         }
-        emojiText = MaterialTextView(requireContext())
-        emojiText?.apply {
-            textSize = 24f
-            text = unicode.convertUnicode()
-            setOnClickListener {
-                EmojiPickerDialogFragment(this@ShowFragment).show(requireActivity().supportFragmentManager,"emoji picker dialog from show fragment")
-            }
-        }
 
         requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).apply {
-            menu.findItem(R.id.bottom_app_bar_item_emoji_unicode_text).actionView = emojiText
+            menu.findItem(R.id.bottom_app_bar_item_emoji_unicode_text).apply {
+                setOnMenuItemClickListener {
+                    EmojiPickerDialogFragment(this@ShowFragment).show(requireActivity().supportFragmentManager,"emoji picker dialog from show fragment")
+                    return@setOnMenuItemClickListener true
+                }
+                when(drawerItem){
+                    DrawerSelectedItemInShow.ALL_NOTE.name -> setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+                    DrawerSelectedItemInShow.BOOKMARKED.name -> setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+                    DrawerSelectedItemInShow.TRASH.name -> setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER)
+                    DrawerSelectedItemInShow.DRAFTS.name -> setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+                    DrawerSelectedItemInShow.EMOJI.name -> setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+                }
+            }
             menu.findItem(R.id.bottom_app_bar_item_preview_raw_change_in_show_fragment).actionView =
                 markdownSwitch
+            menu.findItem(R.id.bottom_app_bar_item_delete_note).setOnMenuItemClickListener {
+                when(drawerItem){
+                    DrawerSelectedItemInShow.ALL_NOTE.name ->{
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val note = showViewModel.getNote(showViewModel.noteDataBaseData.value.noteId)
+                            val bookMarkNote = showViewModel.getBookmarkNote(showViewModel.noteDataBaseData.value.noteId)
+                            note?.let { trash ->
+                                showViewModel.insertTrashNote(trash.convertNoteTrashEntity())
+                                bookMarkNote?.let { bookmark ->
+                                    showViewModel.deleteBookmarkedNote(bookmark.id)
+                                }
+                                withContext(Dispatchers.Main){
+                                    requireActivity().findNavController(R.id.navHostFragment).navigate(
+                                        ShowFragmentDirections.actionDraftFragmentToHomeFragment()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    DrawerSelectedItemInShow.BOOKMARKED.name ->{
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val note = showViewModel.getNote(showViewModel.noteDataBaseData.value.noteId)
+                            note?.let { bookmarked ->
+                                showViewModel.deleteBookmarkedNote(showViewModel.noteDataBaseData.value.noteId)
+                                showViewModel.insertTrashNote(bookmarked.convertNoteTrashEntity())
+                                withContext(Dispatchers.Main){
+                                    requireActivity().findNavController(R.id.navHostFragment).navigate(
+                                        ShowFragmentDirections.actionDraftFragmentToHomeFragment()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    DrawerSelectedItemInShow.DRAFTS.name ->{
+
+                    }
+                    DrawerSelectedItemInShow.TRASH.name ->{
+                        CoroutineScope(Dispatchers.IO).launch {
+                            showViewModel.deleteNote(showViewModel.noteDataBaseData.value.noteId)
+                            showViewModel.deleteTrashNote(showViewModel.noteDataBaseData.value.noteId)
+                            withContext(Dispatchers.Main){
+                                requireActivity().findNavController(R.id.navHostFragment).navigate(
+                                    ShowFragmentDirections.actionDraftFragmentToHomeFragment()
+                                )
+                            }
+                        }
+                    }
+                    DrawerSelectedItemInShow.EMOJI.name ->{
+                        CoroutineScope(Dispatchers.IO).launch {
+                            val note = showViewModel.getNote(showViewModel.noteDataBaseData.value.noteId)
+                            note?.let { trash ->
+                                showViewModel.insertTrashNote(trash.convertNoteTrashEntity())
+                                withContext(Dispatchers.Main){
+                                    requireActivity().findNavController(R.id.navHostFragment).navigate(
+                                        ShowFragmentDirections.actionDraftFragmentToHomeFragment()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+                return@setOnMenuItemClickListener true
+            }
+            menu.findItem(R.id.bottom_app_bar_item_restore_note).setOnMenuItemClickListener {
+                CoroutineScope(Dispatchers.IO).launch {
+                    showViewModel.deleteTrashNote(showViewModel.noteDataBaseData.value.noteId)
+                    withContext(Dispatchers.Main){
+                        requireActivity().findNavController(R.id.navHostFragment).navigate(
+                            ShowFragmentDirections.actionDraftFragmentToHomeFragment()
+                        )
+                    }
+
+                }
+                return@setOnMenuItemClickListener true
+            }
         }
     }
 
