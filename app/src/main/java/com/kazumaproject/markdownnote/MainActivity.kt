@@ -18,6 +18,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomappbar.BottomAppBar
 import com.kazumaproject.markdownnote.adapters.DrawerParentRecyclerViewAdapter
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.databinding.ActivityMainBinding
@@ -346,7 +347,7 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                     DrawerSelectedItemInShow.DRAFTS.name ->{
-                        isVisible = false
+                        isVisible = true
                         setOnClickListener {
                             binding.bottomAppBar.performShow()
                             viewModel.updateSaveClickedInShow(true)

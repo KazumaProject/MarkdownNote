@@ -20,7 +20,8 @@ data class ShowNoteState(
     val currentText: String = "",
     val currentUnicode: Int = 0,
     val originalText: String = "",
-    val originalUnicode: Int = 0
+    val originalUnicode: Int = 0,
+    val currentNoteType: String = ""
 )
 
 data class NoteDataBaseData(
@@ -46,17 +47,21 @@ class ShowViewModel @Inject constructor(
     private val _current_note_id = MutableStateFlow("")
     private val _note_create_at = MutableStateFlow(0L)
 
+    private val _currentNoteType = MutableStateFlow("")
+
     val showNoteState = combine(
         _currentText,
         _currentUnicode,
         _originalNoteText,
-        _originalNoteUnicode
-    ){ text, unicode, note, original_unicode ->
+        _originalNoteUnicode,
+        _currentNoteType
+    ){ text, unicode, note, original_unicode, type ->
         ShowNoteState(
             text,
             unicode,
             note,
-            original_unicode
+            original_unicode,
+            type
         )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ShowNoteState())
 
@@ -102,8 +107,16 @@ class ShowViewModel @Inject constructor(
         _originalNoteUnicode.value = value
     }
 
+    fun updateCurrentNoteType(value: String){
+        _currentNoteType.value = value
+    }
+
     fun insertNote(noteEntity: NoteEntity) = viewModelScope.launch {
         noteRepository.insertNote(noteEntity)
+    }
+
+    fun insertDraftNote(noteDraftEntity: NoteDraftEntity) = viewModelScope.launch {
+        noteRepository.insertDraftNote(noteDraftEntity)
     }
 
     fun insertBookmarkNote(noteNookMarkEntity: NoteBookMarkEntity) = viewModelScope.launch {

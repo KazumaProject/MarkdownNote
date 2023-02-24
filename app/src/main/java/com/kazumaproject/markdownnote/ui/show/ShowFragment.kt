@@ -25,6 +25,7 @@ import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.database.note.NoteEntity
+import com.kazumaproject.markdownnote.database.note_draft.NoteDraftEntity
 import com.kazumaproject.markdownnote.databinding.FragmentDraftBinding
 import com.kazumaproject.markdownnote.other.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -79,6 +80,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
             showViewModel.noteType?.let { type ->
                 when(type){
                     NoteType.NORMAL.name ->{
+                        showViewModel.updateCurrentNoteType(type)
                         showViewModel.noteId?.let { id ->
                             val note = showViewModel.getNote(id)
                             note?.let {
@@ -92,6 +94,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
                         }
                     }
                     NoteType.DRAFT.name ->{
+                        showViewModel.updateCurrentNoteType(type)
                         showViewModel.noteId?.let { id ->
                             val note = showViewModel.getDraftNote(id)
                             note?.let {
@@ -138,12 +141,12 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
 
 
             requireActivity().findViewById<FloatingActionButton>(R.id.add_floating_button).apply {
-                isVisible = showNoteState.currentText != showNoteState.originalText || showNoteState.currentUnicode != showNoteState.originalUnicode
+                isVisible = showNoteState.currentText != showNoteState.originalText || showNoteState.currentUnicode != showNoteState.originalUnicode || showNoteState.currentNoteType == NoteType.DRAFT.name
             }
 
-            activityViewModel.updateFloatingButtonEnableState(showNoteState.currentText != showNoteState.originalText || showNoteState.currentUnicode != showNoteState.originalUnicode)
+            activityViewModel.updateFloatingButtonEnableState(showNoteState.currentText != showNoteState.originalText || showNoteState.currentUnicode != showNoteState.originalUnicode || showNoteState.currentNoteType == NoteType.DRAFT.name )
 
-            if (showNoteState.currentText != showNoteState.originalText || showNoteState.currentUnicode != showNoteState.originalUnicode){
+            if (showNoteState.currentText != showNoteState.originalText || showNoteState.currentUnicode != showNoteState.originalUnicode || showNoteState.currentNoteType == NoteType.DRAFT.name){
                 requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).apply {
                     fabAnchorMode = BottomAppBar.FAB_ANCHOR_MODE_CRADLE
                 }
@@ -156,28 +159,51 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
 
         collectLatestLifecycleFlow(activityViewModel.save_clicked_in_show){ editSaveClick ->
             if (editSaveClick){
-                val bookmarkedNote = showViewModel.getBookmarkNote(showViewModel.noteDataBaseData.value.noteId)
-                val note = NoteEntity(
-                    body = showViewModel.showNoteState.value.currentText,
-                    emojiUnicode = showViewModel.showNoteState.value.currentUnicode,
-                    createdAt = showViewModel.noteDataBaseData.value.createdAt,
-                    updatedAt = System.currentTimeMillis(),
-                    id = showViewModel.noteDataBaseData.value.noteId
-                )
-                delay(1)
-                if (bookmarkedNote == null){
-                    showViewModel.insertNote(note)
-                } else {
-                    showViewModel.insertNote(note)
-                    showViewModel.insertBookmarkNote(
-                        note.convertNoteBookMarkEntity()
-                    )
+                showViewModel.noteType?.let { type ->
+                    when(type){
+                        NoteType.NORMAL.name ->{
+                            val bookmarkedNote = showViewModel.getBookmarkNote(showViewModel.noteDataBaseData.value.noteId)
+                            val note = NoteEntity(
+                                body = showViewModel.showNoteState.value.currentText,
+                                emojiUnicode = showViewModel.showNoteState.value.currentUnicode,
+                                createdAt = showViewModel.noteDataBaseData.value.createdAt,
+                                updatedAt = System.currentTimeMillis(),
+                                id = showViewModel.noteDataBaseData.value.noteId
+                            )
+                            delay(1)
+                            if (bookmarkedNote == null){
+                                showViewModel.insertNote(note)
+                            } else {
+                                showViewModel.insertNote(note)
+                                showViewModel.insertBookmarkNote(
+                                    note.convertNoteBookMarkEntity()
+                                )
+                            }
+                            Timber.d("save note: $note")
+                            delay(1)
+                            requireActivity().findNavController(R.id.navHostFragment).navigate(
+                                ShowFragmentDirections.actionDraftFragmentToHomeFragment()
+                            )
+                        }
+                        NoteType.DRAFT.name ->{
+                            val note = NoteEntity(
+                                body = showViewModel.showNoteState.value.currentText,
+                                emojiUnicode = showViewModel.showNoteState.value.currentUnicode,
+                                createdAt = showViewModel.noteDataBaseData.value.createdAt,
+                                updatedAt = System.currentTimeMillis(),
+                                id = showViewModel.noteDataBaseData.value.noteId
+                            )
+                            delay(1)
+                            showViewModel.insertNote(note)
+                            showViewModel.deleteDraftNote(noteId = note.id)
+                            Timber.d("save note: $note")
+                            delay(1)
+                            requireActivity().findNavController(R.id.navHostFragment).navigate(
+                                ShowFragmentDirections.actionDraftFragmentToHomeFragment()
+                            )
+                        }
+                    }
                 }
-                Timber.d("save note: $note")
-                delay(1)
-                requireActivity().findNavController(R.id.navHostFragment).navigate(
-                    ShowFragmentDirections.actionDraftFragmentToHomeFragment()
-                )
             }
         }
     }
