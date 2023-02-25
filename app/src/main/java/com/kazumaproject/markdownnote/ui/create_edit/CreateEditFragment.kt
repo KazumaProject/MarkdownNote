@@ -13,12 +13,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.bottomappbar.BottomAppBar
 import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
 import com.kazumaproject.emojipicker.model.Emoji
 import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.markdownnote.MainViewModel
-import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.database.note_draft.NoteDraftEntity
 import com.kazumaproject.markdownnote.databinding.FragmentCreateEditBinding
