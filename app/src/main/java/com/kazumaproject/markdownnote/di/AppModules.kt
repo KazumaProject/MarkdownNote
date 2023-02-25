@@ -3,6 +3,7 @@ package com.kazumaproject.markdownnote.di
 import android.content.Context
 import androidx.room.Room
 import com.google.gson.GsonBuilder
+import com.kazumaproject.markdownnote.preferences.SharedPreferences
 import com.kazumaproject.markdownnote.database.note.NoteDatabase
 import com.kazumaproject.markdownnote.database.note_bookmark.NoteBookMarkDatabase
 import com.kazumaproject.markdownnote.database.note_draft.NoteDraftDatabase
@@ -14,6 +15,7 @@ import com.kazumaproject.markdownnote.other.Constants.NOTE_TRASH_DATABASE_NAME
 import com.kazumaproject.markdownnote.other.FileManageUtil
 import com.kazumaproject.markdownnote.other.GrammarLocatorDef
 import com.kazumaproject.markdownnote.other.TaskListToggleSpan
+import com.kazumaproject.markdownnote.preferences.PreferenceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -46,6 +48,19 @@ object AppModules {
     @Singleton
     @Provides
     fun providesFileManageUtil() = FileManageUtil()
+
+    @Provides
+    @Singleton
+    fun providesSharedPreference(@ApplicationContext context: Context): SharedPreferences {
+        SharedPreferences.init(context)
+        return SharedPreferences
+    }
+
+    @Provides
+    @Singleton
+    fun providesPreferenceImpl(
+        sharedPreferences: SharedPreferences
+    ): PreferenceImpl = PreferenceImpl(sharedPreferences)
 
     @Singleton
     @Provides

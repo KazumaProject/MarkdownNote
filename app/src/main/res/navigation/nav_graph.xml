@@ -55,5 +55,6 @@
         android:id="@+id/settingFragment"
         android:name="com.kazumaproject.markdownnote.ui.setting.SettingFragment"
         android:label="fragment_setting"
-        tools:layout="@layout/fragment_setting" />
+        tools:layout="@layout/fragment_setting" >
+    </fragment>
 </navigation>

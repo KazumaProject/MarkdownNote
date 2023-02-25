@@ -97,7 +97,7 @@ class MainViewModel @Inject constructor(
         return noteRepository.getAllTrashNotes()
     }
 
-    private fun getAllBookmarkNotes(): Flow<List<NoteBookMarkEntity>>{
+    fun getAllBookmarkNotes(): Flow<List<NoteBookMarkEntity>>{
         return noteRepository.getAllBookmarkNotes()
     }
 

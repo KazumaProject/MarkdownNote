@@ -323,7 +323,13 @@ class HomeFragment : Fragment() {
                             NoteType.NORMAL.name
                         )
                     )
-                    is DrawerSelectedItem.GoToSettings ->{}
+                    is DrawerSelectedItem.GoToSettings -> requireActivity().findNavController(R.id.navHostFragment).navigate(
+                        HomeFragmentDirections.actionHomeFragmentToDraftFragment(
+                            noteEntity.id,
+                            DrawerSelectedItemInShow.ALL_NOTE.name,
+                            NoteType.NORMAL.name
+                        )
+                    )
                 }
             }
             noteAdapter.setOnItemLikedClickListener { noteEntity, i, isSelected ->
