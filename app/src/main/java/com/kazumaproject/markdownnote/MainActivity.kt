@@ -3,6 +3,8 @@ package com.kazumaproject.markdownnote
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -10,6 +12,7 @@ import android.os.Environment
 import android.provider.Settings
 import android.widget.Switch
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -18,7 +21,6 @@ import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomappbar.BottomAppBar
 import com.kazumaproject.markdownnote.adapters.DrawerParentRecyclerViewAdapter
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.databinding.ActivityMainBinding
@@ -166,6 +168,12 @@ class MainActivity : AppCompatActivity() {
             getEmojiDrawerItems(value.allNotes)
 
         }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onStart() {
+        super.onStart()
+        changeIconColorByTheme()
     }
 
     override fun onDestroy() {
@@ -489,4 +497,19 @@ class MainActivity : AppCompatActivity() {
             emojiUnicode = null
         )
     )
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun changeIconColorByTheme(){
+        binding.bottomAppBar.menu.apply {
+            findItem(R.id.bottom_bar_item_back_arrow).iconTintList = ColorStateList.valueOf(getColor(R.color.text_color_main))
+            findItem(R.id.bottom_bar_item_draft).iconTintList = ColorStateList.valueOf(getColor(R.color.text_color_main))
+            findItem(R.id.bottom_app_bar_item_preview_raw_change).iconTintList = ColorStateList.valueOf(getColor(R.color.text_color_main))
+            findItem(R.id.bottom_app_bar_item_emoji_unicode_text).iconTintList = ColorStateList.valueOf(getColor(R.color.text_color_main))
+            findItem(R.id.bottom_app_bar_item_export_note).iconTintList = ColorStateList.valueOf(getColor(R.color.text_color_main))
+            findItem(R.id.bottom_app_bar_item_restore_note).iconTintList = ColorStateList.valueOf(getColor(R.color.text_color_main))
+            findItem(R.id.bottom_app_bar_item_delete_note).iconTintList = ColorStateList.valueOf(getColor(R.color.text_color_main))
+            findItem(R.id.bottom_app_bar_item_preview_raw_change_in_show_fragment).iconTintList = ColorStateList.valueOf(getColor(R.color.text_color_main))
+        }
+    }
+
 }

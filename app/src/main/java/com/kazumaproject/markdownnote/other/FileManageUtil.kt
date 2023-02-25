@@ -4,13 +4,10 @@ import android.content.Context
 import android.os.Environment
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
-import android.view.ViewGroup.MarginLayoutParams
 import android.widget.EditText
+import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.updateLayoutParams
 import com.google.android.material.snackbar.Snackbar
-import com.google.gson.Gson
 import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.ui.show.ShowViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +25,7 @@ class FileManageUtil {
     ){
         val editText = EditText(context)
         editText.apply {
+            setSingleLine()
             setText(System.currentTimeMillis().toString())
             requestFocus()
             selectAll()
@@ -46,7 +44,7 @@ class FileManageUtil {
                         delay(500)
                         launch(Dispatchers.Main) {
                             Snackbar.make(view,
-                                "markdown_note_${editText.text}.txt is created.\\n${
+                                "markdown_note_${editText.text}.txt is created.\n${
                                     Environment.getExternalStoragePublicDirectory(
                                         Environment.DIRECTORY_DOCUMENTS
                                     )
@@ -68,7 +66,7 @@ class FileManageUtil {
                         delay(500)
                         launch(Dispatchers.Main) {
                             Snackbar.make(view,
-                                "markdown_note_${editText.text}.md is created.\\n${
+                                "markdown_note_${editText.text}.md is created.\n${
                                     Environment.getExternalStoragePublicDirectory(
                                         Environment.DIRECTORY_DOCUMENTS
                                     )
