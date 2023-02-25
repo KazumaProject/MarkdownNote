@@ -101,7 +101,7 @@ class HomeNotesRecyclerViewAdapter (
                 setOnClickListener {
                     onItemLikedClickListener?.let { likedClick ->
                         likedClick(note, position,isSelected)
-                        likeAnimation()
+                        //likeAnimation()
                         isSelected = !this.isSelected
                     }
                 }

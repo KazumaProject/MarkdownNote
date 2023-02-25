@@ -44,6 +44,8 @@ class HomeFragment : Fragment() {
     private var requestSwipeItem = false
     private var onBackPressedCallback: OnBackPressedCallback? = null
 
+    var homeRecylcerViewState: Parcelable? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,7 +60,7 @@ class HomeFragment : Fragment() {
         collectLatestLifecycleFlow(activityViewModel.filteredNotesValue){ filtered_notes ->
             if (initialStart || requestSwipeItem) binding.progressBarHomeFragment.isVisible = true
             binding.homeNotesRecyclerView.isEnabled = false
-            delay(800)
+            delay(1)
             binding.homeNotesRecyclerView.isEnabled = true
             binding.progressBarHomeFragment.isVisible = false
             initialStart = false
@@ -134,6 +136,7 @@ class HomeFragment : Fragment() {
             }
             homeNotesRecyclerViewAdapter = HomeNotesRecyclerViewAdapter(filtered_notes.allBookmarkNotes, filtered_notes.currentDrawerSelectedItem)
             setRecyclerView(filteredNotes, homeNotesRecyclerViewAdapter, filtered_notes.currentDrawerSelectedItem)
+            binding.homeNotesRecyclerView.layoutManager?.onRestoreInstanceState(homeRecylcerViewState)
             setSwipeRefreshLayout(filteredNotes, homeNotesRecyclerViewAdapter)
             setSearchView(filteredNotes, homeNotesRecyclerViewAdapter)
             onBackPressedCallback?.let { backPressed ->
@@ -154,6 +157,7 @@ class HomeFragment : Fragment() {
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     homeNotesRecyclerViewAdapter?.let { noteAdapter ->
+                        homeRecylcerViewState = binding.homeNotesRecyclerView.layoutManager?.onSaveInstanceState()
                         when(activityViewModel.filteredNotesValue.value.currentDrawerSelectedItem){
                             is DrawerSelectedItem.AllNotes, is DrawerSelectedItem.GoToSettings -> {
                                 val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
@@ -240,11 +244,6 @@ class HomeFragment : Fragment() {
                                 }.show()
                             }
                         }
-                    }
-                    CoroutineScope(Dispatchers.Main).launch {
-                        val state: Parcelable? = layoutManager?.onSaveInstanceState()
-                        delay(816)
-                        layoutManager?.onRestoreInstanceState(state)
                     }
                     requestSwipeItem = true
                 }
@@ -333,11 +332,7 @@ class HomeFragment : Fragment() {
                 Timber.d("clicked note: $noteEntity\nindex: $i\nselected: $isSelected")
                 requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).performShow()
                 if (!isSelected) homeViewModel.insertBookmarkedNote(noteEntity.convertNoteBookMarkEntity()) else homeViewModel.deleteBookmarkedNote(noteEntity.id)
-                CoroutineScope(Dispatchers.Main).launch {
-                    val state: Parcelable? = layoutManager?.onSaveInstanceState()
-                    delay(816)
-                    layoutManager?.onRestoreInstanceState(state)
-                }
+                homeRecylcerViewState = binding.homeNotesRecyclerView.layoutManager?.onSaveInstanceState()
             }
         }
         this.layoutManager = LinearLayoutManager(requireContext())
