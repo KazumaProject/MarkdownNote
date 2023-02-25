@@ -1,27 +1,31 @@
 package com.kazumaproject.markdownnote.ui.setting
 
-import android.icu.text.CaseMap.Title
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
 import androidx.navigation.findNavController
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.R
+import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.*
-import timber.log.Timber
+import java.io.BufferedReader
 import java.io.File
+import java.io.IOException
+import java.io.InputStreamReader
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -37,13 +41,23 @@ class SettingFragment : PreferenceFragmentCompat() {
 
     private var startBackupPreference: Preference? = null
 
+    companion object {
+        private const val READ_REQUEST_CODE: Int = 77
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         collectLatestLifecycleFlow(settingViewModel.getAllNotes()){ notes ->
             startBackupPreference?.let { backupPreference ->
                 backupPreference.setOnPreferenceClickListener {
-                    val jsonObject: String = gson.toJson(notes)
+                    val jsonObject: String = gson.toJson(
+                        notes.filter { note ->
+                            note.id !in activityViewModel.dataBaseValues.value.allTrashNotes.map {
+                                it.id
+                            }
+                        }
+                    )
                     val title = "markdown_note_backup_${System.currentTimeMillis()}"
                     saveAllNotes(jsonObject, title)
                     Snackbar.make(
@@ -89,6 +103,13 @@ class SettingFragment : PreferenceFragmentCompat() {
                 }
             }
         }
+        val loadBackupPreference = findPreference<Preference>("load_backup_txt")
+        loadBackupPreference?.let { loadBackup ->
+            loadBackup.setOnPreferenceClickListener {
+                selectFileByUri()
+                return@setOnPreferenceClickListener true
+            }
+        }
     }
 
 
@@ -99,6 +120,68 @@ class SettingFragment : PreferenceFragmentCompat() {
         ).writer().use {
             it.write(string)
         }
+    }
+
+    private fun selectFileByUri(){
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "text/plain"
+        }
+        resultLauncher.launch(intent)
+    }
+
+    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            data?.data?.also { uri ->
+                if (uri.path?.contains("markdown_note_backup_") == true) {
+                    val content: String = readTextFile(uri)
+                    try {
+                        content.let { contents ->
+                            val myType = object : TypeToken<List<NoteEntity>>() {}.type
+                            val notesFromTxt = gson.fromJson<List<NoteEntity>>(contents, myType)
+                            settingViewModel.insertAllNotes(notesFromTxt)
+                        }
+                    }catch (e: Exception){
+                        Snackbar.make(
+                            requireView(),
+                            "Saved text is not valid.",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                        e.printStackTrace()
+                    }
+                } else {
+                    Snackbar.make(
+                        requireView(),
+                        "The selected file is not valid.",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun readTextFile(uri: Uri): String {
+        var reader: BufferedReader? = null
+        val builder = StringBuilder()
+        try {
+            reader = BufferedReader(InputStreamReader(context?.contentResolver?.openInputStream(uri)))
+            var line: String?
+            while (reader.readLine().also { line = it } != null) {
+                builder.append(line)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+        return builder.toString()
     }
 
 }

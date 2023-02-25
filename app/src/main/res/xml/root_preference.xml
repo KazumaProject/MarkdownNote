@@ -9,5 +9,8 @@
             android:key="@string/backup_save_preference"
             android:title="Start back up"
             />
+        <Preference
+            android:key="load_backup_txt"
+            android:title="Load back up file"/>
     </PreferenceCategory>
 </PreferenceScreen>

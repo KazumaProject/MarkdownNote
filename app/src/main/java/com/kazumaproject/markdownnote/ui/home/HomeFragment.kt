@@ -155,7 +155,7 @@ class HomeFragment : Fragment() {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     homeNotesRecyclerViewAdapter?.let { noteAdapter ->
                         when(activityViewModel.filteredNotesValue.value.currentDrawerSelectedItem){
-                            is DrawerSelectedItem.AllNotes -> {
+                            is DrawerSelectedItem.AllNotes, is DrawerSelectedItem.GoToSettings -> {
                                 val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
                                 homeViewModel.insertTrashNote(note.convertNoteTrashEntity())
                                 val bookmarksList = activityViewModel.dataBaseValues.value.allBookmarkNotes.map {
@@ -238,9 +238,6 @@ class HomeFragment : Fragment() {
                                         homeViewModel.deleteTrashNote(note.id)
                                     }
                                 }.show()
-                            }
-                            is DrawerSelectedItem.GoToSettings -> {
-
                             }
                         }
                     }
