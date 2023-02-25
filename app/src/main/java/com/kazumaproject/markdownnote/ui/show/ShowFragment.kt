@@ -1,6 +1,7 @@
 package com.kazumaproject.markdownnote.ui.show
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
@@ -19,13 +20,13 @@ import androidx.navigation.findNavController
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textview.MaterialTextView
+import com.google.gson.Gson
 import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
 import com.kazumaproject.emojipicker.model.Emoji
 import com.kazumaproject.emojipicker.other.convertUnicode
 import com.kazumaproject.markdownnote.MainViewModel
 import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.database.note.NoteEntity
-import com.kazumaproject.markdownnote.database.note_draft.NoteDraftEntity
 import com.kazumaproject.markdownnote.databinding.FragmentDraftBinding
 import com.kazumaproject.markdownnote.other.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,9 +46,19 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
     @Inject
     lateinit var markwon: Markwon
 
+    @Inject
+    lateinit var gson: Gson
+
+    @Inject
+    lateinit var fileManageUtil: FileManageUtil
+
     private var onBackPressedCallback: OnBackPressedCallback? =null
 
     private var emojiText: MaterialTextView? = null
+
+    companion object {
+        private const val READ_REQUEST_CODE: Int = 77
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -334,6 +345,14 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
                 }
                 return@setOnMenuItemClickListener true
             }
+            menu.findItem(R.id.bottom_app_bar_item_export_note).setOnMenuItemClickListener {
+                fileManageUtil.showAlertDialogForExportNote(
+                    requireContext(),
+                    showViewModel,
+                    requireView()
+                )
+                return@setOnMenuItemClickListener true
+            }
         }
     }
 
@@ -346,6 +365,14 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
             requireActivity().findViewById<FloatingActionButton>(R.id.add_floating_button).isVisible = true
         }
 
+    }
+
+    private fun selectFileByUri(){
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "text/plain"
+        }
+        startActivityForResult(intent, READ_REQUEST_CODE)
     }
 
 }

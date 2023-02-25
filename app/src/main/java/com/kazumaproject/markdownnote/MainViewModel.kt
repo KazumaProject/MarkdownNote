@@ -36,7 +36,12 @@ data class FilteredNotesValue(
     val allDraftNotes: List<NoteDraftEntity> = emptyList()
 )
 
-
+data class FilteredNotesValueForRecyclerView(
+    val currentDrawerSelectedItem: DrawerSelectedItem = DrawerSelectedItem.AllNotes,
+    val allTrashNotes: List<NoteTrashEntity> = emptyList(),
+    val allNotes: List<NoteEntity> = emptyList(),
+    val allDraftNotes: List<NoteDraftEntity> = emptyList()
+)
 
 @HiltViewModel
 class MainViewModel @Inject constructor(

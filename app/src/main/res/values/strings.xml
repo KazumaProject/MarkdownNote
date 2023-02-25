@@ -24,4 +24,6 @@
     <string name="export_note">Export note</string>
     <string name="deleted_message">was successfully deleted</string>
     <string name="undo_message">Undo</string>
+
+    <string name="save_note">Save note</string>
 </resources>

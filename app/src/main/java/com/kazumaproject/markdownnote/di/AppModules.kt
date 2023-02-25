@@ -2,6 +2,7 @@ package com.kazumaproject.markdownnote.di
 
 import android.content.Context
 import androidx.room.Room
+import com.google.gson.GsonBuilder
 import com.kazumaproject.markdownnote.database.note.NoteDatabase
 import com.kazumaproject.markdownnote.database.note_bookmark.NoteBookMarkDatabase
 import com.kazumaproject.markdownnote.database.note_draft.NoteDraftDatabase
@@ -10,6 +11,7 @@ import com.kazumaproject.markdownnote.other.Constants.NOTE_BOOKMARK_DATABASE_NAM
 import com.kazumaproject.markdownnote.other.Constants.NOTE_DATABASE_NAME
 import com.kazumaproject.markdownnote.other.Constants.NOTE_DRAFT_DATABASE_NAME
 import com.kazumaproject.markdownnote.other.Constants.NOTE_TRASH_DATABASE_NAME
+import com.kazumaproject.markdownnote.other.FileManageUtil
 import com.kazumaproject.markdownnote.other.GrammarLocatorDef
 import com.kazumaproject.markdownnote.other.TaskListToggleSpan
 import dagger.Module
@@ -40,6 +42,15 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModules {
+
+    @Singleton
+    @Provides
+    fun providesFileManageUtil() = FileManageUtil()
+
+    @Singleton
+    @Provides
+    fun provideGson() = GsonBuilder().disableHtmlEscaping().create()
+
     @Singleton
     @Provides
     fun provideMarkWon(@ApplicationContext context: Context): Markwon =
