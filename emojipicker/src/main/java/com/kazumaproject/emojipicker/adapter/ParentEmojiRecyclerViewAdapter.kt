@@ -59,7 +59,7 @@ class ParentEmojiRecyclerViewAdapter (
         }
         val childLayoutManager = GridLayoutManager(
             childRecyclerView.context,
-            9
+            6
         )
         childLayoutManager.initialPrefetchItemCount = parentItem.childItemList.size
 
