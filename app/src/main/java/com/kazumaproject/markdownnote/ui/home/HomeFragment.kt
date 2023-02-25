@@ -227,6 +227,7 @@ class HomeFragment : Fragment() {
                             is DrawerSelectedItem.BookmarkedNotes -> {
                                 val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
                                 homeViewModel.deleteBookmarkedNote(note.id)
+                                homeViewModel.insertTrashNote(note.convertNoteTrashEntity())
                                 Snackbar.make(
                                     requireView(),
                                     "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
@@ -234,6 +235,7 @@ class HomeFragment : Fragment() {
                                 ).apply {
                                     setAction(getString(R.string.undo_message)){
                                         homeViewModel.insertBookmarkedNote(note.convertNoteBookMarkEntity())
+                                        homeViewModel.deleteTrashNote(note.id)
                                     }
                                 }.show()
                             }
