@@ -228,7 +228,6 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         super.onStop()
         requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).apply {
             fabAnchorMode = BottomAppBar.FAB_ANCHOR_MODE_CRADLE
-            onBackPressedCallback = null
         }
     }
 
@@ -236,6 +235,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         super.onDestroyView()
         requireActivity().window.statusBarColor = ContextCompat.getColor(requireContext(),R.color.window_bg_color)
         _binding = null
+        onBackPressedCallback = null
     }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
@@ -365,14 +365,6 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
             requireActivity().findViewById<FloatingActionButton>(R.id.add_floating_button).isVisible = true
         }
 
-    }
-
-    private fun selectFileByUri(){
-        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
-            addCategory(Intent.CATEGORY_OPENABLE)
-            type = "text/plain"
-        }
-        startActivityForResult(intent, READ_REQUEST_CODE)
     }
 
 }
