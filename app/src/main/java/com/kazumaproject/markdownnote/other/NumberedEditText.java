@@ -32,15 +32,15 @@ public class NumberedEditText extends TextInputEditText {
             if (i < 9){
                 canvas.drawText("" + (i+1), rect.left + 40, baseline, paint);
             } else if (i < 99){
-                canvas.drawText("" + (i+1), rect.left + 60, baseline, paint);
-            } else if (i < 999){
                 canvas.drawText("" + (i+1), rect.left + 80, baseline, paint);
-            } else if (i < 9999){
-                canvas.drawText("" + (i+1), rect.left + 100, baseline, paint);
-            } else if (i < 99999){
-                canvas.drawText("" + (i+1), rect.left + 120, baseline, paint);
-            } else  {
+            } else if (i < 999){
                 canvas.drawText("" + (i+1), rect.left + 140, baseline, paint);
+            } else if (i < 9999){
+                canvas.drawText("" + (i+1), rect.left + 180, baseline, paint);
+            } else if (i < 99999){
+                canvas.drawText("" + (i+1), rect.left + 220, baseline, paint);
+            } else  {
+                canvas.drawText("" + (i+1), rect.left + 260, baseline, paint);
             }
             baseline += getLineHeight();
         }
