@@ -40,6 +40,7 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
 
     private var onBackPressedCallback: OnBackPressedCallback? =null
 
+    private var dialog: EmojiPickerDialogFragment?= null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityViewModel.updateFloatingButtonEnableState(false)
@@ -113,6 +114,7 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
     override fun onPause() {
         super.onPause()
         activityViewModel.updateMarkdownSwitchState(false)
+        dialog?.dismiss()
     }
 
     override fun onStop() {
@@ -140,10 +142,10 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
 
     private fun setChooseEmojiView() = binding.changeEmojiParentView.apply {
         setOnClickListener {
-            val dialog = EmojiPickerDialogFragment(
+            dialog = EmojiPickerDialogFragment(
                 this@CreateEditFragment
             )
-            dialog.show(requireActivity().supportFragmentManager,"emoji picker dialog")
+            dialog?.show(requireActivity().supportFragmentManager,"emoji picker dialog")
         }
     }
 
