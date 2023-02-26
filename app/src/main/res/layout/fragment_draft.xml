@@ -35,7 +35,7 @@
         android:fontFamily="@font/regular"
         android:gravity="top"
         android:minHeight="256dp"
-        android:paddingStart="64dp"
+        android:paddingStart="52dp"
         android:paddingEnd="24dp"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
