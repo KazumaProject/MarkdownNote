@@ -209,7 +209,6 @@ object Constants {
         Emoji(340,"guard",0x1f482),
         Emoji(343,"ninja",0x1f977),
         Emoji(344,"construction worker",0x1f477),
-
         Emoji(347,"construction worker",0x1fac5),
         Emoji(348,"construction worker",0x1f934),
         Emoji(349,"construction worker",0x1f478),
@@ -218,6 +217,25 @@ object Constants {
         Emoji(354,"construction worker",0x1f9d5),
         Emoji(355,"construction worker",0x1f935),
         Emoji(358,"construction worker",0x1f470),
+        Emoji(361,"pregnant woman",0x1f930),
+        Emoji(362,"pregnant man",0x1fac3),
+        Emoji(363,"pregnant person",0x1fac4),
+        Emoji(364,"breast-feeding",0x1f931),
+
+        Emoji(368,"baby angel",0x1f47c),
+        Emoji(369,"Santa Claus",0x1f385),
+        Emoji(370,"Mrs. Claus",0x1f936),
+        Emoji(371,"mx claus",0x1f9d1),
+        Emoji(372,"superhero",0x1f9b8),
+        Emoji(375,"supervillain",0x1f9b9),
+        Emoji(378,"mage",0x1f9d9),
+        Emoji(381,"fairy",0x1f9da),
+        Emoji(384,"vampire",0x1f9db),
+        Emoji(387,"merperson",0x1f9dc),
+        Emoji(390,"elf",0x1f9dd),
+        Emoji(393,"genie",0x1f9de),
+        Emoji(396,"zombie",0x1f9df),
+        Emoji(399,"troll",0x1f9cc),
     )
 
     val EMOJI_LIST_ANIMALS_NATURE = arrayListOf(
