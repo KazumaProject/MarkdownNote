@@ -130,6 +130,15 @@ object Constants {
         Emoji(175,"palm up hand",0x1faf4),
         Emoji(176,"leftwards pushing hand",0x1faf7),
         Emoji(177,"rightwards pushing hand",0x1faf8),
+        Emoji(178,"OK hand",0x1f44c),
+        Emoji(179,"pinched fingers",0x1f90c),
+        Emoji(180,"pinching hand",0x1f90f),
+        Emoji(181,"victory hand",0x270c),
+        Emoji(182,"crossed fingers",0x1f91e),
+        Emoji(183,"hand with index finger and thumb crossed",0x1faf0),
+        Emoji(184,"love-you gesture",0x1f91f),
+        Emoji(185,"sign of the horns",0x1f918),
+        Emoji(186,"call me hand",0x1f919),
     )
 
     val EMOJI_LIST_ANIMALS_NATURE = arrayListOf(

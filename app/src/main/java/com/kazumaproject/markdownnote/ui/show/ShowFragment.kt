@@ -153,7 +153,6 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
 
             markwon.setMarkdown(binding.showFragmentMarkwonText, showNoteState.currentText)
 
-
             requireActivity().findViewById<FloatingActionButton>(R.id.add_floating_button).apply {
                 isVisible = showNoteState.currentText != showNoteState.originalText || showNoteState.currentUnicode != showNoteState.originalUnicode || showNoteState.currentNoteType == NoteType.DRAFT.name
             }
