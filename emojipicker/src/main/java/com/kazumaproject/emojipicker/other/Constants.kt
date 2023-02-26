@@ -152,6 +152,13 @@ object Constants {
         Emoji(197,"oncoming fist",0x1f44a),
         Emoji(198,"left-facing fist",0x1f91b),
         Emoji(199,"right-facing fist",0x1f91c),
+        Emoji(200,"clapping hands",0x1f44f),
+        Emoji(201,"raising hands",0x1f64c),
+        Emoji(202,"heart hands",0x1faf6),
+        Emoji(203,"open hands",0x1f450),
+        Emoji(204,"palms up together",0x1f932),
+        Emoji(205,"handshake",0x1f91d),
+        Emoji(206,"folded hands",0x1f64f),
     )
 
     val EMOJI_LIST_ANIMALS_NATURE = arrayListOf(
