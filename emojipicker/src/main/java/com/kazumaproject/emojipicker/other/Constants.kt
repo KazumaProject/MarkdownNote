@@ -221,7 +221,6 @@ object Constants {
         Emoji(362,"pregnant man",0x1fac3),
         Emoji(363,"pregnant person",0x1fac4),
         Emoji(364,"breast-feeding",0x1f931),
-
         Emoji(368,"baby angel",0x1f47c),
         Emoji(369,"Santa Claus",0x1f385),
         Emoji(370,"Mrs. Claus",0x1f936),
@@ -236,6 +235,16 @@ object Constants {
         Emoji(393,"genie",0x1f9de),
         Emoji(396,"zombie",0x1f9df),
         Emoji(399,"troll",0x1f9cc),
+        Emoji(400,"person getting massage",0x1f486),
+        Emoji(403,"person getting haircut",0x1f487),
+        Emoji(406,"person walking",0x1f6b6),
+        Emoji(409,"person standing",0x1f9cd),
+        Emoji(412,"person kneeling",0x1f9ce),
+        Emoji(428,"man dancing",0x1f57a),
+        Emoji(429,"person in suit levitating",0x1f574),
+        Emoji(430,"people with bunny ears",0x1f46f),
+        Emoji(433,"person in steamy room",0x1f9d6),
+        Emoji(436,"person climbing",0x1f9d7),
     )
 
     val EMOJI_LIST_ANIMALS_NATURE = arrayListOf(
