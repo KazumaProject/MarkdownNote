@@ -26,4 +26,5 @@
     <string name="undo_message">元に戻す</string>
 
     <string name="save_note">ノートを保存する</string>
+    <string name="change_emoji">絵文字を変更する</string>
 </resources>
