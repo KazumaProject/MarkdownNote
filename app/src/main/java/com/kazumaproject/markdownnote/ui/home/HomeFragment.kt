@@ -85,7 +85,9 @@ class HomeFragment : Fragment() {
                         is DrawerSelectedItem.EmojiCategory ->{
                             activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
                         }
-                        is DrawerSelectedItem.GoToSettings -> {}
+                        is DrawerSelectedItem.GoToSettings -> {
+                            requireActivity().finish()
+                        }
                     }
                 }
             }
