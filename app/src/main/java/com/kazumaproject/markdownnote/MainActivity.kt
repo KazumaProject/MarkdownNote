@@ -302,7 +302,10 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                         is FragmentType.DraftFragment -> {
-                            findNavController(R.id.navHostFragment).popBackStack()
+                            when{
+                                hasFocus -> KeyboardHelper.hideKeyboardAndClearFocus(this@MainActivity)
+                                else ->  findNavController(R.id.navHostFragment).popBackStack()
+                            }
                         }
                         is FragmentType.SettingFragment -> {
                             findNavController(R.id.navHostFragment).popBackStack()

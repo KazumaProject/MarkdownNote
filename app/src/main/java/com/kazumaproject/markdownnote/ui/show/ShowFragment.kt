@@ -56,10 +56,6 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
 
     private var emojiText: MaterialTextView? = null
 
-    companion object {
-        private const val READ_REQUEST_CODE: Int = 77
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityViewModel.updateCurrentFragmentType(FragmentType.DraftFragment)
@@ -77,9 +73,13 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         super.onViewCreated(view, savedInstanceState)
         onBackPressedCallback = object : OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
-                requireActivity().findNavController(
-                    R.id.navHostFragment
-                ).popBackStack()
+                if (activityViewModel.fragmentAndFloatingButtonState.value.hasFocus){
+                    KeyboardHelper.hideKeyboardAndClearFocus(requireActivity())
+                } else {
+                    requireActivity().findNavController(
+                        R.id.navHostFragment
+                    ).popBackStack()
+                }
             }
         }
         CoroutineScope(Dispatchers.Main).launch {
@@ -125,6 +125,9 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         binding.showFragmentEditText.apply {
             addTextChangedListener { text: Editable? ->
                 showViewModel.updateCurrentText(text.toString())
+            }
+            setOnFocusChangeListener { _, hasFocus ->
+                activityViewModel.updateHasFocusInEditText(hasFocus)
             }
         }
 
