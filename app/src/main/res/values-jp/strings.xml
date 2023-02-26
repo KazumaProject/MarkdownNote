@@ -27,4 +27,8 @@
 
     <string name="save_note">ノートを保存する</string>
     <string name="change_emoji">絵文字を変更する</string>
+
+    <string name="backup_string">バックアップ</string>
+    <string name="start_backup">バックアップする</string>
+    <string name="load_backup">復元する</string>
 </resources>

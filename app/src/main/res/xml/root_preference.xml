@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Backup">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        android:title="@string/backup_string">
         <EditTextPreference
             android:key="@string/file_path_edit_text_preference_key"
             android:title="Back up File path:"
             />
         <Preference
             android:key="@string/backup_save_preference"
-            android:title="Start back up"
+            android:title="@string/start_backup"
             />
         <Preference
             android:key="load_backup_txt"
-            android:title="Load back up file"/>
+            android:title="@string/load_backup"/>
     </PreferenceCategory>
+
 </PreferenceScreen>

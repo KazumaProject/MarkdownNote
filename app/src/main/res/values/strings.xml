@@ -29,4 +29,8 @@
     <string name="file_path_edit_text_preference_key" translatable="false">file_path_edit_preference</string>
     <string name="backup_save_preference" translatable="false">backup_save_preference</string>
     <string name="change_emoji">Change Emoji</string>
+
+    <string name="backup_string">Backup</string>
+    <string name="start_backup">Start back up</string>
+    <string name="load_backup">Load back up file</string>
 </resources>
