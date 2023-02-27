@@ -5,5 +5,6 @@ enum class DrawerSelectedItemInShow {
     BOOKMARKED,
     DRAFTS,
     TRASH,
-    EMOJI
+    EMOJI,
+    READ_FILE
 }

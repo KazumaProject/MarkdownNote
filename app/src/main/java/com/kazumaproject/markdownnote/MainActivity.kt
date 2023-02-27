@@ -1,10 +1,16 @@
 package com.kazumaproject.markdownnote
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.content.res.ColorStateList
+import android.database.Cursor
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.widget.Switch
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +20,7 @@ import androidx.core.view.isVisible
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.kazumaproject.markdownnote.adapters.DrawerParentRecyclerViewAdapter
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.databinding.ActivityMainBinding
@@ -26,6 +33,9 @@ import com.kazumaproject.markdownnote.ui.create_edit.CreateEditFragmentDirection
 import com.kazumaproject.markdownnote.ui.home.HomeFragmentDirections
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStreamReader
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -120,7 +130,7 @@ class MainActivity : AppCompatActivity() {
                                     viewModel.updateCurrentSelectedDrawerItem(
                                         DrawerSelectedItem.ReadFile
                                     )
-                                    //** TODO **//
+                                    selectFileByUri()
                                 }
                                 1 ->{
                                     viewModel.updateCurrentSelectedDrawerItem(
@@ -151,6 +161,72 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         drawerParentRecyclerViewAdapter = null
     }
+
+    private fun selectFileByUri(){
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "text/*"
+        }
+        resultLauncher.launch(intent)
+    }
+
+    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data: Intent? = result.data
+            data?.data?.also { uri ->
+                val returnCursor: Cursor? = contentResolver.query(uri, null, null, null, null)
+                val nameIndex: Int? = returnCursor?.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                returnCursor?.moveToFirst()
+                nameIndex?.let { index ->
+                    val content: String = readTextFile(uri)
+                    try {
+                        content.let { contents ->
+                            Timber.d("selected contents: $contents")
+                            findNavController(R.id.navHostFragment).navigate(
+                                HomeFragmentDirections.actionHomeFragmentToDraftFragment(
+                                    noteId = contents,
+                                    drawerSelectedItem = DrawerSelectedItemInShow.READ_FILE.name,
+                                    noteType = NoteType.READ_FILE.name
+                                )
+                            )
+                        }
+                    }catch (e: Exception){
+                        Snackbar.make(
+                            binding.root,
+                            "Saved text is not valid.",
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                        e.printStackTrace()
+                    }
+                }
+
+            }
+        }
+    }
+
+    private fun readTextFile(uri: Uri): String {
+        var reader: BufferedReader? = null
+        val builder = StringBuilder()
+        try {
+            reader = BufferedReader(InputStreamReader(contentResolver?.openInputStream(uri)))
+            var line: String?
+            while (reader.readLine().also { line = it } != null) {
+                builder.append(line + "\n")
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+        return builder.toString()
+    }
+
     private fun setAppBottomBarAppearanceByFragmentType(
         type: FragmentType,
         isEnable: Boolean,
@@ -342,6 +418,13 @@ class MainActivity : AppCompatActivity() {
                     }
                     DrawerSelectedItemInShow.EMOJI.name ->{
                         isVisible = false
+                        setOnClickListener {
+                            binding.bottomAppBar.performShow()
+                            viewModel.updateSaveClickedInShow(true)
+                        }
+                    }
+                    DrawerSelectedItemInShow.READ_FILE.name ->{
+                        isVisible = true
                         setOnClickListener {
                             binding.bottomAppBar.performShow()
                             viewModel.updateSaveClickedInShow(true)

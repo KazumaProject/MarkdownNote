@@ -3,6 +3,7 @@ package com.kazumaproject.markdownnote.ui.show
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract.CommonDataKinds.Note
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -37,6 +38,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
 import kotlinx.coroutines.*
 import timber.log.Timber
+import java.util.UUID
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -122,6 +124,18 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
                             }
                         }
                     }
+                    NoteType.READ_FILE.name ->{
+                        showViewModel.updateCurrentNoteType(type)
+                        showViewModel.noteId?.let { id ->
+                            val unicode = com.kazumaproject.emojipicker.other.Constants.EMOJI_LIST_ANIMALS_NATURE[(0 until com.kazumaproject.emojipicker.other.Constants.EMOJI_LIST_ANIMALS_NATURE.size).random()].unicode
+                            showViewModel.updateCurrentText(id)
+                            showViewModel.updateOriginalNoteText("")
+                            showViewModel.updateCurrentUnicode(unicode)
+                            showViewModel.updateNoteId(UUID.randomUUID().toString())
+                            showViewModel.updateNoteCreatedAt(System.currentTimeMillis())
+                            showViewModel.updateOriginUnicode(unicode)
+                        }
+                    }
                 }
             }
         }
@@ -158,10 +172,10 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
             markwon.setMarkdown(binding.showFragmentMarkwonText, showNoteState.currentText)
 
             requireActivity().findViewById<FloatingActionButton>(R.id.add_floating_button).apply {
-                isVisible = showNoteState.currentText != showNoteState.originalText || showNoteState.currentUnicode != showNoteState.originalUnicode || showNoteState.currentNoteType == NoteType.DRAFT.name
+                isVisible = showNoteState.currentText != showNoteState.originalText || showNoteState.currentUnicode != showNoteState.originalUnicode || showNoteState.currentNoteType == NoteType.DRAFT.name || showNoteState.currentNoteType == NoteType.READ_FILE.name
             }
 
-            activityViewModel.updateFloatingButtonEnableState(showNoteState.currentText != showNoteState.originalText || showNoteState.currentUnicode != showNoteState.originalUnicode || showNoteState.currentNoteType == NoteType.DRAFT.name )
+            activityViewModel.updateFloatingButtonEnableState(showNoteState.currentText != showNoteState.originalText || showNoteState.currentUnicode != showNoteState.originalUnicode || showNoteState.currentNoteType == NoteType.DRAFT.name || showNoteState.currentNoteType == NoteType.READ_FILE.name )
 
             if (showNoteState.currentText != showNoteState.originalText || showNoteState.currentUnicode != showNoteState.originalUnicode || showNoteState.currentNoteType == NoteType.DRAFT.name){
                 requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).apply {
@@ -214,6 +228,21 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
                             showViewModel.insertNote(note)
                             showViewModel.deleteDraftNote(noteId = note.id)
                             Timber.d("save note: $note")
+                            delay(1)
+                            requireActivity().findNavController(R.id.navHostFragment).navigate(
+                                ShowFragmentDirections.actionDraftFragmentToHomeFragment()
+                            )
+                        }
+                        NoteType.READ_FILE.name ->{
+                            val note = NoteEntity(
+                                body = showViewModel.showNoteState.value.currentText,
+                                emojiUnicode = showViewModel.showNoteState.value.currentUnicode,
+                                createdAt = showViewModel.noteDataBaseData.value.createdAt,
+                                updatedAt = System.currentTimeMillis(),
+                                id = showViewModel.noteDataBaseData.value.noteId
+                            )
+                            delay(1)
+                            showViewModel.insertNote(note)
                             delay(1)
                             requireActivity().findNavController(R.id.navHostFragment).navigate(
                                 ShowFragmentDirections.actionDraftFragmentToHomeFragment()

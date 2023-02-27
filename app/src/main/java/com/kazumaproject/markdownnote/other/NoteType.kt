@@ -2,5 +2,6 @@ package com.kazumaproject.markdownnote.other
 
 enum class NoteType {
     NORMAL,
-    DRAFT
+    DRAFT,
+    READ_FILE
 }
