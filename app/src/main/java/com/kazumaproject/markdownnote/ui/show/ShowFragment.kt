@@ -62,6 +62,8 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
 
     private var emojiText: MaterialTextView? = null
 
+    private var emojiDialog: EmojiPickerDialogFragment?= null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityViewModel.updateCurrentFragmentType(FragmentType.DraftFragment)
@@ -88,6 +90,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
                 }
             }
         }
+        emojiDialog = EmojiPickerDialogFragment(this)
         CoroutineScope(Dispatchers.Main).launch {
             showViewModel.drawerSelectedItem?.let { drawerItem ->
                 Timber.d("drawer item: $drawerItem")
@@ -256,6 +259,9 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
 
     override fun onPause() {
         super.onPause()
+        if (
+            emojiDialog?.fragmentManager != null
+        )  emojiDialog?.dismiss()
         activityViewModel.updateSaveClickedInShow(false)
     }
 
@@ -286,7 +292,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         emojiText?.apply{
             text = showViewModel.showNoteState.value.currentUnicode.convertUnicode()
             setOnClickListener {
-                EmojiPickerDialogFragment(this@ShowFragment).show(requireActivity().supportFragmentManager,"emoji picker dialog from show fragment")
+                emojiDialog?.show(requireActivity().supportFragmentManager,"emoji picker dialog from show fragment")
             }
         }
 
@@ -294,7 +300,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
             menu.findItem(R.id.bottom_app_bar_item_emoji_unicode_text).apply {
                 actionView = emojiText
                 setOnMenuItemClickListener {
-                    EmojiPickerDialogFragment(this@ShowFragment).show(requireActivity().supportFragmentManager,"emoji picker dialog from show fragment")
+                    emojiDialog?.show(requireActivity().supportFragmentManager,"emoji picker dialog from show fragment")
                     return@setOnMenuItemClickListener true
                 }
                 when(drawerItem){

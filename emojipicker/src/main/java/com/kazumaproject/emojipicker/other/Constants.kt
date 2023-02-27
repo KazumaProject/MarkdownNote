@@ -271,8 +271,6 @@ object Constants {
         Emoji(491,"kiss",0x1f48f),
         Emoji(495,"couple with heart",0x1f491),
         Emoji(499,"family",0x1f46a),
-        Emoji(500,"family: man, woman, boy",0x1f468),
-        Emoji(510,"family: woman, woman, boy",0x1f469),
         Emoji(525,"speaking head",0x1f5e3),
         Emoji(526,"bust in silhouette",0x1f464),
         Emoji(527,"busts in silhouette",0x1f465),
