@@ -14,18 +14,6 @@ class SettingViewModel @Inject constructor(
     private val preferenceImpl: PreferenceImpl,
     private val noteRepository: NoteRepository
 ) : ViewModel() {
-    fun saveFilePathEditText(file_path: String){
-        preferenceImpl.saveBackupFilePath(file_path)
-    }
-
-    fun getFilePathEditText(): String{
-        return preferenceImpl.getBackupFilePath()
-    }
-
-    fun clearFilePathEditText(){
-        preferenceImpl.clearFilePathPreference()
-    }
-
     fun getAllNotes() = noteRepository.getAllNotes()
 
     fun insertAllNotes(notes: List<NoteEntity>) = viewModelScope.launch {

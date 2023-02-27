@@ -13,7 +13,6 @@ import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
-import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.snackbar.Snackbar
@@ -27,7 +26,6 @@ import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.io.BufferedReader
-import java.io.File
 import java.io.IOException
 import java.io.InputStreamReader
 import javax.inject.Inject
@@ -69,9 +67,7 @@ class SettingFragment : PreferenceFragmentCompat() {
                     createLauncherTxt.launch(title)
                     Snackbar.make(
                         requireView(),
-                        "$title is created at \n${
-                            settingViewModel.getFilePathEditText()
-                        }",
+                        "$title is created.",
                         Snackbar.LENGTH_LONG
                     ).show()
                     return@setOnPreferenceClickListener true
@@ -117,34 +113,15 @@ class SettingFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.root_preference, rootKey)
-        val filePathEditText = findPreference<EditTextPreference>(getString(R.string.file_path_edit_text_preference_key))
+
         startBackupPreference = findPreference(getString(R.string.backup_save_preference))
-        filePathEditText?.let { editText ->
-            editText.apply {
-                summary = settingViewModel.getFilePathEditText()
-                text = settingViewModel.getFilePathEditText()
-                setOnPreferenceChangeListener { _, newValue ->
-                    summary = newValue.toString()
-                    return@setOnPreferenceChangeListener true
-                }
-            }
-        }
+
         val loadBackupPreference = findPreference<Preference>("load_backup_txt")
         loadBackupPreference?.let { loadBackup ->
             loadBackup.setOnPreferenceClickListener {
                 selectFileByUri()
                 return@setOnPreferenceClickListener true
             }
-        }
-    }
-
-
-    private fun saveAllNotes(string: String, title: String){
-        File(
-            settingViewModel.getFilePathEditText(),
-            "$title.txt"
-        ).writer().use {
-            it.write(string)
         }
     }
 
