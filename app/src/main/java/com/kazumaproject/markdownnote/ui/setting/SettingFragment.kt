@@ -2,11 +2,14 @@ package com.kazumaproject.markdownnote.ui.setting
 
 import android.app.Activity
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
@@ -22,11 +25,13 @@ import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.io.BufferedReader
 import java.io.File
 import java.io.IOException
 import java.io.InputStreamReader
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class SettingFragment : PreferenceFragmentCompat() {
@@ -45,13 +50,15 @@ class SettingFragment : PreferenceFragmentCompat() {
         private const val READ_REQUEST_CODE: Int = 77
     }
 
+    private var allNotesInString: String? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         collectLatestLifecycleFlow(settingViewModel.getAllNotes()){ notes ->
             startBackupPreference?.let { backupPreference ->
                 backupPreference.setOnPreferenceClickListener {
-                    val jsonObject: String = gson.toJson(
+                    allNotesInString = gson.toJson(
                         notes.filter { note ->
                             note.id !in activityViewModel.dataBaseValues.value.allTrashNotes.map {
                                 it.id
@@ -59,7 +66,7 @@ class SettingFragment : PreferenceFragmentCompat() {
                         }
                     )
                     val title = "markdown_note_backup_${System.currentTimeMillis()}"
-                    saveAllNotes(jsonObject, title)
+                    createLauncherTxt.launch(title)
                     Snackbar.make(
                         requireView(),
                         "$title is created at \n${
@@ -87,6 +94,25 @@ class SettingFragment : PreferenceFragmentCompat() {
     override fun onDestroyView() {
         super.onDestroyView()
         onBackPressedCallback = null
+    }
+
+    private val createLauncherTxt = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
+        uri ?: return@registerForActivityResult
+        requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        val documentFile = DocumentFile.fromSingleUri(
+            requireContext(),
+            uri
+        )
+        allNotesInString?.let { notes ->
+            documentFile?.let { file ->
+                val out = requireContext().contentResolver.openOutputStream(file.uri)
+                out?.apply {
+                    write(notes.toByteArray())
+                    flush()
+                    close()
+                }
+            }
+        }
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -134,29 +160,36 @@ class SettingFragment : PreferenceFragmentCompat() {
         if (result.resultCode == Activity.RESULT_OK) {
             val data: Intent? = result.data
             data?.data?.also { uri ->
-                if (uri.path?.contains("markdown_note_backup_") == true) {
-                    val content: String = readTextFile(uri)
-                    try {
-                        content.let { contents ->
-                            val myType = object : TypeToken<List<NoteEntity>>() {}.type
-                            val notesFromTxt = gson.fromJson<List<NoteEntity>>(contents, myType)
-                            settingViewModel.insertAllNotes(notesFromTxt)
+                val returnCursor: Cursor? = requireContext().contentResolver.query(uri, null, null, null, null)
+                val nameIndex: Int? = returnCursor?.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                returnCursor?.moveToFirst()
+                nameIndex?.let { index ->
+                    Timber.d("selected uri: ${returnCursor.getString(index)}")
+                    if (returnCursor.getString(index).contains("markdown_note_backup_")) {
+                        val content: String = readTextFile(uri)
+                        try {
+                            content.let { contents ->
+                                val myType = object : TypeToken<List<NoteEntity>>() {}.type
+                                val notesFromTxt = gson.fromJson<List<NoteEntity>>(contents, myType)
+                                settingViewModel.insertAllNotes(notesFromTxt)
+                            }
+                        }catch (e: Exception){
+                            Snackbar.make(
+                                requireView(),
+                                "Saved text is not valid.",
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                            e.printStackTrace()
                         }
-                    }catch (e: Exception){
+                    } else {
                         Snackbar.make(
                             requireView(),
-                            "Saved text is not valid.",
+                            "The selected file is not valid.",
                             Snackbar.LENGTH_LONG
                         ).show()
-                        e.printStackTrace()
                     }
-                } else {
-                    Snackbar.make(
-                        requireView(),
-                        "The selected file is not valid.",
-                        Snackbar.LENGTH_LONG
-                    ).show()
                 }
+
             }
         }
     }

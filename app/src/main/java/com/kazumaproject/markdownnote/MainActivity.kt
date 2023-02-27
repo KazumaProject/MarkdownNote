@@ -57,28 +57,28 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
-            if (!Environment.isExternalStorageManager()){
-                try {
-                    val uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID)
-                    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri)
-                    startActivity(intent)
-                }catch (e : Exception){
-                    val intent = Intent()
-                    intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
-                    Timber.d("Error: $e")
-                }
-            }
-            if (!allPermissionsGranted()){
-                ActivityCompat.requestPermissions(this,
-                    REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
-            }
-        }else {
-            if (!allPermissionsGranted()){
-                ActivityCompat.requestPermissions(this,
-                    REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
-            }
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+//            if (!Environment.isExternalStorageManager()){
+//                try {
+//                    val uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID)
+//                    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri)
+//                    startActivity(intent)
+//                }catch (e : Exception){
+//                    val intent = Intent()
+//                    intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+//                    Timber.d("Error: $e")
+//                }
+//            }
+//            if (!allPermissionsGranted()){
+//                ActivityCompat.requestPermissions(this,
+//                    REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+//            }
+//        }else {
+//            if (!allPermissionsGranted()){
+//                ActivityCompat.requestPermissions(this,
+//                    REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+//            }
+//        }
         supportActionBar?.hide()
 
         drawerParentRecyclerViewAdapter = DrawerParentRecyclerViewAdapter()

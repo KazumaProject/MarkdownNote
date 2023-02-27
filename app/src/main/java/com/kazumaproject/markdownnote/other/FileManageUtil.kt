@@ -16,10 +16,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 
-class FileManageUtil {
+class FileManageUtil(
+    private val context: Context
+) {
 
     fun showAlertDialogForExportNote(
-        context: Context,
         showViewModel: ShowViewModel,
         view: View
     ){
@@ -80,6 +81,7 @@ class FileManageUtil {
         }
         alertDialog.show()
     }
+
 
     private fun saveFile(string: String, title: String){
         File(

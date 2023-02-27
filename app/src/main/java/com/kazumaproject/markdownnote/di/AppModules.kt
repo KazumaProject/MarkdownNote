@@ -47,7 +47,9 @@ object AppModules {
 
     @Singleton
     @Provides
-    fun providesFileManageUtil() = FileManageUtil()
+    fun providesFileManageUtil(
+        @ApplicationContext context: Context
+    ) = FileManageUtil(context)
 
     @Provides
     @Singleton

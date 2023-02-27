@@ -3,22 +3,28 @@ package com.kazumaproject.markdownnote.ui.show
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Switch
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import androidx.documentfile.provider.DocumentFile
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import com.google.gson.Gson
 import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
@@ -33,6 +39,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
 import kotlinx.coroutines.*
 import timber.log.Timber
+import java.io.File
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -240,7 +247,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         onBackPressedCallback = null
     }
 
-    @SuppressLint("UseSwitchCompatOrMaterialCode")
+    @SuppressLint("UseSwitchCompatOrMaterialCode", "SetTextI18n")
     private fun createMenuItemsInBottomAppBarInMainActivity(drawerItem: String){
         val markdownSwitch = Switch(requireContext())
         markdownSwitch.isChecked = false
@@ -348,11 +355,32 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
                 return@setOnMenuItemClickListener true
             }
             menu.findItem(R.id.bottom_app_bar_item_export_note).setOnMenuItemClickListener {
-                fileManageUtil.showAlertDialogForExportNote(
-                    requireContext(),
-                    showViewModel,
-                    requireView()
-                )
+
+                val editText = EditText(context)
+                editText.apply {
+                    setSingleLine()
+                    setText("markdown_note_${System.currentTimeMillis()}")
+                    requestFocus()
+                    selectAll()
+                }
+                val alertDialog = AlertDialog.Builder(context)
+                alertDialog.setView(editText)
+                alertDialog.apply {
+                    setTitle(context.getString(R.string.save_note))
+                    setCancelable(true)
+                    setPositiveButton("txt") { dialog, _ ->
+                        createLauncherTxt.launch(editText.text.toString())
+                        dialog.dismiss()
+                    }
+                    setNegativeButton("Cancel") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    setNeutralButton("md"){ dialog, _ ->
+                        createLauncherMD.launch(editText.text.toString())
+                        dialog.dismiss()
+                    }
+                }
+                alertDialog.show()
                 return@setOnMenuItemClickListener true
             }
         }
@@ -366,7 +394,40 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         if (emoji.unicode != showViewModel.showNoteState.value.originalUnicode){
             requireActivity().findViewById<FloatingActionButton>(R.id.add_floating_button).isVisible = true
         }
+    }
 
+    private val createLauncherTxt = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
+        uri ?: return@registerForActivityResult
+        requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        val documentFile = DocumentFile.fromSingleUri(
+            requireContext(),
+            uri
+        )
+        documentFile?.let { file ->
+            val out = requireContext().contentResolver.openOutputStream(file.uri)
+            out?.apply {
+                write(showViewModel.showNoteState.value.currentText.toByteArray())
+                flush()
+                close()
+            }
+        }
+    }
+
+    private val createLauncherMD = registerForActivityResult(ActivityResultContracts.CreateDocument("text/markdown")) { uri ->
+        uri ?: return@registerForActivityResult
+        requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        val documentFile = DocumentFile.fromSingleUri(
+            requireContext(),
+            uri
+        )
+        documentFile?.let { file ->
+            val out = requireContext().contentResolver.openOutputStream(file.uri)
+            out?.apply {
+                write(showViewModel.showNoteState.value.currentText.toByteArray())
+                flush()
+                close()
+            }
+        }
     }
 
 }
