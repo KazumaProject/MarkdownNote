@@ -25,23 +25,37 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.kazumaproject.markdownnote.other.NumberedEditText
-        android:id="@+id/show_fragment_edit_text"
+    <com.vic797.syntaxhighlight.LineCountLayout
+        app:numberSize="12sp"
+        android:id="@+id/line_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="?attr/actionBarSize"
-        android:visibility="gone"
-        android:elevation="4dp"
-        android:fontFamily="@font/regular"
-        android:gravity="top"
-        android:minHeight="256dp"
-        android:paddingStart="52dp"
-        android:paddingEnd="24dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:textColor="@color/text_color_main"
-        android:textSize="20sp"
-        android:background="@color/markwon_show_bg_color"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
+
+        <com.vic797.syntaxhighlight.SyntaxHighlighter
+            android:id="@+id/edit_text"
+            android:padding="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.vic797.syntaxhighlight.LineCountLayout>
+
+<!--    <com.kazumaproject.markdownnote.other.NumberedEditText-->
+<!--        android:id="@+id/show_fragment_edit_text"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:layout_marginBottom="?attr/actionBarSize"-->
+<!--        android:visibility="gone"-->
+<!--        android:elevation="4dp"-->
+<!--        android:fontFamily="@font/regular"-->
+<!--        android:gravity="top"-->
+<!--        android:minHeight="256dp"-->
+<!--        android:paddingStart="52dp"-->
+<!--        android:paddingEnd="24dp"-->
+<!--        android:paddingTop="16dp"-->
+<!--        android:paddingBottom="16dp"-->
+<!--        android:textColor="@color/text_color_main"-->
+<!--        android:textSize="20sp"-->
+<!--        android:background="@color/markwon_show_bg_color"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>

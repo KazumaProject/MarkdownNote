@@ -91,6 +91,9 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
             }
         }
         emojiDialog = EmojiPickerDialogFragment(this)
+        //binding.editText.addSyntax(requireActivity().assets,"java.json")
+        binding.lineLayout.attachEditText(binding.editText)
+        binding.editText.startHighlight(false)
         CoroutineScope(Dispatchers.Main).launch {
             showViewModel.drawerSelectedItem?.let { drawerItem ->
                 Timber.d("drawer item: $drawerItem")
@@ -143,7 +146,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
             }
         }
 
-        binding.showFragmentEditText.apply {
+        binding.editText.apply {
             addTextChangedListener { text: Editable? ->
                 showViewModel.updateCurrentText(text.toString())
             }
@@ -164,7 +167,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
 
 
         collectLatestLifecycleFlow(showViewModel.switchState){ switch_on ->
-            binding.showFragmentEditText.isVisible = switch_on
+            binding.lineLayout.isVisible = switch_on
             binding.showFragmentMarkwonText.isVisible = !switch_on
         }
 
@@ -289,7 +292,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         markdownSwitch.isChecked = false
         markdownSwitch.setOnCheckedChangeListener { _, isChecked ->
             showViewModel.updateSwitchState(isChecked)
-            binding.showFragmentEditText.setText(showViewModel.showNoteState.value.currentText)
+            binding.editText.setText(showViewModel.showNoteState.value.currentText)
         }
 
         emojiText = MaterialTextView(requireContext())

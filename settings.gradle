@@ -16,3 +16,4 @@ rootProject.name = "MarkdownNote"
 include ':app'
 include ':emojipicker'
 include ':smallbang'
+include ':nativesyntax'
