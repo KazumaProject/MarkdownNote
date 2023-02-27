@@ -3,6 +3,7 @@ package com.kazumaproject.markdownnote.ui.create_edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kazumaproject.emojipicker.model.Emoji
+import com.kazumaproject.emojipicker.other.Constants
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.database.note_draft.NoteDraftEntity
 import com.kazumaproject.markdownnote.repositories.NoteRepository
@@ -21,9 +22,9 @@ data class CreateEditState(
     val currentText: String = "",
     val editTextHasFocus: Boolean = false,
     val emoji: Emoji = Emoji(
-        539,
-        "dog",
-        0x1f415
+        0,
+        "initial_emoji",
+        Constants.EMOJI_LIST_ANIMALS_NATURE[(0 until Constants.EMOJI_LIST_ANIMALS_NATURE.size).random()].unicode
     )
 )
 @HiltViewModel
@@ -35,9 +36,9 @@ class CreateEditViewModel @Inject constructor(
     private val _editTextHasFocus = MutableStateFlow(false)
     private var _currentEmoji = MutableStateFlow(
         Emoji(
-            539,
-            "dog",
-            0x1f415
+            0,
+            "initial_emoji",
+            Constants.EMOJI_LIST_ANIMALS_NATURE[(0 until Constants.EMOJI_LIST_ANIMALS_NATURE.size).random()].unicode
         )
     )
 

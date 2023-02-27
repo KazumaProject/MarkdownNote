@@ -155,7 +155,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
                     requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).performHide()
                 }else {
                     requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).performShow()
-                    if (showViewModel.showNoteState.value.currentText != showViewModel.showNoteState.value.originalText){
+                    if (showViewModel.showNoteState.value.currentText != showViewModel.showNoteState.value.originalText || showViewModel.showNoteState.value.currentUnicode != showViewModel.showNoteState.value.originalUnicode){
                         requireActivity().findViewById<FloatingActionButton>(R.id.add_floating_button).show()
                     } else {
                         requireActivity().findViewById<FloatingActionButton>(R.id.add_floating_button).hide()
