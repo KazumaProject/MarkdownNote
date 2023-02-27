@@ -9,8 +9,8 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
-import android.widget.Switch
+import android.widget.*
+import android.widget.AdapterView.OnItemClickListener
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -420,20 +420,42 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
                     requestFocus()
                     selectAll()
                 }
+
+                val listView = ListView(requireContext())
+                val arrayAdapter = ArrayAdapter(requireContext(),android.R.layout.simple_list_item_1,
+                    arrayListOf("txt","md","css","csv","html","calendar")
+                )
+                listView.adapter = arrayAdapter
+                listView.onItemClickListener =
+                    OnItemClickListener { parent, view, position, id ->
+                        when(position){
+                            0 ->{
+                                createLauncherTxt.launch("markdown_note_${System.currentTimeMillis()}")
+                            }
+                            1 ->{
+                                createLauncherMD.launch("markdown_note_${System.currentTimeMillis()}")
+                            }
+                            2 ->{
+                                createLauncherCSS.launch("markdown_note_${System.currentTimeMillis()}")
+                            }
+                            3 ->{
+                                createLauncherCSV.launch("markdown_note_${System.currentTimeMillis()}")
+                            }
+                            4 ->{
+                                createLauncherHTML.launch("markdown_note_${System.currentTimeMillis()}")
+                            }
+                            5 ->{
+                                createLauncherCalendar.launch("markdown_note_${System.currentTimeMillis()}")
+                            }
+                        }
+                    }
+
                 val alertDialog = AlertDialog.Builder(context)
-                alertDialog.setView(editText)
+                alertDialog.setView(listView)
                 alertDialog.apply {
                     setTitle(context.getString(R.string.save_note))
                     setCancelable(true)
-                    setPositiveButton("txt") { dialog, _ ->
-                        createLauncherTxt.launch(editText.text.toString())
-                        dialog.dismiss()
-                    }
                     setNegativeButton("Cancel") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    setNeutralButton("md"){ dialog, _ ->
-                        createLauncherMD.launch(editText.text.toString())
                         dialog.dismiss()
                     }
                 }
@@ -471,6 +493,91 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
     }
 
     private val createLauncherMD = registerForActivityResult(ActivityResultContracts.CreateDocument("text/markdown")) { uri ->
+        uri ?: return@registerForActivityResult
+        requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        val documentFile = DocumentFile.fromSingleUri(
+            requireContext(),
+            uri
+        )
+        documentFile?.let { file ->
+            val out = requireContext().contentResolver.openOutputStream(file.uri)
+            out?.apply {
+                write(showViewModel.showNoteState.value.currentText.toByteArray())
+                flush()
+                close()
+            }
+        }
+    }
+
+    private val createLauncherCSS = registerForActivityResult(ActivityResultContracts.CreateDocument("text/css")) { uri ->
+        uri ?: return@registerForActivityResult
+        requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        val documentFile = DocumentFile.fromSingleUri(
+            requireContext(),
+            uri
+        )
+        documentFile?.let { file ->
+            val out = requireContext().contentResolver.openOutputStream(file.uri)
+            out?.apply {
+                write(showViewModel.showNoteState.value.currentText.toByteArray())
+                flush()
+                close()
+            }
+        }
+    }
+
+    private val createLauncherCSV = registerForActivityResult(ActivityResultContracts.CreateDocument("text/csv")) { uri ->
+        uri ?: return@registerForActivityResult
+        requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        val documentFile = DocumentFile.fromSingleUri(
+            requireContext(),
+            uri
+        )
+        documentFile?.let { file ->
+            val out = requireContext().contentResolver.openOutputStream(file.uri)
+            out?.apply {
+                write(showViewModel.showNoteState.value.currentText.toByteArray())
+                flush()
+                close()
+            }
+        }
+    }
+
+    private val createLauncherHTML = registerForActivityResult(ActivityResultContracts.CreateDocument("text/html")) { uri ->
+        uri ?: return@registerForActivityResult
+        requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        val documentFile = DocumentFile.fromSingleUri(
+            requireContext(),
+            uri
+        )
+        documentFile?.let { file ->
+            val out = requireContext().contentResolver.openOutputStream(file.uri)
+            out?.apply {
+                write(showViewModel.showNoteState.value.currentText.toByteArray())
+                flush()
+                close()
+            }
+        }
+    }
+
+    private val createLauncherCalendar = registerForActivityResult(ActivityResultContracts.CreateDocument("text/calendar")) { uri ->
+        uri ?: return@registerForActivityResult
+        requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        val documentFile = DocumentFile.fromSingleUri(
+            requireContext(),
+            uri
+        )
+        documentFile?.let { file ->
+            val out = requireContext().contentResolver.openOutputStream(file.uri)
+            out?.apply {
+                write(showViewModel.showNoteState.value.currentText.toByteArray())
+                flush()
+                close()
+            }
+        }
+    }
+
+    private val createLauncherJavascript = registerForActivityResult(ActivityResultContracts.CreateDocument("text/javascript")) { uri ->
         uri ?: return@registerForActivityResult
         requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         val documentFile = DocumentFile.fromSingleUri(

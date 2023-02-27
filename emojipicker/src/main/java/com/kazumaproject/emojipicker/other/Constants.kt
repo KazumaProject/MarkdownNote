@@ -480,7 +480,5 @@ object Constants {
         Emoji(683,"empty nest",0x1fab9),
         Emoji(684,"nest with eggs",0x1faba),
         Emoji(685,"mushroom",0x1f344),
-
-
     )
 }
