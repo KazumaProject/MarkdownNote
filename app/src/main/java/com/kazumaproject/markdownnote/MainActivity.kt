@@ -1,7 +1,6 @@
 package com.kazumaproject.markdownnote
 
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
@@ -34,16 +33,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
     private val viewModel : MainViewModel by viewModels()
     private var drawerParentRecyclerViewAdapter: DrawerParentRecyclerViewAdapter? = null
-
-    companion object {
-
-        private const val REQUEST_CODE_PERMISSIONS = 17
-
-        private val REQUIRED_PERMISSIONS = arrayOf(
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            android.Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-    }
 
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -161,10 +150,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         drawerParentRecyclerViewAdapter = null
-    }
-
-    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
     }
     private fun setAppBottomBarAppearanceByFragmentType(
         type: FragmentType,
