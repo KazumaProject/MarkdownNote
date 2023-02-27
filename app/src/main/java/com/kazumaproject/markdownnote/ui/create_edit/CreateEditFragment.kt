@@ -114,7 +114,9 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
     override fun onPause() {
         super.onPause()
         activityViewModel.updateMarkdownSwitchState(false)
-        dialog?.dismiss()
+        try {
+            dialog?.dismiss()
+        }catch (e :Exception){}
     }
 
     override fun onStop() {

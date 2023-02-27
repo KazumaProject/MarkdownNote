@@ -259,9 +259,13 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
 
     override fun onPause() {
         super.onPause()
-        if (
-            emojiDialog?.fragmentManager != null
-        )  emojiDialog?.dismiss()
+        if (emojiDialog?.fragmentManager != null)  {
+            try {
+                emojiDialog?.dismiss()
+            }catch (e: Exception){
+
+            }
+        }
         activityViewModel.updateSaveClickedInShow(false)
     }
 
