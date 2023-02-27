@@ -17,6 +17,8 @@
 
     <string name="emoji_string">Emoji</string>
     <string name="general_string">General</string>
+    <string name="read_md">Read file</string>
+
     <string name="switch_markdown_in_showfragment">Switch Markdown</string>
     <string name="choose_emoji">Choose Emoji</string>
     <string name="delete_note">Delete note</string>

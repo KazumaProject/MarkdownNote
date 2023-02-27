@@ -82,6 +82,9 @@ class HomeFragment : Fragment() {
                         is DrawerSelectedItem.EmojiCategory ->{
                             activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
                         }
+                        is DrawerSelectedItem.ReadFile ->{
+                            requireActivity().finish()
+                        }
                         is DrawerSelectedItem.GoToSettings -> {
                             requireActivity().finish()
                         }
@@ -105,6 +108,9 @@ class HomeFragment : Fragment() {
                 is DrawerSelectedItem.EmojiCategory ->{
                     binding.currentSelectedItemTitle.text = getString(R.string.emoji_string)
                 }
+                is DrawerSelectedItem.ReadFile -> {
+                    binding.currentSelectedItemTitle.text = getString(R.string.read_md)
+                }
                 is DrawerSelectedItem.GoToSettings -> {
                     binding.currentSelectedItemTitle.text = getString(R.string.all_notes)
                 }
@@ -127,6 +133,9 @@ class HomeFragment : Fragment() {
                 is DrawerSelectedItem.EmojiCategory -> filtered_notes.allNotes.filter {
                     it.emojiUnicode == filtered_notes.currentDrawerSelectedItem.unicode
                 }.filter { note ->
+                    !activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
+                }
+                is DrawerSelectedItem.ReadFile -> filtered_notes.allNotes.filter { note ->
                     !activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
                 }
                 is DrawerSelectedItem.GoToSettings -> filtered_notes.allNotes.filter { note ->
@@ -158,7 +167,7 @@ class HomeFragment : Fragment() {
                     homeNotesRecyclerViewAdapter?.let { noteAdapter ->
                         homeRecylcerViewState = binding.homeNotesRecyclerView.layoutManager?.onSaveInstanceState()
                         when(activityViewModel.filteredNotesValue.value.currentDrawerSelectedItem){
-                            is DrawerSelectedItem.AllNotes, is DrawerSelectedItem.GoToSettings -> {
+                            is DrawerSelectedItem.AllNotes, is DrawerSelectedItem.GoToSettings, is DrawerSelectedItem.ReadFile -> {
                                 val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
                                 homeViewModel.insertTrashNote(note.convertNoteTrashEntity())
                                 val bookmarksList = activityViewModel.dataBaseValues.value.allBookmarkNotes.map {
@@ -318,7 +327,7 @@ class HomeFragment : Fragment() {
                             NoteType.NORMAL.name
                         )
                     )
-                    is DrawerSelectedItem.GoToSettings -> requireActivity().findNavController(R.id.navHostFragment).navigate(
+                    is DrawerSelectedItem.ReadFile, is DrawerSelectedItem.GoToSettings -> requireActivity().findNavController(R.id.navHostFragment).navigate(
                         HomeFragmentDirections.actionHomeFragmentToDraftFragment(
                             noteEntity.id,
                             DrawerSelectedItemInShow.ALL_NOTE.name,

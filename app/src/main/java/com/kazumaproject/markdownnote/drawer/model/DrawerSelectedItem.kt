@@ -1,7 +1,5 @@
 package com.kazumaproject.markdownnote.drawer.model
 
-import com.kazumaproject.emojipicker.model.Emoji
-
 sealed class DrawerSelectedItem{
     object AllNotes: DrawerSelectedItem()
     object BookmarkedNotes: DrawerSelectedItem()
@@ -11,5 +9,7 @@ sealed class DrawerSelectedItem{
         val unicode: Int,
         val index: Int
     ): DrawerSelectedItem()
+
+    object ReadFile: DrawerSelectedItem()
     object GoToSettings: DrawerSelectedItem()
 }

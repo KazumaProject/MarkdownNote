@@ -1,20 +1,14 @@
 package com.kazumaproject.markdownnote
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
-import android.content.res.Configuration
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.Settings
 import android.widget.Switch
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
@@ -56,29 +50,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
-//            if (!Environment.isExternalStorageManager()){
-//                try {
-//                    val uri = Uri.parse("package:" + BuildConfig.APPLICATION_ID)
-//                    val intent = Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION, uri)
-//                    startActivity(intent)
-//                }catch (e : Exception){
-//                    val intent = Intent()
-//                    intent.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
-//                    Timber.d("Error: $e")
-//                }
-//            }
-//            if (!allPermissionsGranted()){
-//                ActivityCompat.requestPermissions(this,
-//                    REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
-//            }
-//        }else {
-//            if (!allPermissionsGranted()){
-//                ActivityCompat.requestPermissions(this,
-//                    REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
-//            }
-//        }
         supportActionBar?.hide()
 
         drawerParentRecyclerViewAdapter = DrawerParentRecyclerViewAdapter()
@@ -155,12 +126,23 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                         is DrawerItemType.Navigation -> {
-                            viewModel.updateCurrentSelectedDrawerItem(
-                                DrawerSelectedItem.GoToSettings
-                            )
-                            findNavController(R.id.navHostFragment).navigate(
-                                HomeFragmentDirections.actionHomeFragmentToSettingFragment()
-                            )
+                            when(i){
+                                0 ->{
+                                    viewModel.updateCurrentSelectedDrawerItem(
+                                        DrawerSelectedItem.ReadFile
+                                    )
+                                    //** TODO **//
+                                }
+                                1 ->{
+                                    viewModel.updateCurrentSelectedDrawerItem(
+                                        DrawerSelectedItem.GoToSettings
+                                    )
+                                    findNavController(R.id.navHostFragment).navigate(
+                                        HomeFragmentDirections.actionHomeFragmentToSettingFragment()
+                                    )
+                                }
+                            }
+
                         }
                     }
                 }
@@ -288,6 +270,9 @@ class MainActivity : AppCompatActivity() {
                                 }
                                 is DrawerSelectedItem.BookmarkedNotes -> {
                                     viewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
+                                }
+                                is DrawerSelectedItem.ReadFile ->{
+                                    this@MainActivity.finish()
                                 }
                                 is DrawerSelectedItem.GoToSettings -> {
                                     this@MainActivity.finish()
@@ -492,6 +477,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getNavigationDrawerItem(): List<DrawerItem> = listOf(
+        DrawerItem(
+            title = getString(R.string.read_md),
+            count = 0,
+            type = DrawerItemType.Navigation,
+            resID = R.drawable.edit,
+            emojiUnicode = null
+        ),
         DrawerItem(
             title = getString(R.string.main_menu_setting),
             count = 0,

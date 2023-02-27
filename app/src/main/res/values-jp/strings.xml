@@ -31,4 +31,6 @@
     <string name="backup_string">バックアップ</string>
     <string name="start_backup">バックアップする</string>
     <string name="load_backup">復元する</string>
+
+    <string name="read_md">ファイルを読み込む</string>
 </resources>
