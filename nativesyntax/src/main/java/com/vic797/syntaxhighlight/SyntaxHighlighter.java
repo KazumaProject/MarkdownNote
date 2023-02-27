@@ -197,7 +197,7 @@ public class SyntaxHighlighter extends AppCompatEditText {
                 }
             } else {
                 getLineBounds(getCurrentLine(), rect);
-                canvas.drawRect(rect, paint);
+                //canvas.drawRect(rect, paint);
             }
         }
         super.onDraw(canvas);
