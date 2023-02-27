@@ -26,7 +26,8 @@
         android:id="@+id/bottom_app_bar_item_export_note"
         android:title="@string/export_note"
         app:showAsAction="ifRoom"
-        android:visible="false"/>
+        android:visible="false"
+        android:icon="@drawable/baseline_ios_share_24"/>
     <item
         android:id="@+id/bottom_app_bar_item_delete_note"
         android:title="@string/delete_note"

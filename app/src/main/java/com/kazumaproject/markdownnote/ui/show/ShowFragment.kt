@@ -3,7 +3,6 @@ package com.kazumaproject.markdownnote.ui.show
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -24,7 +23,6 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textview.MaterialTextView
 import com.google.gson.Gson
 import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
@@ -39,7 +37,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
 import kotlinx.coroutines.*
 import timber.log.Timber
-import java.io.File
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -256,8 +253,17 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
             binding.showFragmentEditText.setText(showViewModel.showNoteState.value.currentText)
         }
 
+        emojiText = MaterialTextView(requireContext())
+        emojiText?.apply{
+            text = showViewModel.showNoteState.value.currentUnicode.convertUnicode()
+            setOnClickListener {
+                EmojiPickerDialogFragment(this@ShowFragment).show(requireActivity().supportFragmentManager,"emoji picker dialog from show fragment")
+            }
+        }
+
         requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).apply {
             menu.findItem(R.id.bottom_app_bar_item_emoji_unicode_text).apply {
+                actionView = emojiText
                 setOnMenuItemClickListener {
                     EmojiPickerDialogFragment(this@ShowFragment).show(requireActivity().supportFragmentManager,"emoji picker dialog from show fragment")
                     return@setOnMenuItemClickListener true
