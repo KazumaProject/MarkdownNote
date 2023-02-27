@@ -65,7 +65,7 @@
 
     </io.github.florent37.shapeofview.shapes.RoundRectView>
 
-    <com.google.android.material.textfield.TextInputEditText
+    <com.vic797.syntaxhighlight.SyntaxHighlighter
         android:id="@+id/markdown_raw_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

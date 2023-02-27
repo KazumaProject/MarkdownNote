@@ -91,7 +91,6 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
             }
         }
         emojiDialog = EmojiPickerDialogFragment(this)
-        //binding.editText.addSyntax(requireActivity().assets,"java.json")
         binding.lineLayout.attachEditText(binding.editText)
         binding.editText.startHighlight(false)
         CoroutineScope(Dispatchers.Main).launch {
@@ -152,6 +151,11 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
             }
             setOnFocusChangeListener { _, hasFocus ->
                 activityViewModel.updateHasFocusInEditText(hasFocus)
+                if (hasFocus){
+                    requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).performHide()
+                }else {
+                    requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).performShow()
+                }
             }
         }
 

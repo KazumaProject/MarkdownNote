@@ -56,7 +56,7 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.markdownRawEditText.startHighlight(false)
         activityViewModel.updateCurrentFragmentType(FragmentType.CreateEditFragment)
         setChooseEmojiView()
         collectLatestLifecycleFlow(createEditViewModel.createEditState){ state ->
