@@ -134,6 +134,12 @@ class MainActivity : AppCompatActivity() {
                                 }
                                 1 ->{
                                     viewModel.updateCurrentSelectedDrawerItem(
+                                        DrawerSelectedItem.ReadApplicationFile
+                                    )
+                                    selectJsonFileByUri()
+                                }
+                                2 ->{
+                                    viewModel.updateCurrentSelectedDrawerItem(
                                         DrawerSelectedItem.GoToSettings
                                     )
                                     findNavController(R.id.navHostFragment).navigate(
@@ -169,6 +175,15 @@ class MainActivity : AppCompatActivity() {
         }
         resultLauncher.launch(intent)
     }
+
+    private fun selectJsonFileByUri(){
+        val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            addCategory(Intent.CATEGORY_OPENABLE)
+            type = "application/*"
+        }
+        resultLauncher.launch(intent)
+    }
+
 
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -333,6 +348,9 @@ class MainActivity : AppCompatActivity() {
                                     viewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
                                 }
                                 is DrawerSelectedItem.ReadFile ->{
+                                    this@MainActivity.finish()
+                                }
+                                is DrawerSelectedItem.ReadApplicationFile ->{
                                     this@MainActivity.finish()
                                 }
                                 is DrawerSelectedItem.GoToSettings -> {
@@ -550,6 +568,13 @@ class MainActivity : AppCompatActivity() {
             count = 0,
             type = DrawerItemType.Navigation,
             resID = R.drawable.edit,
+            emojiUnicode = null
+        ),
+        DrawerItem(
+            title = getString(R.string.read_json),
+            count = 0,
+            type = DrawerItemType.Navigation,
+            resID = R.drawable.baseline_insert_drive_file_24,
             emojiUnicode = null
         ),
         DrawerItem(

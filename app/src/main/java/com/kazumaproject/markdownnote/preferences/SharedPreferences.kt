@@ -8,6 +8,7 @@ import androidx.preference.PreferenceManager
 object SharedPreferences {
     private lateinit var preferences: SharedPreferences
 
+    private val SYNTAX = Pair("edit_text_syntax_mode_preference","")
     fun init(context: Context) {
         preferences = PreferenceManager.getDefaultSharedPreferences(context)
     }
@@ -18,5 +19,11 @@ object SharedPreferences {
         editor.apply()
     }
 
+    var syntaxInEditText: String?
+        get() = preferences.getString(SYNTAX.first, SYNTAX.second)
+
+        set(value) = preferences.edit {
+            it.putString(SYNTAX.first, value ?: "")
+        }
 
 }

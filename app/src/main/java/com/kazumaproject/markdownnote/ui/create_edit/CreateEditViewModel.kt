@@ -6,6 +6,7 @@ import com.kazumaproject.emojipicker.model.Emoji
 import com.kazumaproject.emojipicker.other.Constants
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.database.note_draft.NoteDraftEntity
+import com.kazumaproject.markdownnote.preferences.PreferenceImpl
 import com.kazumaproject.markdownnote.repositories.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -29,7 +30,8 @@ data class CreateEditState(
 )
 @HiltViewModel
 class CreateEditViewModel @Inject constructor(
-    private val noteRepository: NoteRepository
+    private val noteRepository: NoteRepository,
+    private val preferenceImpl: PreferenceImpl
 ) : ViewModel() {
 
     private val _currentText = MutableStateFlow("")
@@ -73,6 +75,10 @@ class CreateEditViewModel @Inject constructor(
 
     fun insertDraftNote(noteDraftEntity: NoteDraftEntity) = viewModelScope.launch {
         noteRepository.insertDraftNote(noteDraftEntity)
+    }
+
+    fun getSyntaxType():String{
+        return preferenceImpl.getSyntaxInEditTextType()
     }
 
 }

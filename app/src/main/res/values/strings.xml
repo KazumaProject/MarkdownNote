@@ -17,7 +17,10 @@
 
     <string name="emoji_string">Emoji</string>
     <string name="general_string">General</string>
-    <string name="read_md">Read file</string>
+    <string name="read_md">Read text file</string>
+    <string name="read_json">Read Application file</string>
+    <string name="read_js">Read js</string>
+
 
     <string name="switch_markdown_in_showfragment">Switch Markdown</string>
     <string name="choose_emoji">Choose Emoji</string>
@@ -35,4 +38,5 @@
     <string name="backup_string">Backup</string>
     <string name="start_backup">Start back up</string>
     <string name="load_backup">Load back up file</string>
+    <string name="list_prefrence_description">Select syntax used in edit text</string>
 </resources>

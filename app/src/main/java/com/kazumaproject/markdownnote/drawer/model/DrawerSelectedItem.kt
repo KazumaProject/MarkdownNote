@@ -11,5 +11,8 @@ sealed class DrawerSelectedItem{
     ): DrawerSelectedItem()
 
     object ReadFile: DrawerSelectedItem()
+
+    object ReadApplicationFile: DrawerSelectedItem()
+
     object GoToSettings: DrawerSelectedItem()
 }

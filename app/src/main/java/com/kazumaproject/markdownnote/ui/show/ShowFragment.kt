@@ -199,7 +199,14 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         }
         emojiDialog = EmojiPickerDialogFragment(this)
         binding.lineLayout.attachEditText(binding.editText)
-        setHighLightHtmlInEditText()
+        when(showViewModel.getSyntaxType()){
+            "1" ->{
+
+            }
+            "2" ->{
+                setHighLightHtmlInEditText()
+            }
+        }
 
         CoroutineScope(Dispatchers.Main).launch {
             showViewModel.drawerSelectedItem?.let { drawerItem ->

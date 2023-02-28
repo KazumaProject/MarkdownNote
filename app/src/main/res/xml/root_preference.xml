@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
         android:title="@string/backup_string">
         <Preference
@@ -9,6 +10,19 @@
         <Preference
             android:key="load_backup_txt"
             android:title="@string/load_backup"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Syntax">
+        <ListPreference
+            android:key="edit_text_syntax_mode_preference"
+            android:entries="@array/syntax_language"
+            android:entryValues="@array/syntax_language_values"
+            android:title="@string/list_prefrence_description"
+            android:defaultValue="2"
+            app:useSimpleSummaryProvider="true"
+            />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

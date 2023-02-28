@@ -10,6 +10,7 @@ import com.kazumaproject.markdownnote.database.note_trash.NoteTrashEntity
 import com.kazumaproject.markdownnote.other.Constants.HOME_TO_SHOW_ARGUMENT
 import com.kazumaproject.markdownnote.other.Constants.HOME_TO_SHOW_DRAWER_ITEM
 import com.kazumaproject.markdownnote.other.Constants.HOME_TO_SHOW_NOTE_TYPE
+import com.kazumaproject.markdownnote.preferences.PreferenceImpl
 import com.kazumaproject.markdownnote.repositories.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -31,7 +32,8 @@ data class NoteDataBaseData(
 @HiltViewModel
 class ShowViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val noteRepository: NoteRepository
+    private val noteRepository: NoteRepository,
+    private val preferenceImpl: PreferenceImpl
 ): ViewModel() {
     val noteId = savedStateHandle.get<String>(HOME_TO_SHOW_ARGUMENT)
     val drawerSelectedItem = savedStateHandle.get<String>(HOME_TO_SHOW_DRAWER_ITEM)
@@ -146,4 +148,7 @@ class ShowViewModel @Inject constructor(
         noteRepository.deleteDraftNote(noteId)
     }
 
+    fun getSyntaxType():String{
+        return preferenceImpl.getSyntaxInEditTextType()
+    }
 }
