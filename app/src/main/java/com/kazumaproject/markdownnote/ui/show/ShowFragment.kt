@@ -81,6 +81,41 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         return binding.root
     }
 
+    private fun setHighLightHtmlInEditText(){
+        val highLight = HighlightTextWatcher()
+
+        highLight.addScheme(
+            ColorScheme(
+                Pattern.compile("<!--[\\s\\S]*?-->"),
+                resources.getColor(android.R.color.holo_green_dark,null)
+            ).setClearOldSpan(true),
+            ColorScheme(
+                Pattern.compile(
+                    "<[\\da-zA-Z]+([ \\t\\n\\f\\r]+[^ \\x00-\\x1F\\x7F\"'>/=]+([ \\t\\n\\f\\r]*=[ \\t\\n\\f\\r]*([^ \\t\\n\\f\\r\"'=><`]+|'[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F']*'|\"[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F\"]*\"))?)*[ \\t\\n\\f\\r]*/?>"),
+                resources.getColor(android.R.color.holo_blue_dark, null)
+            ).setClearOldSpan(true),
+            ColorScheme(
+                Pattern.compile(
+                    "</[\\da-zA-Z]+[ \\t\\n\\f\\r]*>"
+                ),
+                resources.getColor(android.R.color.holo_blue_dark, null)
+            ),
+            ColorScheme(
+                Pattern.compile(
+                    "<x([ \\t\\n\\f\\r]+[^ \\x00-\\x1F\\x7F\"'>/=]+([ \\t\\n\\f\\r]*=[ \\t\\n\\f\\r]*([^ \\t\\n\\f\\r\"'=><`]+|'[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F']*'|\"[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F\"]*\"))?)*[ \\t\\n\\f\\r]*/?>"
+                ),
+                resources.getColor(android.R.color.holo_orange_dark, null)
+            ),
+            ColorScheme(
+                Pattern.compile(
+                    "</x[ \\t\\n\\f\\r]*>"
+                ),
+                resources.getColor(android.R.color.holo_orange_dark, null)
+            )
+        )
+        binding.editText.addTextChangedListener(highLight)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onBackPressedCallback = object : OnBackPressedCallback(true){
@@ -96,14 +131,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         }
         emojiDialog = EmojiPickerDialogFragment(this)
         binding.lineLayout.attachEditText(binding.editText)
-        val highLight = HighlightTextWatcher()
-        highLight.addScheme(
-            ColorScheme(
-                Pattern.compile("\\b([Jj])ava\\b"),
-                resources.getColor(android.R.color.holo_green_dark,null)
-            ).setClearOldSpan(true)
-        )
-        binding.editText.addTextChangedListener(highLight)
+        setHighLightHtmlInEditText()
 
         CoroutineScope(Dispatchers.Main).launch {
             showViewModel.drawerSelectedItem?.let { drawerItem ->
