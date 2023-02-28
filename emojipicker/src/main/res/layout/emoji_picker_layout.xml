@@ -12,7 +12,7 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <SearchView
+    <androidx.appcompat.widget.SearchView
         android:id="@+id/emoji_search_view"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
