@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kazumaproject.emojipicker.adapter.ParentEmojiRecyclerViewAdapter
 import com.kazumaproject.emojipicker.model.Emoji
 import com.kazumaproject.emojipicker.model.ParentEmojiItem
+import com.kazumaproject.emojipicker.other.Constants.EMOJI_ACTIVITY
 import com.kazumaproject.emojipicker.other.Constants.EMOJI_LIST_ANIMALS_NATURE
+import com.kazumaproject.emojipicker.other.Constants.EMOJI_LIST_FOOD_DRINK
 import com.kazumaproject.emojipicker.other.Constants.EMOJI_LIST_SMILEYS_PEOPLE
 
 class EmojiPickerDialogFragment (
@@ -53,6 +55,16 @@ class EmojiPickerDialogFragment (
                 EMOJI_LIST_ANIMALS_NATURE
             )
             emoji_itemList.add(emoji_item_animals_and_nature)
+            val emoji_item_food_drink = ParentEmojiItem(
+                "Food & Drink",
+                EMOJI_LIST_FOOD_DRINK
+            )
+            emoji_itemList.add(emoji_item_food_drink)
+            val emoji_item_activity = ParentEmojiItem(
+                "Activity",
+                EMOJI_ACTIVITY
+            )
+            emoji_itemList.add(emoji_item_activity)
             parentAdapter.parent_emoji_list = emoji_itemList.toList()
             this.adapter = parentAdapter
         }
