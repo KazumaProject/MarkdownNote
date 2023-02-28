@@ -423,7 +423,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
 
                 val listView = ListView(requireContext())
                 val arrayAdapter = ArrayAdapter(requireContext(),android.R.layout.simple_list_item_1,
-                    arrayListOf("txt","md","css","csv","html","json")
+                    arrayListOf("txt","md","json","csv","html","css","js")
                 )
                 listView.adapter = arrayAdapter
                 listView.onItemClickListener =
@@ -436,7 +436,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
                                 createLauncherMD.launch("markdown_note_${System.currentTimeMillis()}")
                             }
                             2 ->{
-                                createLauncherCSS.launch("markdown_note_${System.currentTimeMillis()}")
+                                createLauncherJson.launch("markdown_note_${System.currentTimeMillis()}")
                             }
                             3 ->{
                                 createLauncherCSV.launch("markdown_note_${System.currentTimeMillis()}")
@@ -445,7 +445,10 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
                                 createLauncherHTML.launch("markdown_note_${System.currentTimeMillis()}")
                             }
                             5 ->{
-                                createLauncherJson.launch("markdown_note_${System.currentTimeMillis()}")
+                                createLauncherCSS.launch("markdown_note_${System.currentTimeMillis()}")
+                            }
+                            6 ->{
+                                createLauncherJavascript.launch("markdown_note_${System.currentTimeMillis()}")
                             }
                         }
                     }
@@ -577,7 +580,24 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         }
     }
 
-    private val createLauncherJavascript = registerForActivityResult(ActivityResultContracts.CreateDocument("text/javascript")) { uri ->
+    private val createLauncherJavascript = registerForActivityResult(ActivityResultContracts.CreateDocument("application/javascript")) { uri ->
+        uri ?: return@registerForActivityResult
+        requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+        val documentFile = DocumentFile.fromSingleUri(
+            requireContext(),
+            uri
+        )
+        documentFile?.let { file ->
+            val out = requireContext().contentResolver.openOutputStream(file.uri)
+            out?.apply {
+                write(showViewModel.showNoteState.value.currentText.toByteArray())
+                flush()
+                close()
+            }
+        }
+    }
+
+    private val createLauncherKotlin = registerForActivityResult(ActivityResultContracts.CreateDocument("application/pdf")) { uri ->
         uri ?: return@registerForActivityResult
         requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         val documentFile = DocumentFile.fromSingleUri(
