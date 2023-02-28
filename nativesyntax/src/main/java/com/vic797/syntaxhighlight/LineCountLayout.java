@@ -54,7 +54,7 @@ public class LineCountLayout extends ScrollView {
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.LineCountLayout);
         try {
             textColor = array.getColor(R.styleable.LineCountLayout_numberColor, getResources().getColor(R.color.text_color_sub1,null));
-            stripColor = array.getColor(R.styleable.LineCountLayout_stripColor, getResources().getColor(R.color.window_bg_color,null));
+            stripColor = array.getColor(R.styleable.LineCountLayout_stripColor, getResources().getColor(R.color.markdown_bg_color,null));
             textSize = array.getDimension(R.styleable.LineCountLayout_numberSize, 12.0f);
         } finally {
             array.recycle();

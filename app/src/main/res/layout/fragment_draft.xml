@@ -37,6 +37,7 @@
             android:paddingBottom="?attr/actionBarSize"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/markwon_show_bg_color"
             tools:ignore="RtlSymmetry" />
 
     </com.vic797.syntaxhighlight.LineCountLayout>

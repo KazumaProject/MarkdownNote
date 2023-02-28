@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="window_bg_color">#120d09</color>
-    <color name="markdown_bg_color">#FF000000</color>
+    <color name="markdown_bg_color">#1e1e1e</color>
     <color name="text_color_main">#c7c7c7</color>
     <color name="text_color_sub1">#7b7b7b</color>
     <color name="text_color_sub2">#66615d</color>
