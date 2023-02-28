@@ -16,7 +16,6 @@ import com.kazumaproject.emojipicker.other.Constants.EMOJI_ACTIVITY
 import com.kazumaproject.emojipicker.other.Constants.EMOJI_LIST_ANIMALS_NATURE
 import com.kazumaproject.emojipicker.other.Constants.EMOJI_LIST_FOOD_DRINK
 import com.kazumaproject.emojipicker.other.Constants.EMOJI_LIST_SMILEYS_PEOPLE
-import com.kazumaproject.emojipicker.other.Constants.EMOJI_LIST_TEST
 import com.kazumaproject.emojipicker.other.Constants.EMOJI_TRAVEL
 
 class EmojiPickerDialogFragment (

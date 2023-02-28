@@ -3,7 +3,7 @@ package com.kazumaproject.emojipicker.other
 import com.kazumaproject.emojipicker.model.Emoji
 
 object Constants {
-    
+
     val EMOJI_LIST_SMILEYS_PEOPLE = arrayListOf(
         Emoji(1,"grinning face",0x1f600),
         Emoji(2,"grinning face with big eyes",0x1f603),

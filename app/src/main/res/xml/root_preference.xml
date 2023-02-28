@@ -25,4 +25,12 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="About">
+        <Preference
+            android:key="open_source_preference_key"
+            android:title="Open source licenses"
+            android:summary="License details for open source software"/>
+    </PreferenceCategory>
+
 </PreferenceScreen>

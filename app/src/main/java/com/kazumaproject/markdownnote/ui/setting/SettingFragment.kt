@@ -44,10 +44,6 @@ class SettingFragment : PreferenceFragmentCompat() {
 
     private var startBackupPreference: Preference? = null
 
-    companion object {
-        private const val READ_REQUEST_CODE: Int = 77
-    }
-
     private var allNotesInString: String? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -122,6 +118,14 @@ class SettingFragment : PreferenceFragmentCompat() {
                 selectFileByUri()
                 return@setOnPreferenceClickListener true
             }
+        }
+
+        val openSourcePreference = findPreference<Preference>("open_source_preference_key")
+        openSourcePreference?.setOnPreferenceClickListener {
+            requireActivity().findNavController(R.id.navHostFragment).navigate(
+                SettingFragmentDirections.actionSettingFragmentToOpenSourceFragment()
+            )
+            return@setOnPreferenceClickListener true
         }
     }
 

@@ -56,5 +56,13 @@
         android:name="com.kazumaproject.markdownnote.ui.setting.SettingFragment"
         android:label="fragment_setting"
         tools:layout="@layout/fragment_setting" >
+        <action
+            android:id="@+id/action_settingFragment_to_openSourceFragment"
+            app:destination="@id/openSourceFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/openSourceFragment"
+        android:name="com.kazumaproject.markdownnote.ui.opensource.OpenSourceFragment"
+        android:label="fragment_open_source"
+        tools:layout="@layout/fragment_open_source" />
 </navigation>
