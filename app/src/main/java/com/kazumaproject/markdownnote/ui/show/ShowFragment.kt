@@ -34,11 +34,15 @@ import com.kazumaproject.markdownnote.R
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.databinding.FragmentDraftBinding
 import com.kazumaproject.markdownnote.other.*
+import com.neo.highlight.core.Highlight
+import com.neo.highlight.util.listener.HighlightTextWatcher
+import com.neo.highlight.util.scheme.ColorScheme
 import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.util.UUID
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -92,7 +96,15 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         }
         emojiDialog = EmojiPickerDialogFragment(this)
         binding.lineLayout.attachEditText(binding.editText)
-        binding.editText.startHighlight(false)
+        val highLight = HighlightTextWatcher()
+        highLight.addScheme(
+            ColorScheme(
+                Pattern.compile("\\b([Jj])ava\\b"),
+                resources.getColor(android.R.color.holo_green_dark,null)
+            ).setClearOldSpan(true)
+        )
+        binding.editText.addTextChangedListener(highLight)
+
         CoroutineScope(Dispatchers.Main).launch {
             showViewModel.drawerSelectedItem?.let { drawerItem ->
                 Timber.d("drawer item: $drawerItem")
