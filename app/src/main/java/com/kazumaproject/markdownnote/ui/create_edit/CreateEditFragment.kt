@@ -1,6 +1,8 @@
 package com.kazumaproject.markdownnote.ui.create_edit
 
+import android.R
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -23,9 +25,12 @@ import com.kazumaproject.markdownnote.databinding.FragmentCreateEditBinding
 import com.kazumaproject.markdownnote.other.FragmentType
 import com.kazumaproject.markdownnote.other.KeyboardHelper
 import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
+import com.neo.highlight.util.listener.HighlightTextWatcher
+import com.neo.highlight.util.scheme.ColorScheme
 import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.*
 import timber.log.Timber
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -53,10 +58,114 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
         return binding.root
     }
 
+    private fun setHighLightHtmlInEditText(){
+        val highLight = HighlightTextWatcher()
+
+        when(requireContext().resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK){
+            Configuration.UI_MODE_NIGHT_YES ->{
+                highLight.addScheme(
+                    ColorScheme(
+                        Pattern.compile("<!--[\\s\\S]*?-->"),
+                        resources.getColor(R.color.holo_green_dark,null)
+                    ).setClearOldSpan(true),
+                    ColorScheme(
+                        Pattern.compile(
+                            "<[\\da-zA-Z]+([ \\t\\n\\f\\r]+[^ \\x00-\\x1F\\x7F\"'>/=]+([ \\t\\n\\f\\r]*=[ \\t\\n\\f\\r]*([^ \\t\\n\\f\\r\"'=><`]+|'[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F']*'|\"[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F\"]*\"))?)*[ \\t\\n\\f\\r]*/?>"),
+                        resources.getColor(R.color.holo_blue_dark, null)
+                    ).setClearOldSpan(true),
+                    ColorScheme(
+                        Pattern.compile(
+                            "</[\\da-zA-Z]+[ \\t\\n\\f\\r]*>"
+                        ),
+                        resources.getColor(R.color.holo_blue_dark, null)
+                    ),
+                    ColorScheme(
+                        Pattern.compile(
+                            "<x([ \\t\\n\\f\\r]+[^ \\x00-\\x1F\\x7F\"'>/=]+([ \\t\\n\\f\\r]*=[ \\t\\n\\f\\r]*([^ \\t\\n\\f\\r\"'=><`]+|'[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F']*'|\"[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F\"]*\"))?)*[ \\t\\n\\f\\r]*/?>"
+                        ),
+                        resources.getColor(R.color.holo_orange_dark, null)
+                    ),
+                    ColorScheme(
+                        Pattern.compile(
+                            "</x[ \\t\\n\\f\\r]*>"
+                        ),
+                        resources.getColor(R.color.holo_orange_dark, null)
+                    )
+                )
+            }
+            Configuration.UI_MODE_NIGHT_NO ->{
+                highLight.addScheme(
+                    ColorScheme(
+                        Pattern.compile("<!--[\\s\\S]*?-->"),
+                        resources.getColor(R.color.holo_green_light,null)
+                    ).setClearOldSpan(true),
+                    ColorScheme(
+                        Pattern.compile(
+                            "<[\\da-zA-Z]+([ \\t\\n\\f\\r]+[^ \\x00-\\x1F\\x7F\"'>/=]+([ \\t\\n\\f\\r]*=[ \\t\\n\\f\\r]*([^ \\t\\n\\f\\r\"'=><`]+|'[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F']*'|\"[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F\"]*\"))?)*[ \\t\\n\\f\\r]*/?>"),
+                        resources.getColor(R.color.holo_blue_light, null)
+                    ).setClearOldSpan(true),
+                    ColorScheme(
+                        Pattern.compile(
+                            "</[\\da-zA-Z]+[ \\t\\n\\f\\r]*>"
+                        ),
+                        resources.getColor(R.color.holo_blue_light, null)
+                    ),
+                    ColorScheme(
+                        Pattern.compile(
+                            "<x([ \\t\\n\\f\\r]+[^ \\x00-\\x1F\\x7F\"'>/=]+([ \\t\\n\\f\\r]*=[ \\t\\n\\f\\r]*([^ \\t\\n\\f\\r\"'=><`]+|'[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F']*'|\"[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F\"]*\"))?)*[ \\t\\n\\f\\r]*/?>"
+                        ),
+                        resources.getColor(R.color.holo_orange_light, null)
+                    ),
+                    ColorScheme(
+                        Pattern.compile(
+                            "</x[ \\t\\n\\f\\r]*>"
+                        ),
+                        resources.getColor(R.color.holo_orange_light, null)
+                    )
+                )
+            }
+            Configuration.UI_MODE_NIGHT_UNDEFINED ->{
+                highLight.addScheme(
+                    ColorScheme(
+                        Pattern.compile("<!--[\\s\\S]*?-->"),
+                        resources.getColor(R.color.holo_green_light,null)
+                    ).setClearOldSpan(true),
+                    ColorScheme(
+                        Pattern.compile(
+                            "<[\\da-zA-Z]+([ \\t\\n\\f\\r]+[^ \\x00-\\x1F\\x7F\"'>/=]+([ \\t\\n\\f\\r]*=[ \\t\\n\\f\\r]*([^ \\t\\n\\f\\r\"'=><`]+|'[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F']*'|\"[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F\"]*\"))?)*[ \\t\\n\\f\\r]*/?>"),
+                        resources.getColor(R.color.holo_blue_light, null)
+                    ).setClearOldSpan(true),
+                    ColorScheme(
+                        Pattern.compile(
+                            "</[\\da-zA-Z]+[ \\t\\n\\f\\r]*>"
+                        ),
+                        resources.getColor(R.color.holo_blue_light, null)
+                    ),
+                    ColorScheme(
+                        Pattern.compile(
+                            "<x([ \\t\\n\\f\\r]+[^ \\x00-\\x1F\\x7F\"'>/=]+([ \\t\\n\\f\\r]*=[ \\t\\n\\f\\r]*([^ \\t\\n\\f\\r\"'=><`]+|'[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F']*'|\"[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F\"]*\"))?)*[ \\t\\n\\f\\r]*/?>"
+                        ),
+                        resources.getColor(R.color.holo_orange_light, null)
+                    ),
+                    ColorScheme(
+                        Pattern.compile(
+                            "</x[ \\t\\n\\f\\r]*>"
+                        ),
+                        resources.getColor(R.color.holo_orange_light, null)
+                    )
+                )
+            }
+        }
+
+        binding.markdownRawEditText.addTextChangedListener(highLight)
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.markdownRawEditText.startHighlight(false)
+        setHighLightHtmlInEditText()
+
         activityViewModel.updateCurrentFragmentType(FragmentType.CreateEditFragment)
         setChooseEmojiView()
         collectLatestLifecycleFlow(createEditViewModel.createEditState){ state ->
