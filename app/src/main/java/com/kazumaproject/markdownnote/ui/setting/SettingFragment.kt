@@ -92,7 +92,7 @@ class SettingFragment : PreferenceFragmentCompat() {
         onBackPressedCallback = null
     }
 
-    private val createLauncherTxt = registerForActivityResult(ActivityResultContracts.CreateDocument("text/plain")) { uri ->
+    private val createLauncherTxt = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
         uri ?: return@registerForActivityResult
         requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         val documentFile = DocumentFile.fromSingleUri(
@@ -128,7 +128,7 @@ class SettingFragment : PreferenceFragmentCompat() {
     private fun selectFileByUri(){
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            type = "text/plain"
+            type = "application/json"
         }
         resultLauncher.launch(intent)
     }

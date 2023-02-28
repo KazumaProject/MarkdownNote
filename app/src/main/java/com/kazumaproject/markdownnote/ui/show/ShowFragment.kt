@@ -423,7 +423,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
 
                 val listView = ListView(requireContext())
                 val arrayAdapter = ArrayAdapter(requireContext(),android.R.layout.simple_list_item_1,
-                    arrayListOf("txt","md","css","csv","html","calendar")
+                    arrayListOf("txt","md","css","csv","html","json")
                 )
                 listView.adapter = arrayAdapter
                 listView.onItemClickListener =
@@ -445,7 +445,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
                                 createLauncherHTML.launch("markdown_note_${System.currentTimeMillis()}")
                             }
                             5 ->{
-                                createLauncherCalendar.launch("markdown_note_${System.currentTimeMillis()}")
+                                createLauncherJson.launch("markdown_note_${System.currentTimeMillis()}")
                             }
                         }
                     }
@@ -560,7 +560,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
         }
     }
 
-    private val createLauncherCalendar = registerForActivityResult(ActivityResultContracts.CreateDocument("text/calendar")) { uri ->
+    private val createLauncherJson = registerForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
         uri ?: return@registerForActivityResult
         requireContext().contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
         val documentFile = DocumentFile.fromSingleUri(
