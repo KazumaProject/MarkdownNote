@@ -16,17 +16,18 @@ android {
         targetSdk 33
         versionCode 1
         versionName "1.0"
-
+        resConfigs "en", "US"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     bundle {
         storeArchive {
-            enable = false
+            enable = true
         }
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
