@@ -33,7 +33,7 @@
     <string name="load_backup">復元する</string>
 
     <string name="read_md">テキストファイルを読み込む</string>
-    <string name="read_json">Application ファイルを読み込む</string>
+    <string name="read_json">JSON ファイルを読み込む</string>
     <string name="read_js">Js を読み込む</string>
     <string name="list_prefrence_description">Syntax を選択</string>
 </resources>

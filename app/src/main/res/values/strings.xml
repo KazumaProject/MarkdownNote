@@ -18,7 +18,7 @@
     <string name="emoji_string">Emoji</string>
     <string name="general_string">General</string>
     <string name="read_md">Read text file</string>
-    <string name="read_json">Read Application file</string>
+    <string name="read_json">Read JSON file</string>
     <string name="read_js">Read js</string>
 
 

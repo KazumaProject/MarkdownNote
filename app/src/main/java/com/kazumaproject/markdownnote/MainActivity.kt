@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity() {
     private fun selectJsonFileByUri(){
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
-            type = "application/*"
+            type = "application/json"
         }
         resultLauncher.launch(intent)
     }
