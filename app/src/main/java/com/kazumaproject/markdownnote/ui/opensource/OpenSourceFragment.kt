@@ -1,5 +1,6 @@
 package com.kazumaproject.markdownnote.ui.opensource
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,10 +34,6 @@ class OpenSourceFragment : Fragment() {
         )
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -52,7 +49,7 @@ class OpenSourceFragment : Fragment() {
             adapter = arrayAdapter
             setOnItemClickListener { parent, view, position, id ->
                 when(position){
-                    0,1,2,3,4,5,6,7,8,9,12,13,14,15,16,17,18 ->{
+                    0,1,2,3,4,5,6,7,8,9,12,13,14,15,16,17,18,20,21,22,26 ->{
                         val name = OPEN_SOURCE_LICENSES[position]
                         val copyright = "Copyright (c) 2005-2011, The Android Open Source Project"
                         val license = ApacheSoftwareLicense20()
@@ -70,6 +67,119 @@ class OpenSourceFragment : Fragment() {
                         val notice = Notice(name,"",copyright,license)
                         LicensesDialog.Builder(requireContext())
                             .setTitle("MIT Software License")
+                            .setNotices(notice)
+                            .build()
+                            .show()
+                    }
+                    19 ->{
+                        val name = OPEN_SOURCE_LICENSES[position]
+                        val copyright = "Copyright (c) 2013, Jake Wharton"
+                        val license = ApacheSoftwareLicense20()
+                        val notice = Notice(name,"https://github.com/JakeWharton/timber",copyright,license)
+                        LicensesDialog.Builder(requireContext())
+                            .setTitle("Apache Software License")
+                            .setNotices(notice)
+                            .build()
+                            .show()
+                    }
+                    23 ->{
+                        val name = OPEN_SOURCE_LICENSES[position]
+                        val copyright = "Copyright (c) 2019 Dimitry Ivanov (legal@noties.io)"
+                        val license = ApacheSoftwareLicense20()
+                        val notice = Notice(name,"https://github.com/noties/Markwon",copyright,license)
+                        LicensesDialog.Builder(requireContext())
+                            .setTitle("Apache Software License")
+                            .setNotices(notice)
+                            .build()
+                            .show()
+                    }
+                    24 ->{
+                        val name = OPEN_SOURCE_LICENSES[position]
+                        val copyright = "Copyright (c) 2019 Dimitry Ivanov (legal@noties.io)"
+                        val license = ApacheSoftwareLicense20()
+                        val notice = Notice(name,"https://github.com/noties/Prism4j",copyright,license)
+                        LicensesDialog.Builder(requireContext())
+                            .setTitle("Apache Software License")
+                            .setNotices(notice)
+                            .build()
+                            .show()
+                    }
+                    25 -> {
+                        val name = OPEN_SOURCE_LICENSES[position]
+                        val copyright = "Copyright (c) 2017 Florent37, Inc."
+                        val license = ApacheSoftwareLicense20()
+                        val notice = Notice(name,"https://github.com/florent37/ShapeOfView",copyright,license)
+                        LicensesDialog.Builder(requireContext())
+                            .setTitle("Apache Software License")
+                            .setNotices(notice)
+                            .build()
+                            .show()
+                    }
+                    27 ->{
+                        val name = OPEN_SOURCE_LICENSES[position]
+                        val copyright = "Copyright (c) 2013 - present Karol Wrótniak, Droids on Roids LLC"
+                        val license = MITLicense()
+                        val notice = Notice(name,"https://github.com/koral--/android-gif-drawable/blob/dev/LICENSE",copyright,license)
+                        LicensesDialog.Builder(requireContext())
+                            .setTitle("MIT Software License")
+                            .setNotices(notice)
+                            .build()
+                            .show()
+                    }
+                    28 ->{
+                        val name = OPEN_SOURCE_LICENSES[position]
+                        val copyright = ""
+                        val license = ApacheSoftwareLicense20()
+                        val notice = Notice(name,"https://github.com/BigBadaboom/androidsvg",copyright,license)
+                        LicensesDialog.Builder(requireContext())
+                            .setTitle("Apache Software License")
+                            .setNotices(notice)
+                            .build()
+                            .show()
+                    }
+                    29 ->{
+                        val name = OPEN_SOURCE_LICENSES[position]
+                        val copyright = "Copyright 2008 Google Inc."
+                        val license = ApacheSoftwareLicense20()
+                        val notice = Notice(name,"https://github.com/google/gson",copyright,license)
+                        LicensesDialog.Builder(requireContext())
+                            .setTitle("Apache Software License")
+                            .setNotices(notice)
+                            .build()
+                            .show()
+                    }
+                    30 ->{
+                        val name = OPEN_SOURCE_LICENSES[position]
+                        val copyright = "Copyright (C) 2015 [Hanks](https://github.com/hanks-zyh)"
+                        val license = ApacheSoftwareLicense20()
+                        val notice = Notice(name,"https://github.com/hanks-zyh/SmallBang",copyright,license)
+                        LicensesDialog.Builder(requireContext())
+                            .setTitle("Apache Software License")
+                            .setNotices(notice)
+                            .build()
+                            .show()
+                    }
+                    31 ->{
+                        val name = OPEN_SOURCE_LICENSES[position]
+                        val copyright = "Copyright 2017 Victor Campos"
+                        val license = ApacheSoftwareLicense20()
+                        val notice = Notice(name,"https://github.com/vic797/android_native_code_view",copyright,license)
+                        LicensesDialog.Builder(requireContext())
+                            .setTitle("Apache Software License")
+                            .setNotices(notice)
+                            .build()
+                            .show()
+                    }
+                    32 ->{
+
+                    }
+                    33 ->{
+                        val name = OPEN_SOURCE_LICENSES[position]
+                        val copyright = "Copyright 2013 Philip Schiffer"
+                        val license = ApacheSoftwareLicense20()
+                        val notice = Notice(name,"https://github.com/PSDev/LicensesDialog",copyright,license)
+                        LicensesDialog.Builder(requireContext())
+                            .setTitle("Apache Software License")
                             .setNotices(notice)
                             .build()
                             .show()

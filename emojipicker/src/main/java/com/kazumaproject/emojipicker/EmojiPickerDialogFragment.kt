@@ -16,6 +16,7 @@ import com.kazumaproject.emojipicker.other.Constants.EMOJI_ACTIVITY
 import com.kazumaproject.emojipicker.other.Constants.EMOJI_LIST_ANIMALS_NATURE
 import com.kazumaproject.emojipicker.other.Constants.EMOJI_LIST_FOOD_DRINK
 import com.kazumaproject.emojipicker.other.Constants.EMOJI_LIST_SMILEYS_PEOPLE
+import com.kazumaproject.emojipicker.other.Constants.EMOJI_OBJECT
 import com.kazumaproject.emojipicker.other.Constants.EMOJI_TRAVEL
 
 class EmojiPickerDialogFragment (
@@ -73,6 +74,12 @@ class EmojiPickerDialogFragment (
             EMOJI_TRAVEL
         )
         emoji_itemList.add(emoji_item_travel_places)
+
+        val emoji_item_object = ParentEmojiItem(
+            "Objects",
+            EMOJI_OBJECT
+        )
+        emoji_itemList.add(emoji_item_object)
 
         recyclerView.apply {
             parentEmojiRecyclerViewAdapter?.let { parentAdapter ->
