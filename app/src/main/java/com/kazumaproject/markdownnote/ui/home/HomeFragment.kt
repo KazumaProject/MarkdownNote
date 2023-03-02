@@ -1,5 +1,6 @@
 package com.kazumaproject.markdownnote.ui.home
 
+import android.graphics.Canvas
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
@@ -7,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -25,6 +27,7 @@ import com.kazumaproject.markdownnote.databinding.FragmentHomeBinding
 import com.kazumaproject.markdownnote.drawer.model.DrawerSelectedItem
 import com.kazumaproject.markdownnote.other.*
 import dagger.hilt.android.AndroidEntryPoint
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
@@ -170,6 +173,34 @@ class HomeFragment : Fragment() {
                     target: RecyclerView.ViewHolder
                 ): Boolean {
                     return false
+                }
+
+                override fun onChildDraw(
+                    c: Canvas,
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    dX: Float,
+                    dY: Float,
+                    actionState: Int,
+                    isCurrentlyActive: Boolean
+                ) {
+                    RecyclerViewSwipeDecorator.Builder(
+                        c,recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive
+                    ).addBackgroundColor(ContextCompat.getColor(requireContext(),R.color.red))
+                        .addActionIcon(R.drawable.trash)
+                        .setActionIconTint(ContextCompat.getColor(requireContext(),R.color.text_color_main))
+                        .create()
+                        .decorate()
+
+                    super.onChildDraw(
+                        c,
+                        recyclerView,
+                        viewHolder,
+                        dX,
+                        dY,
+                        actionState,
+                        isCurrentlyActive
+                    )
                 }
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {

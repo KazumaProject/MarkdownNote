@@ -1,5 +1,6 @@
 package com.kazumaproject.markdownnote.adapters
 
+import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,6 +71,7 @@ class DrawerChildRecyclerViewAdapter : RecyclerView.Adapter<DrawerChildRecyclerV
                 is DrawerItemType.FilterNotes -> {
                     drawerItem.resID?.let { id ->
                         drawerIcon.background = ContextCompat.getDrawable(context,id)
+                        drawerIcon.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context,R.color.text_color_main))
                     }
                     drawerTitle.text = drawerItem.title
                     drawerCount.text = if (drawerItem.count >= 100) "99+" else drawerItem.count.toString()
@@ -84,6 +86,7 @@ class DrawerChildRecyclerViewAdapter : RecyclerView.Adapter<DrawerChildRecyclerV
                 is DrawerItemType.Navigation -> {
                     drawerItem.resID?.let { id ->
                         drawerIcon.background = ContextCompat.getDrawable(context,id)
+                        drawerIcon.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context,R.color.text_color_main))
                     }
                     drawerTitle.text = drawerItem.title
                     drawerCount.text = ""

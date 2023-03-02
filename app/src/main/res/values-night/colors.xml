@@ -29,4 +29,6 @@
     <color name="keyboard_helper_bg_color">#edf2f7</color>
 
     <color name="markwon_show_bg_color">#1e1e1e</color>
+
+    <color name="red">#ffcc0000</color>
 </resources>

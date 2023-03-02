@@ -30,7 +30,8 @@ class OpenSourceFragment : Fragment() {
             "androidx.navigation:navigation-ui-ktx","androidx.swiperefreshlayout:swiperefreshlayout",
             "io.noties.markwon","io.noties:prism4j", "io.github.florent37:shapeofview", "androidx.emoji:emoji",
             "pl.droidsonroids.gif:android-gif-drawable", "com.caverock:androidsvg-aar", "com.google.code.gson:gson",
-            "pub.hanks:smallbang", "com.github.vic797:android_native_code_view", "com.github.Irineu333:Highlight","de.psdev.licensesdialog:licensesdialog"
+            "pub.hanks:smallbang", "com.github.vic797:android_native_code_view", "com.github.Irineu333:Highlight","de.psdev.licensesdialog:licensesdialog",
+            "it.xabaras.android:recyclerview-swipedecorator"
         )
     }
 
@@ -178,6 +179,17 @@ class OpenSourceFragment : Fragment() {
                         val copyright = "Copyright 2013 Philip Schiffer"
                         val license = ApacheSoftwareLicense20()
                         val notice = Notice(name,"https://github.com/PSDev/LicensesDialog",copyright,license)
+                        LicensesDialog.Builder(requireContext())
+                            .setTitle("Apache Software License")
+                            .setNotices(notice)
+                            .build()
+                            .show()
+                    }
+                    34 ->{
+                        val name = OPEN_SOURCE_LICENSES[position]
+                        val copyright = ""
+                        val license = ApacheSoftwareLicense20()
+                        val notice = Notice(name,"https://github.com/xabaras/RecyclerViewSwipeDecorator",copyright,license)
                         LicensesDialog.Builder(requireContext())
                             .setTitle("Apache Software License")
                             .setNotices(notice)

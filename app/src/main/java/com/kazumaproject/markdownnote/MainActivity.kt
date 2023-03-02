@@ -575,7 +575,7 @@ class MainActivity : AppCompatActivity() {
             title = getString(R.string.read_json),
             count = 0,
             type = DrawerItemType.Navigation,
-            resID = R.drawable.baseline_insert_drive_file_24,
+            resID = R.drawable.json_file,
             emojiUnicode = null
         ),
         DrawerItem(
