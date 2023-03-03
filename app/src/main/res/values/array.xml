@@ -2,7 +2,7 @@
 <resources>
     <string-array name="syntax_language">
         <item>None</item>
-        <item>HTML</item>
+        <item>Default</item>
     </string-array>
 
     <string-array name="syntax_language_values">

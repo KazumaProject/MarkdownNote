@@ -538,7 +538,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
 
                 val listView = ListView(requireContext())
                 val arrayAdapter = ArrayAdapter(requireContext(),android.R.layout.simple_list_item_1,
-                    arrayListOf("txt","md","json","csv","html","css","js")
+                    arrayListOf("txt","md","json","html")
                 )
                 listView.adapter = arrayAdapter
                 listView.onItemClickListener =
@@ -554,16 +554,10 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
                                 createLauncherJson.launch("markdown_note_${System.currentTimeMillis()}")
                             }
                             3 ->{
-                                createLauncherCSV.launch("markdown_note_${System.currentTimeMillis()}")
+                                createLauncherHTML.launch("markdown_note_${System.currentTimeMillis()}")
                             }
                             4 ->{
                                 createLauncherHTML.launch("markdown_note_${System.currentTimeMillis()}")
-                            }
-                            5 ->{
-                                createLauncherCSS.launch("markdown_note_${System.currentTimeMillis()}")
-                            }
-                            6 ->{
-                                createLauncherJavascript.launch("markdown_note_${System.currentTimeMillis()}")
                             }
                         }
                     }
