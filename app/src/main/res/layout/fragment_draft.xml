@@ -7,23 +7,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.show.ShowFragment"
     android:background="@color/markwon_show_bg_color">
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/show_fragment_markwon_text"
+    <ScrollView
+        android:id="@+id/show_fragment_markwon_text_parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="?attr/actionBarSize"
-        android:background="@color/markwon_show_bg_color"
-        android:elevation="4dp"
-        android:fontFamily="@font/regular"
-        android:gravity="top"
-        android:minHeight="256dp"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:textColor="@color/text_color_main"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/show_fragment_markwon_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="?attr/actionBarSize"
+            android:background="@color/markwon_show_bg_color"
+            android:elevation="4dp"
+            android:fontFamily="@font/regular"
+            android:gravity="top"
+            android:minHeight="256dp"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:textColor="@color/text_color_main"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </ScrollView>
+
 
     <com.vic797.syntaxhighlight.LineCountLayout
         app:numberSize="12sp"

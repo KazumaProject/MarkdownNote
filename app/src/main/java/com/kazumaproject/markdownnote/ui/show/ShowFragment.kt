@@ -292,7 +292,7 @@ class ShowFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListene
 
         collectLatestLifecycleFlow(showViewModel.switchState){ switch_on ->
             binding.lineLayout.isVisible = switch_on
-            binding.showFragmentMarkwonText.isVisible = !switch_on
+            binding.showFragmentMarkwonTextParent.isVisible = !switch_on
         }
 
         collectLatestLifecycleFlow(showViewModel.showNoteState){ showNoteState ->
