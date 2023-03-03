@@ -36,4 +36,10 @@
     <string name="read_json">JSON ファイルを読み込む</string>
     <string name="read_js">Js を読み込む</string>
     <string name="list_prefrence_description">Syntax を選択</string>
+
+    <string name="delete_note_message">ノートを削除しますか?</string>
+    <string name="delete_note_in_trash_title">ノートを削除する</string>
+    <string name="delete_note_bookmarked_message">お気に入りのノートを削除しますか?</string>
+    <string name="delete_note_in_draft_message">下書きを削除しますか?</string>
+    <string name="delete_note_in_trash_message">ごみ箱のノートを削除しますか?</string>
 </resources>

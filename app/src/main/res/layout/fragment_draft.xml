@@ -10,14 +10,14 @@
     <ScrollView
         android:id="@+id/show_fragment_markwon_text_parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:elevation="4dp">
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/show_fragment_markwon_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="?attr/actionBarSize"
             android:background="@color/markwon_show_bg_color"
-            android:elevation="4dp"
             android:fontFamily="@font/regular"
             android:gravity="top"
             android:minHeight="256dp"
@@ -30,7 +30,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </ScrollView>
-
 
     <com.vic797.syntaxhighlight.LineCountLayout
         app:numberSize="12sp"

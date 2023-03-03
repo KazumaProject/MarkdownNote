@@ -1,5 +1,6 @@
 package com.kazumaproject.markdownnote.ui.home
 
+import android.content.DialogInterface
 import android.graphics.Canvas
 import android.os.Bundle
 import android.os.Parcelable
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -238,9 +240,38 @@ class HomeFragment : Fragment() {
                                 }
                             }
                             is DrawerSelectedItem.TrashNotes -> {
-                                val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
-                                homeViewModel.deleteTrashNote(note.id)
-                                homeViewModel.deleteNote(note.id)
+                                AlertDialog.Builder(requireContext())
+                                    .setMessage(getString(R.string.delete_note_in_trash_message))
+                                    .setPositiveButton("Confirm"
+                                    ) { dialog, _ ->
+                                        val note =
+                                            noteAdapter.filtered_notes[viewHolder.layoutPosition]
+                                        homeViewModel.deleteTrashNote(note.id)
+                                        homeViewModel.deleteNote(note.id)
+
+                                        dialog.dismiss()
+
+                                        Snackbar.make(
+                                            requireView(),
+                                            "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                            Snackbar.LENGTH_LONG
+                                        ).show()
+                                    }
+                                    .setNegativeButton("Cancel"
+                                    ) { dialog, _ ->
+                                        dialog.dismiss()
+                                        adapter?.let { noteAdapter ->
+                                            binding.homeNotesRecyclerView.adapter = noteAdapter
+                                        }
+                                    }
+                                    .setCancelable(true)
+                                    .setOnCancelListener {
+                                        adapter?.let { noteAdapter ->
+                                            binding.homeNotesRecyclerView.adapter = noteAdapter
+                                        }
+                                    }
+                                    .show()
+
                             }
                             is DrawerSelectedItem.EmojiCategory -> {
                                 val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
@@ -273,8 +304,37 @@ class HomeFragment : Fragment() {
                                 }
                             }
                             is DrawerSelectedItem.DraftNotes -> {
-                                val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
-                                homeViewModel.deleteDraftNote(note.id)
+                                AlertDialog.Builder(requireContext())
+                                    .setMessage(getString(R.string.delete_note_in_draft_message))
+                                    .setPositiveButton("Confirm"
+                                    ) { dialog, _ ->
+                                        val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
+                                        homeViewModel.deleteDraftNote(note.id)
+                                        dialog.dismiss()
+                                        Snackbar.make(
+                                            requireView(),
+                                            "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                            Snackbar.LENGTH_LONG
+                                        ).apply {
+                                            setAction(getString(R.string.undo_message)){
+                                                homeViewModel.insertDraftedNote(note.convertNoteDraftEntity())
+                                            }
+                                        }.show()
+                                    }
+                                    .setNegativeButton("Cancel"
+                                    ) { dialog, _ ->
+                                        dialog.dismiss()
+                                        adapter?.let { noteAdapter ->
+                                            binding.homeNotesRecyclerView.adapter = noteAdapter
+                                        }
+                                    }
+                                    .setCancelable(true)
+                                    .setOnCancelListener {
+                                        adapter?.let { noteAdapter ->
+                                            binding.homeNotesRecyclerView.adapter = noteAdapter
+                                        }
+                                    }
+                                    .show()
                             }
                             is DrawerSelectedItem.BookmarkedNotes -> {
                                 val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
