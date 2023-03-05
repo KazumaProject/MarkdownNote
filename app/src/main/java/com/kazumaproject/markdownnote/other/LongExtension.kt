@@ -12,6 +12,20 @@ fun Long.convertLongToTime(): String {
 }
 
 @SuppressLint("SimpleDateFormat")
+fun Long.convertLongToTimeTwitterFormat(): String {
+    val date = Date(this)
+    val format = SimpleDateFormat("dd MMM")
+    return format.format(date)
+}
+
+@SuppressLint("SimpleDateFormat")
+fun Long.convertLongToTimeTwitterFormatInJapanese(): String {
+    val date = Date(this)
+    val format = SimpleDateFormat("MMMdd")
+    return format.format(date)
+}
+
+@SuppressLint("SimpleDateFormat")
 fun String.convertDateToLong(): Long? {
     val df = SimpleDateFormat("yyyy/MM/dd")
     return df.parse(this)?.time

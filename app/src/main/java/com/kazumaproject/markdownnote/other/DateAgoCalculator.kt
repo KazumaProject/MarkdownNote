@@ -71,8 +71,10 @@ object DateAgoCalculator {
                 TimeUnit.SECOND -> "${timeAgo.value}秒前"    // 1分未満は0分前表示
                 TimeUnit.MINUTE -> "${timeAgo.value}分前"
                 TimeUnit.HOUR -> "${timeAgo.value}時間前"
-                TimeUnit.DAY -> "${timeAgo.value}日前"
-                TimeUnit.MONTH -> past.time.convertLongToTime()
+                TimeUnit.DAY -> {
+                    if(timeAgo.value <=7) "${timeAgo.value}日前" else "${past.time.convertLongToTimeTwitterFormatInJapanese()}日"
+                }
+                TimeUnit.MONTH -> "${past.time.convertLongToTimeTwitterFormatInJapanese()}日"
                 TimeUnit.YEAR -> past.time.convertLongToTime()
             }
         } else {
@@ -80,8 +82,10 @@ object DateAgoCalculator {
                 TimeUnit.SECOND -> "${timeAgo.value}s"    // 1分未満は0分前表示
                 TimeUnit.MINUTE -> "${timeAgo.value}m"
                 TimeUnit.HOUR -> "${timeAgo.value}h"
-                TimeUnit.DAY -> "${timeAgo.value}d"
-                TimeUnit.MONTH -> past.time.convertLongToTime()
+                TimeUnit.DAY -> {
+                    if(timeAgo.value <=7) "${timeAgo.value}d" else past.time.convertLongToTimeTwitterFormat()
+                }
+                TimeUnit.MONTH -> past.time.convertLongToTimeTwitterFormat()
                 TimeUnit.YEAR -> past.time.convertLongToTime()
             }
         }
