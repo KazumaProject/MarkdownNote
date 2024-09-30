@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
@@ -15,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomappbar.BottomAppBar
 import com.kazumaproject.emojipicker.EmojiPickerDialogFragment
 import com.kazumaproject.emojipicker.model.Emoji
 import com.kazumaproject.emojipicker.other.convertUnicode
@@ -28,28 +30,29 @@ import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
 import com.neo.highlight.util.listener.HighlightTextWatcher
 import com.neo.highlight.util.scheme.ColorScheme
 import dagger.hilt.android.AndroidEntryPoint
-import io.noties.markwon.*
+import io.noties.markwon.Markwon
 import timber.log.Timber
 import java.util.regex.Pattern
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListener{
+class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickListener {
     private val createEditViewModel: CreateEditViewModel by viewModels()
     private val activityViewModel: MainViewModel by activityViewModels()
-    private var _binding : FragmentCreateEditBinding? = null
+    private var _binding: FragmentCreateEditBinding? = null
     private val binding get() = _binding!!
 
     @Inject
     lateinit var markwon: Markwon
 
-    private var onBackPressedCallback: OnBackPressedCallback? =null
+    private var onBackPressedCallback: OnBackPressedCallback? = null
 
-    private var dialog: EmojiPickerDialogFragment?= null
+    private var dialog: EmojiPickerDialogFragment? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activityViewModel.updateFloatingButtonEnableState(false)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,20 +61,21 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
         return binding.root
     }
 
-    private fun setHighLightHtmlInEditText(){
+    private fun setHighLightHtmlInEditText() {
         val highLight = HighlightTextWatcher()
 
-        when(requireContext().resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK){
-            Configuration.UI_MODE_NIGHT_YES ->{
+        when (requireContext().resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_YES -> {
                 highLight.addScheme(
                     ColorScheme(
                         Pattern.compile("<!--[\\s\\S]*?-->"),
-                        resources.getColor(R.color.holo_green_dark,null)
+                        resources.getColor(R.color.holo_green_dark, null)
                     ).setClearOldSpan(true),
                     ColorScheme(
                         Pattern.compile(
-                            "<[\\da-zA-Z]+([ \\t\\n\\f\\r]+[^ \\x00-\\x1F\\x7F\"'>/=]+([ \\t\\n\\f\\r]*=[ \\t\\n\\f\\r]*([^ \\t\\n\\f\\r\"'=><`]+|'[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F']*'|\"[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F\"]*\"))?)*[ \\t\\n\\f\\r]*/?>"),
+                            "<[\\da-zA-Z]+([ \\t\\n\\f\\r]+[^ \\x00-\\x1F\\x7F\"'>/=]+([ \\t\\n\\f\\r]*=[ \\t\\n\\f\\r]*([^ \\t\\n\\f\\r\"'=><`]+|'[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F']*'|\"[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F\"]*\"))?)*[ \\t\\n\\f\\r]*/?>"
+                        ),
                         resources.getColor(R.color.holo_blue_dark, null)
                     ).setClearOldSpan(true),
                     ColorScheme(
@@ -94,15 +98,17 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                     )
                 )
             }
-            Configuration.UI_MODE_NIGHT_NO ->{
+
+            Configuration.UI_MODE_NIGHT_NO -> {
                 highLight.addScheme(
                     ColorScheme(
                         Pattern.compile("<!--[\\s\\S]*?-->"),
-                        resources.getColor(R.color.holo_green_light,null)
+                        resources.getColor(R.color.holo_green_light, null)
                     ).setClearOldSpan(true),
                     ColorScheme(
                         Pattern.compile(
-                            "<[\\da-zA-Z]+([ \\t\\n\\f\\r]+[^ \\x00-\\x1F\\x7F\"'>/=]+([ \\t\\n\\f\\r]*=[ \\t\\n\\f\\r]*([^ \\t\\n\\f\\r\"'=><`]+|'[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F']*'|\"[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F\"]*\"))?)*[ \\t\\n\\f\\r]*/?>"),
+                            "<[\\da-zA-Z]+([ \\t\\n\\f\\r]+[^ \\x00-\\x1F\\x7F\"'>/=]+([ \\t\\n\\f\\r]*=[ \\t\\n\\f\\r]*([^ \\t\\n\\f\\r\"'=><`]+|'[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F']*'|\"[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F\"]*\"))?)*[ \\t\\n\\f\\r]*/?>"
+                        ),
                         resources.getColor(R.color.holo_blue_light, null)
                     ).setClearOldSpan(true),
                     ColorScheme(
@@ -125,15 +131,17 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
                     )
                 )
             }
-            Configuration.UI_MODE_NIGHT_UNDEFINED ->{
+
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {
                 highLight.addScheme(
                     ColorScheme(
                         Pattern.compile("<!--[\\s\\S]*?-->"),
-                        resources.getColor(R.color.holo_green_light,null)
+                        resources.getColor(R.color.holo_green_light, null)
                     ).setClearOldSpan(true),
                     ColorScheme(
                         Pattern.compile(
-                            "<[\\da-zA-Z]+([ \\t\\n\\f\\r]+[^ \\x00-\\x1F\\x7F\"'>/=]+([ \\t\\n\\f\\r]*=[ \\t\\n\\f\\r]*([^ \\t\\n\\f\\r\"'=><`]+|'[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F']*'|\"[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F\"]*\"))?)*[ \\t\\n\\f\\r]*/?>"),
+                            "<[\\da-zA-Z]+([ \\t\\n\\f\\r]+[^ \\x00-\\x1F\\x7F\"'>/=]+([ \\t\\n\\f\\r]*=[ \\t\\n\\f\\r]*([^ \\t\\n\\f\\r\"'=><`]+|'[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F']*'|\"[^\\x00-\\x08\\x0B\\x0E-\\x1F\\x7F\"]*\"))?)*[ \\t\\n\\f\\r]*/?>"
+                        ),
                         resources.getColor(R.color.holo_blue_light, null)
                     ).setClearOldSpan(true),
                     ColorScheme(
@@ -164,25 +172,26 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
     @SuppressLint("ClickableViewAccessibility")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        when(createEditViewModel.getSyntaxType()){
+        setHasOptionsMenu(true)
+        when (createEditViewModel.getSyntaxType()) {
             "1" -> {
 
             }
-            "2" ->{
+
+            "2" -> {
                 setHighLightHtmlInEditText()
             }
         }
 
         activityViewModel.updateCurrentFragmentType(FragmentType.CreateEditFragment)
         setChooseEmojiView()
-        collectLatestLifecycleFlow(createEditViewModel.createEditState){ state ->
+        collectLatestLifecycleFlow(createEditViewModel.createEditState) { state ->
             binding.chosenEmojiTextView.apply {
                 try {
                     val textStr = EmojiCompat.get().process(state.emoji.unicode.convertUnicode())
                     Timber.d("emoji: $text")
                     text = textStr
-                }catch (e: Exception){
+                } catch (e: Exception) {
                     //** Noting to do **//
                 }
             }
@@ -191,27 +200,29 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
             onBackPressedCallback?.let { backPressed ->
                 requireActivity().onBackPressedDispatcher.addCallback(backPressed)
             }
-            markwon.setMarkdown(binding.markdownPreviewText,state.currentText)
+            markwon.setMarkdown(binding.markdownPreviewText, state.currentText)
         }
-        collectLatestLifecycleFlow(activityViewModel.markdown_switch_state){ state ->
+        collectLatestLifecycleFlow(activityViewModel.markdown_switch_state) { state ->
             binding.markdownRawEditText.isVisible = !state
             binding.markdownPreviewText.isVisible = state
             binding.createEditFragmentRootView.setOnTouchListener(null)
-            if (!state){
+            if (!state) {
                 binding.createEditFragmentRootView.setOnTouchListener { _, _ ->
                     KeyboardHelper.hideKeyboardAndClearFocus(requireActivity())
                     return@setOnTouchListener true
                 }
             }
         }
-        collectLatestLifecycleFlow(activityViewModel.saveClicked){ clicked ->
-            if (clicked && createEditViewModel.createEditState.value.currentText.isNotBlank()){
-                createEditViewModel.insertNote(NoteEntity(
-                    createEditViewModel.createEditState.value.currentText,
-                    createEditViewModel.createEditState.value.emoji.unicode,
-                    createdAt = System.currentTimeMillis(),
-                    updatedAt = System.currentTimeMillis()
-                ))
+        collectLatestLifecycleFlow(activityViewModel.saveClicked) { clicked ->
+            if (clicked && createEditViewModel.createEditState.value.currentText.isNotBlank()) {
+                createEditViewModel.insertNote(
+                    NoteEntity(
+                        createEditViewModel.createEditState.value.currentText,
+                        createEditViewModel.createEditState.value.emoji.unicode,
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    )
+                )
             }
         }
         binding.markdownRawEditText.apply {
@@ -223,7 +234,7 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
             setOnFocusChangeListener { v, hasFocus ->
                 isCursorVisible = hasFocus
                 createEditViewModel.updateEditTextHasFocus(hasFocus)
-                activityViewModel.updateHasFocusInEditText(hasFocus)
+                //activityViewModel.updateHasFocusInEditText(hasFocus)
             }
         }
     }
@@ -233,7 +244,8 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
         activityViewModel.updateMarkdownSwitchState(false)
         try {
             dialog?.dismiss()
-        }catch (e :Exception){}
+        } catch (e: Exception) {
+        }
     }
 
     override fun onStop() {
@@ -241,7 +253,7 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
         if (!requireActivity().isChangingConfigurations &&
             !binding.markdownRawEditText.text.isNullOrBlank() &&
             !activityViewModel.saveClicked.value
-        ){
+        ) {
             createEditViewModel.insertDraftNote(
                 NoteDraftEntity(
                     binding.markdownRawEditText.text.toString(),
@@ -264,7 +276,7 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
             dialog = EmojiPickerDialogFragment(
                 this@CreateEditFragment
             )
-            dialog?.show(requireActivity().supportFragmentManager,"emoji picker dialog")
+            dialog?.show(requireActivity().supportFragmentManager, "emoji picker dialog")
         }
     }
 
@@ -273,11 +285,14 @@ class CreateEditFragment : Fragment(), EmojiPickerDialogFragment.EmojiItemClickL
     }
 
     private fun getOnBackPressCallback(hasFocus: Boolean): OnBackPressedCallback {
-        return object : OnBackPressedCallback(true){
+        return object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                when{
+                when {
                     hasFocus -> binding.markdownRawEditText.clearFocus()
-                    activityViewModel.markdown_switch_state.value -> activityViewModel.updateMarkdownSwitchState(false)
+                    activityViewModel.markdown_switch_state.value -> activityViewModel.updateMarkdownSwitchState(
+                        false
+                    )
+
                     else -> {
                         isEnabled = false
                         findNavController().popBackStack()

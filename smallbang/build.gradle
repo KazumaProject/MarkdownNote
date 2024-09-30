@@ -1,13 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 33
-
+    namespace 'com.kazumaproject.smallbang'
+    compileSdk 35
     defaultConfig {
         minSdkVersion 24
-        targetSdkVersion 33
-        versionCode 1
-        versionName "1.0.0"
+        targetSdkVersion 35
     }
     buildTypes {
         release {

@@ -56,7 +56,7 @@ class ShowViewModel @Inject constructor(
         _currentUnicode,
         _originalNoteText,
         _originalNoteUnicode,
-        _currentNoteType
+        _currentNoteType,
     ){ text, unicode, note, original_unicode, type ->
         ShowNoteState(
             text,

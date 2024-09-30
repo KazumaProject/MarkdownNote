@@ -11,9 +11,7 @@ import timber.log.Timber
 class Application: Application() {
     override fun onCreate() {
         super.onCreate()
-        if(BuildConfig.DEBUG){
-            Timber.plant(Timber.DebugTree())
-        }
+        Timber.plant(Timber.DebugTree())
         val fontRequest = FontRequest(
             "com.google.android.gms.fonts",
             "com.google.android.gms",

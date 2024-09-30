@@ -43,8 +43,14 @@ class HomeNotesRecyclerViewAdapter (
 
     private var onItemLikedClickListener: ((NoteEntity, Int, Boolean) -> Unit)? = null
 
+    private var onItemLongClickListener: ((NoteEntity, Int, Boolean) -> Unit)? = null
+
     fun setOnItemLikedClickListener(onItemLikeClick: (NoteEntity, Int, Boolean) -> Unit) {
         this.onItemLikedClickListener = onItemLikeClick
+    }
+
+    fun setOnItemLongClickListener(onItemLongClick: (NoteEntity, Int, Boolean) -> Unit) {
+        this.onItemLongClickListener = onItemLongClick
     }
 
     private val differ = AsyncListDiffer(this, diffCallback)
@@ -74,6 +80,12 @@ class HomeNotesRecyclerViewAdapter (
                 onItemClickListener?.let { click ->
                     click(note, position)
                 }
+            }
+            setOnLongClickListener {
+                onItemLongClickListener?.let { longClick ->
+                    longClick(note,position, false)
+                }
+                return@setOnLongClickListener false
             }
             val emojiText = findViewById<MaterialTextView>(R.id.note_item_emoji_view)
             val noteTitleText = findViewById<MaterialTextView>(R.id.note_item_title)

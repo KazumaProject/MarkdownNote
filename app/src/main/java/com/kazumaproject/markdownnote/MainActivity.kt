@@ -74,6 +74,7 @@ class MainActivity : AppCompatActivity() {
         collectLatestLifecycleFlow(viewModel.markdown_switch_state){ state ->
             val markdownSwitch = Switch(this@MainActivity)
             markdownSwitch.isChecked = state
+            if (state) KeyboardHelper.hideKeyboardAndClearFocus(this)
             markdownSwitch.setOnCheckedChangeListener { _, isChecked ->
                 viewModel.updateMarkdownSwitchState(isChecked)
             }
@@ -329,54 +330,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.bottom_bar_item_draft -> {
                     binding.drawerLayout.openDrawer(GravityCompat.START)
                 }
-                R.id.bottom_bar_item_back_arrow ->{
-                    when(fragmentType){
-                        is FragmentType.HomeFragment -> {
-                            when(viewModel.filteredNotesValue.value.currentDrawerSelectedItem){
-                                is DrawerSelectedItem.AllNotes ->{
-                                    this@MainActivity.finish()
-                                }
-                                is DrawerSelectedItem.DraftNotes -> {
-                                    viewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
-                                }
-                                is DrawerSelectedItem.TrashNotes -> {
-                                    viewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
-                                }
-                                is DrawerSelectedItem.EmojiCategory -> {
-                                    viewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
-                                }
-                                is DrawerSelectedItem.BookmarkedNotes -> {
-                                    viewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
-                                }
-                                is DrawerSelectedItem.ReadFile ->{
-                                    this@MainActivity.finish()
-                                }
-                                is DrawerSelectedItem.ReadApplicationFile ->{
-                                    this@MainActivity.finish()
-                                }
-                                is DrawerSelectedItem.GoToSettings -> {
-                                    this@MainActivity.finish()
-                                }
-                            }
-                        }
-                        is FragmentType.CreateEditFragment -> {
-                            when{
-                                hasFocus -> KeyboardHelper.hideKeyboardAndClearFocus(this@MainActivity)
-                                viewModel.markdown_switch_state.value -> viewModel.updateMarkdownSwitchState(false)
-                                else ->  findNavController(R.id.navHostFragment).popBackStack()
-                            }
-                        }
-                        is FragmentType.DraftFragment -> {
-                            when{
-                                hasFocus -> KeyboardHelper.hideKeyboardAndClearFocus(this@MainActivity)
-                                else ->  findNavController(R.id.navHostFragment).popBackStack()
-                            }
-                        }
-                        is FragmentType.SettingFragment -> {
-                            findNavController(R.id.navHostFragment).popBackStack()
-                        }
-                    }
-                }
             }
             return@setOnMenuItemClickListener true
         }
@@ -471,9 +424,6 @@ class MainActivity : AppCompatActivity() {
         binding.bottomAppBar.menu.apply {
             findItem(R.id.bottom_bar_item_draft).isVisible = visibility
             findItem(R.id.bottom_app_bar_item_preview_raw_change).isVisible = switchVisibility && !hasFocus
-            if (hasFocus) findItem(R.id.bottom_bar_item_back_arrow).icon =
-                ContextCompat.getDrawable(this@MainActivity,R.drawable.arrow_down) else findItem(R.id.bottom_bar_item_back_arrow).icon =
-                ContextCompat.getDrawable(this@MainActivity,R.drawable.back)
             when(fragmentType){
                 is FragmentType.DraftFragment ->{
                     when(drawerSelectedItemInShow){
@@ -590,7 +540,6 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun changeIconColorByTheme(){
         binding.bottomAppBar.menu.apply {
-            findItem(R.id.bottom_bar_item_back_arrow).iconTintList = ColorStateList.valueOf(getColor(R.color.text_color_main))
             findItem(R.id.bottom_bar_item_draft).iconTintList = ColorStateList.valueOf(getColor(R.color.text_color_main))
             findItem(R.id.bottom_app_bar_item_preview_raw_change).iconTintList = ColorStateList.valueOf(getColor(R.color.text_color_main))
             findItem(R.id.bottom_app_bar_item_emoji_unicode_text).iconTintList = ColorStateList.valueOf(getColor(R.color.text_color_main))

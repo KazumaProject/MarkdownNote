@@ -3,7 +3,6 @@ package com.vic797.syntaxhighlight;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.text.Editable;
@@ -11,9 +10,12 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.widget.EditText;
 import android.widget.ScrollView;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.kazumaproject.nativesyntax.R;
 
 
 public class LineCountLayout extends ScrollView {

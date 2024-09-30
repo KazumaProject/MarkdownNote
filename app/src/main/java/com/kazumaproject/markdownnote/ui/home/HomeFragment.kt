@@ -1,6 +1,5 @@
 package com.kazumaproject.markdownnote.ui.home
 
-import android.content.DialogInterface
 import android.graphics.Canvas
 import android.os.Bundle
 import android.os.Parcelable
@@ -27,9 +26,20 @@ import com.kazumaproject.markdownnote.adapters.HomeNotesRecyclerViewAdapter
 import com.kazumaproject.markdownnote.database.note.NoteEntity
 import com.kazumaproject.markdownnote.databinding.FragmentHomeBinding
 import com.kazumaproject.markdownnote.drawer.model.DrawerSelectedItem
-import com.kazumaproject.markdownnote.other.*
+import com.kazumaproject.markdownnote.other.DrawerSelectedItemInShow
+import com.kazumaproject.markdownnote.other.FragmentType
+import com.kazumaproject.markdownnote.other.NoteType
+import com.kazumaproject.markdownnote.other.collectLatestLifecycleFlow
+import com.kazumaproject.markdownnote.other.convertNoteBookMarkEntity
+import com.kazumaproject.markdownnote.other.convertNoteDraftEntity
+import com.kazumaproject.markdownnote.other.convertNoteEntity
+import com.kazumaproject.markdownnote.other.convertNoteTrashEntity
+import com.kazumaproject.markdownnote.other.getTitleFromNote
 import dagger.hilt.android.AndroidEntryPoint
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import timber.log.Timber
 
@@ -39,7 +49,7 @@ class HomeFragment : Fragment() {
 
     private val homeViewModel: HomeViewModel by viewModels()
     private val activityViewModel: MainViewModel by activityViewModels()
-    private var _binding : FragmentHomeBinding? = null
+    private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private var homeNotesRecyclerViewAdapter: HomeNotesRecyclerViewAdapter? = null
     private var initialStart = true
@@ -58,41 +68,47 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        collectLatestLifecycleFlow(activityViewModel.filteredNotesValue){ filtered_notes ->
+        setHasOptionsMenu(true)
+        collectLatestLifecycleFlow(activityViewModel.filteredNotesValue) { filtered_notes ->
             if (initialStart || requestSwipeItem) binding.progressBarHomeFragment.isVisible = true
-            binding.homeNotesRecyclerView.isEnabled = false
-            delay(1)
+            delay(128L)
             binding.homeNotesRecyclerView.isEnabled = true
             binding.progressBarHomeFragment.isVisible = false
             initialStart = false
             requestSwipeItem = false
             Timber.d("all trash notes: ${activityViewModel.dataBaseValues.value.allTrashNotes}\ncount: ${activityViewModel.dataBaseValues.value.allTrashNotes.size}")
 
-            onBackPressedCallback = object: OnBackPressedCallback(true){
+            onBackPressedCallback = object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    when(filtered_notes.currentDrawerSelectedItem){
+                    when (filtered_notes.currentDrawerSelectedItem) {
                         is DrawerSelectedItem.AllNotes -> {
                             requireActivity().finish()
                         }
+
                         is DrawerSelectedItem.BookmarkedNotes -> {
                             activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
                         }
+
                         is DrawerSelectedItem.DraftNotes -> {
                             activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
                         }
+
                         is DrawerSelectedItem.TrashNotes -> {
                             activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
                         }
-                        is DrawerSelectedItem.EmojiCategory ->{
+
+                        is DrawerSelectedItem.EmojiCategory -> {
                             activityViewModel.updateCurrentSelectedDrawerItem(DrawerSelectedItem.AllNotes)
                         }
-                        is DrawerSelectedItem.ReadFile ->{
+
+                        is DrawerSelectedItem.ReadFile -> {
                             requireActivity().finish()
                         }
-                        is DrawerSelectedItem.ReadApplicationFile ->{
+
+                        is DrawerSelectedItem.ReadApplicationFile -> {
                             requireActivity().finish()
                         }
+
                         is DrawerSelectedItem.GoToSettings -> {
                             requireActivity().finish()
                         }
@@ -100,262 +116,308 @@ class HomeFragment : Fragment() {
                 }
             }
 
-            when(filtered_notes.currentDrawerSelectedItem){
+            when (filtered_notes.currentDrawerSelectedItem) {
                 is DrawerSelectedItem.AllNotes -> {
-                   binding.currentSelectedItemTitle.text = getString(R.string.all_notes)
+                    binding.currentSelectedItemTitle.text = getString(R.string.all_notes)
                 }
+
                 is DrawerSelectedItem.BookmarkedNotes -> {
                     binding.currentSelectedItemTitle.text = getString(R.string.bookmarked_notes)
                 }
+
                 is DrawerSelectedItem.DraftNotes -> {
                     binding.currentSelectedItemTitle.text = getString(R.string.draft_notes)
                 }
+
                 is DrawerSelectedItem.TrashNotes -> {
                     binding.currentSelectedItemTitle.text = getString(R.string.trash_notes)
                 }
-                is DrawerSelectedItem.EmojiCategory ->{
+
+                is DrawerSelectedItem.EmojiCategory -> {
                     binding.currentSelectedItemTitle.text = getString(R.string.emoji_string)
                 }
+
                 is DrawerSelectedItem.ReadFile -> {
                     binding.currentSelectedItemTitle.text = getString(R.string.all_notes)
                 }
-                is DrawerSelectedItem.ReadApplicationFile ->{
+
+                is DrawerSelectedItem.ReadApplicationFile -> {
                     binding.currentSelectedItemTitle.text = getString(R.string.all_notes)
                 }
+
                 is DrawerSelectedItem.GoToSettings -> {
                     binding.currentSelectedItemTitle.text = getString(R.string.all_notes)
                 }
             }
-            val filteredNotes: List<NoteEntity> = when(filtered_notes.currentDrawerSelectedItem){
-                is DrawerSelectedItem.AllNotes -> filtered_notes.allNotes.filter { note ->
-                    note.id !in activityViewModel.dataBaseValues.value.allTrashNotes.map {
-                        it.id
+            val filteredNotes: List<NoteEntity> = CoroutineScope(Dispatchers.IO).async {
+                when (filtered_notes.currentDrawerSelectedItem) {
+                    is DrawerSelectedItem.AllNotes -> filtered_notes.allNotes.filter { note ->
+                        note.id !in activityViewModel.dataBaseValues.value.allTrashNotes.map {
+                            it.id
+                        }
+                    }
+
+                    is DrawerSelectedItem.BookmarkedNotes -> filtered_notes.allNotes.filter { note ->
+                        activityViewModel.dataBaseValues.value.allBookmarkNotes.contains(note.convertNoteBookMarkEntity())
+                    }
+
+                    is DrawerSelectedItem.DraftNotes -> activityViewModel.dataBaseValues.value.allDraftNotes.map {
+                        it.convertNoteEntity()
+                    }
+
+                    is DrawerSelectedItem.TrashNotes -> filtered_notes.allNotes.filter { note ->
+                        activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
+                    }
+
+                    is DrawerSelectedItem.EmojiCategory -> filtered_notes.allNotes.filter {
+                        it.emojiUnicode == filtered_notes.currentDrawerSelectedItem.unicode
+                    }.filter { note ->
+                        !activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
+                    }
+
+                    is DrawerSelectedItem.ReadFile -> filtered_notes.allNotes.filter { note ->
+                        !activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
+                    }
+
+                    is DrawerSelectedItem.ReadApplicationFile -> filtered_notes.allNotes.filter { note ->
+                        !activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
+                    }
+
+                    is DrawerSelectedItem.GoToSettings -> filtered_notes.allNotes.filter { note ->
+                        !activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
                     }
                 }
-                is DrawerSelectedItem.BookmarkedNotes -> filtered_notes.allNotes.filter { note ->
-                    activityViewModel.dataBaseValues.value.allBookmarkNotes.contains(note.convertNoteBookMarkEntity())
-                }
-                is DrawerSelectedItem.DraftNotes -> activityViewModel.dataBaseValues.value.allDraftNotes.map {
-                    it.convertNoteEntity()
-                }
-                is DrawerSelectedItem.TrashNotes -> filtered_notes.allNotes.filter { note ->
-                    activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
-                }
-                is DrawerSelectedItem.EmojiCategory -> filtered_notes.allNotes.filter {
-                    it.emojiUnicode == filtered_notes.currentDrawerSelectedItem.unicode
-                }.filter { note ->
-                    !activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
-                }
-                is DrawerSelectedItem.ReadFile -> filtered_notes.allNotes.filter { note ->
-                    !activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
-                }
-                is DrawerSelectedItem.ReadApplicationFile -> filtered_notes.allNotes.filter { note ->
-                    !activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
-                }
-                is DrawerSelectedItem.GoToSettings -> filtered_notes.allNotes.filter { note ->
-                    !activityViewModel.dataBaseValues.value.allTrashNotes.contains(note.convertNoteTrashEntity())
-                }
-            }
-            homeNotesRecyclerViewAdapter = HomeNotesRecyclerViewAdapter(filtered_notes.allBookmarkNotes, filtered_notes.currentDrawerSelectedItem)
-            setRecyclerView(filteredNotes, homeNotesRecyclerViewAdapter, filtered_notes.currentDrawerSelectedItem)
-            binding.homeNotesRecyclerView.layoutManager?.onRestoreInstanceState(homeRecylcerViewState)
+            }.await()
+
+            homeNotesRecyclerViewAdapter = HomeNotesRecyclerViewAdapter(
+                filtered_notes.allBookmarkNotes,
+                filtered_notes.currentDrawerSelectedItem
+            )
+            setRecyclerView(
+                filteredNotes,
+                homeNotesRecyclerViewAdapter,
+                filtered_notes.currentDrawerSelectedItem
+            )
+            binding.homeNotesRecyclerView.layoutManager?.onRestoreInstanceState(
+                homeRecylcerViewState
+            )
             setSwipeRefreshLayout(filteredNotes, homeNotesRecyclerViewAdapter)
             setSearchView(filteredNotes, homeNotesRecyclerViewAdapter)
             onBackPressedCallback?.let { backPressed ->
                 requireActivity().onBackPressedDispatcher.addCallback(backPressed)
             }
+
             Timber.d("current filtered notes: $filteredNotes\ncounts: ${filteredNotes.size}")
         }
 
         binding.homeNotesRecyclerView.apply {
-            val itemTouchHelper = ItemTouchHelper( object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-                override fun onMove(
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    target: RecyclerView.ViewHolder
-                ): Boolean {
-                    return false
-                }
 
-                override fun onChildDraw(
-                    c: Canvas,
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    dX: Float,
-                    dY: Float,
-                    actionState: Int,
-                    isCurrentlyActive: Boolean
-                ) {
-                    RecyclerViewSwipeDecorator.Builder(
-                        c,recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive
-                    ).addBackgroundColor(ContextCompat.getColor(requireContext(),R.color.red))
-                        .addActionIcon(R.drawable.trash)
-                        .setActionIconTint(ContextCompat.getColor(requireContext(),R.color.text_color_main))
-                        .create()
-                        .decorate()
+            val itemTouchHelper =
+                ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+                    override fun onMove(
+                        recyclerView: RecyclerView,
+                        viewHolder: RecyclerView.ViewHolder,
+                        target: RecyclerView.ViewHolder
+                    ): Boolean {
+                        return false
+                    }
 
-                    super.onChildDraw(
-                        c,
-                        recyclerView,
-                        viewHolder,
-                        dX,
-                        dY,
-                        actionState,
-                        isCurrentlyActive
-                    )
-                }
+                    override fun onChildDraw(
+                        c: Canvas,
+                        recyclerView: RecyclerView,
+                        viewHolder: RecyclerView.ViewHolder,
+                        dX: Float,
+                        dY: Float,
+                        actionState: Int,
+                        isCurrentlyActive: Boolean
+                    ) {
+                        RecyclerViewSwipeDecorator.Builder(
+                            c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive
+                        ).addBackgroundColor(ContextCompat.getColor(requireContext(), R.color.red))
+                            .addActionIcon(R.drawable.trash)
+                            .setActionIconTint(
+                                ContextCompat.getColor(
+                                    requireContext(),
+                                    R.color.text_color_main
+                                )
+                            )
+                            .create()
+                            .decorate()
 
-                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    homeNotesRecyclerViewAdapter?.let { noteAdapter ->
-                        homeRecylcerViewState = binding.homeNotesRecyclerView.layoutManager?.onSaveInstanceState()
-                        when(activityViewModel.filteredNotesValue.value.currentDrawerSelectedItem){
-                            is DrawerSelectedItem.AllNotes, is DrawerSelectedItem.GoToSettings, is DrawerSelectedItem.ReadFile, is DrawerSelectedItem.ReadApplicationFile, -> {
-                                val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
-                                homeViewModel.insertTrashNote(note.convertNoteTrashEntity())
-                                val bookmarksList = activityViewModel.dataBaseValues.value.allBookmarkNotes.map {
-                                    it.id
-                                }
-                                if (bookmarksList.contains(note.id)) {
-                                    homeViewModel.deleteBookmarkedNote(note.id)
-                                    Snackbar.make(
-                                        requireView(),
-                                        "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
-                                        Snackbar.LENGTH_LONG
-                                    ).apply {
-                                        setAction(getString(R.string.undo_message)){
-                                            homeViewModel.deleteTrashNote(note.id)
-                                            homeViewModel.insertBookmarkedNote(note.convertNoteBookMarkEntity())
-                                        }
-                                    }.show()
-                                } else {
-                                    Snackbar.make(
-                                        requireView(),
-                                        "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
-                                        Snackbar.LENGTH_LONG
-                                    ).apply {
-                                        setAction(getString(R.string.undo_message)){
-                                            homeViewModel.deleteTrashNote(note.id)
-                                        }
-                                    }.show()
-                                }
-                            }
-                            is DrawerSelectedItem.TrashNotes -> {
-                                AlertDialog.Builder(requireContext())
-                                    .setMessage(getString(R.string.delete_note_in_trash_message))
-                                    .setPositiveButton("Confirm"
-                                    ) { dialog, _ ->
-                                        val note =
-                                            noteAdapter.filtered_notes[viewHolder.layoutPosition]
-                                        homeViewModel.deleteTrashNote(note.id)
-                                        homeViewModel.deleteNote(note.id)
+                        super.onChildDraw(
+                            c,
+                            recyclerView,
+                            viewHolder,
+                            dX,
+                            dY,
+                            actionState,
+                            isCurrentlyActive
+                        )
+                    }
 
-                                        dialog.dismiss()
-
-                                        Snackbar.make(
-                                            requireView(),
-                                            "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
-                                            Snackbar.LENGTH_LONG
-                                        ).show()
-                                    }
-                                    .setNegativeButton("Cancel"
-                                    ) { dialog, _ ->
-                                        dialog.dismiss()
-                                        adapter?.let { noteAdapter ->
-                                            binding.homeNotesRecyclerView.adapter = noteAdapter
+                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                        homeNotesRecyclerViewAdapter?.let { noteAdapter ->
+                            homeRecylcerViewState =
+                                binding.homeNotesRecyclerView.layoutManager?.onSaveInstanceState()
+                            when (activityViewModel.filteredNotesValue.value.currentDrawerSelectedItem) {
+                                is DrawerSelectedItem.AllNotes, is DrawerSelectedItem.GoToSettings, is DrawerSelectedItem.ReadFile, is DrawerSelectedItem.ReadApplicationFile -> {
+                                    val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
+                                    homeViewModel.insertTrashNote(note.convertNoteTrashEntity())
+                                    val bookmarksList =
+                                        activityViewModel.dataBaseValues.value.allBookmarkNotes.map {
+                                            it.id
                                         }
-                                    }
-                                    .setCancelable(true)
-                                    .setOnCancelListener {
-                                        adapter?.let { noteAdapter ->
-                                            binding.homeNotesRecyclerView.adapter = noteAdapter
-                                        }
-                                    }
-                                    .show()
-
-                            }
-                            is DrawerSelectedItem.EmojiCategory -> {
-                                val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
-                                val bookmarksList = activityViewModel.dataBaseValues.value.allBookmarkNotes.map {
-                                    it.id
-                                }
-                                homeViewModel.insertTrashNote(note.convertNoteTrashEntity())
-                                if (bookmarksList.contains(note.id)) {
-                                    homeViewModel.deleteBookmarkedNote(note.id)
-                                    Snackbar.make(
-                                        requireView(),
-                                        "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
-                                        Snackbar.LENGTH_LONG
-                                    ).apply {
-                                        setAction(getString(R.string.undo_message)){
-                                            homeViewModel.deleteTrashNote(note.id)
-                                            homeViewModel.insertBookmarkedNote(note.convertNoteBookMarkEntity())
-                                        }
-                                    }.show()
-                                } else {
-                                    Snackbar.make(
-                                        requireView(),
-                                        "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
-                                        Snackbar.LENGTH_LONG
-                                    ).apply {
-                                        setAction(getString(R.string.undo_message)){
-                                            homeViewModel.deleteTrashNote(note.id)
-                                        }
-                                    }.show()
-                                }
-                            }
-                            is DrawerSelectedItem.DraftNotes -> {
-                                AlertDialog.Builder(requireContext())
-                                    .setMessage(getString(R.string.delete_note_in_draft_message))
-                                    .setPositiveButton("Confirm"
-                                    ) { dialog, _ ->
-                                        val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
-                                        homeViewModel.deleteDraftNote(note.id)
-                                        dialog.dismiss()
+                                    if (bookmarksList.contains(note.id)) {
+                                        homeViewModel.deleteBookmarkedNote(note.id)
                                         Snackbar.make(
                                             requireView(),
                                             "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
                                             Snackbar.LENGTH_LONG
                                         ).apply {
-                                            setAction(getString(R.string.undo_message)){
-                                                homeViewModel.insertDraftedNote(note.convertNoteDraftEntity())
+                                            setAction(getString(R.string.undo_message)) {
+                                                homeViewModel.deleteTrashNote(note.id)
+                                                homeViewModel.insertBookmarkedNote(note.convertNoteBookMarkEntity())
+                                            }
+                                        }.show()
+                                    } else {
+                                        Snackbar.make(
+                                            requireView(),
+                                            "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                            Snackbar.LENGTH_LONG
+                                        ).apply {
+                                            setAction(getString(R.string.undo_message)) {
+                                                homeViewModel.deleteTrashNote(note.id)
                                             }
                                         }.show()
                                     }
-                                    .setNegativeButton("Cancel"
-                                    ) { dialog, _ ->
-                                        dialog.dismiss()
-                                        adapter?.let { noteAdapter ->
-                                            binding.homeNotesRecyclerView.adapter = noteAdapter
+                                }
+
+                                is DrawerSelectedItem.TrashNotes -> {
+                                    AlertDialog.Builder(requireContext())
+                                        .setMessage(getString(R.string.delete_note_in_trash_message))
+                                        .setPositiveButton(
+                                            "Confirm"
+                                        ) { dialog, _ ->
+                                            val note =
+                                                noteAdapter.filtered_notes[viewHolder.layoutPosition]
+                                            homeViewModel.deleteTrashNote(note.id)
+                                            homeViewModel.deleteNote(note.id)
+
+                                            dialog.dismiss()
+
+                                            Snackbar.make(
+                                                requireView(),
+                                                "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                                Snackbar.LENGTH_LONG
+                                            ).show()
                                         }
-                                    }
-                                    .setCancelable(true)
-                                    .setOnCancelListener {
-                                        adapter?.let { noteAdapter ->
-                                            binding.homeNotesRecyclerView.adapter = noteAdapter
+                                        .setNegativeButton(
+                                            "Cancel"
+                                        ) { dialog, _ ->
+                                            dialog.dismiss()
+                                            adapter?.let { noteAdapter ->
+                                                binding.homeNotesRecyclerView.adapter = noteAdapter
+                                            }
                                         }
+                                        .setCancelable(true)
+                                        .setOnCancelListener {
+                                            adapter?.let { noteAdapter ->
+                                                binding.homeNotesRecyclerView.adapter = noteAdapter
+                                            }
+                                        }
+                                        .show()
+
+                                }
+
+                                is DrawerSelectedItem.EmojiCategory -> {
+                                    val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
+                                    val bookmarksList =
+                                        activityViewModel.dataBaseValues.value.allBookmarkNotes.map {
+                                            it.id
+                                        }
+                                    homeViewModel.insertTrashNote(note.convertNoteTrashEntity())
+                                    if (bookmarksList.contains(note.id)) {
+                                        homeViewModel.deleteBookmarkedNote(note.id)
+                                        Snackbar.make(
+                                            requireView(),
+                                            "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                            Snackbar.LENGTH_LONG
+                                        ).apply {
+                                            setAction(getString(R.string.undo_message)) {
+                                                homeViewModel.deleteTrashNote(note.id)
+                                                homeViewModel.insertBookmarkedNote(note.convertNoteBookMarkEntity())
+                                            }
+                                        }.show()
+                                    } else {
+                                        Snackbar.make(
+                                            requireView(),
+                                            "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                            Snackbar.LENGTH_LONG
+                                        ).apply {
+                                            setAction(getString(R.string.undo_message)) {
+                                                homeViewModel.deleteTrashNote(note.id)
+                                            }
+                                        }.show()
                                     }
-                                    .show()
-                            }
-                            is DrawerSelectedItem.BookmarkedNotes -> {
-                                val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
-                                homeViewModel.deleteBookmarkedNote(note.id)
-                                homeViewModel.insertTrashNote(note.convertNoteTrashEntity())
-                                Snackbar.make(
-                                    requireView(),
-                                    "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
-                                    Snackbar.LENGTH_LONG
-                                ).apply {
-                                    setAction(getString(R.string.undo_message)){
-                                        homeViewModel.insertBookmarkedNote(note.convertNoteBookMarkEntity())
-                                        homeViewModel.deleteTrashNote(note.id)
-                                    }
-                                }.show()
+                                }
+
+                                is DrawerSelectedItem.DraftNotes -> {
+                                    AlertDialog.Builder(requireContext())
+                                        .setMessage(getString(R.string.delete_note_in_draft_message))
+                                        .setPositiveButton(
+                                            "Confirm"
+                                        ) { dialog, _ ->
+                                            val note =
+                                                noteAdapter.filtered_notes[viewHolder.layoutPosition]
+                                            homeViewModel.deleteDraftNote(note.id)
+                                            dialog.dismiss()
+                                            Snackbar.make(
+                                                requireView(),
+                                                "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                                Snackbar.LENGTH_LONG
+                                            ).apply {
+                                                setAction(getString(R.string.undo_message)) {
+                                                    homeViewModel.insertDraftedNote(note.convertNoteDraftEntity())
+                                                }
+                                            }.show()
+                                        }
+                                        .setNegativeButton(
+                                            "Cancel"
+                                        ) { dialog, _ ->
+                                            dialog.dismiss()
+                                            adapter?.let { noteAdapter ->
+                                                binding.homeNotesRecyclerView.adapter = noteAdapter
+                                            }
+                                        }
+                                        .setCancelable(true)
+                                        .setOnCancelListener {
+                                            adapter?.let { noteAdapter ->
+                                                binding.homeNotesRecyclerView.adapter = noteAdapter
+                                            }
+                                        }
+                                        .show()
+                                }
+
+                                is DrawerSelectedItem.BookmarkedNotes -> {
+                                    val note = noteAdapter.filtered_notes[viewHolder.layoutPosition]
+                                    homeViewModel.deleteBookmarkedNote(note.id)
+                                    homeViewModel.insertTrashNote(note.convertNoteTrashEntity())
+                                    Snackbar.make(
+                                        requireView(),
+                                        "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                        Snackbar.LENGTH_LONG
+                                    ).apply {
+                                        setAction(getString(R.string.undo_message)) {
+                                            homeViewModel.insertBookmarkedNote(note.convertNoteBookMarkEntity())
+                                            homeViewModel.deleteTrashNote(note.id)
+                                        }
+                                    }.show()
+                                }
                             }
                         }
+                        requestSwipeItem = true
                     }
-                    requestSwipeItem = true
-                }
-            })
+                })
             itemTouchHelper.attachToRecyclerView(this)
         }
 
@@ -367,7 +429,7 @@ class HomeFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         binding.homeSearchView.apply {
-            setQuery("",false)
+            setQuery("", false)
             clearFocus()
             isIconified = true
         }
@@ -388,46 +450,59 @@ class HomeFragment : Fragment() {
     ) = binding.homeNotesRecyclerView.apply {
         homeNotesAdapter?.let { noteAdapter ->
             noteAdapter.filtered_notes = notes
+            Timber.d("note list:\n${notes.map { it.id + " " + it.body }}")
             this@apply.adapter = noteAdapter
             noteAdapter.setOnItemClickListener { noteEntity, i ->
                 requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).performShow()
-                when(drawerSelectedItem){
-                    is DrawerSelectedItem.AllNotes -> requireActivity().findNavController(R.id.navHostFragment).navigate(
-                        HomeFragmentDirections.actionHomeFragmentToDraftFragment(
-                            noteEntity.id,
-                            DrawerSelectedItemInShow.ALL_NOTE.name,
-                            NoteType.NORMAL.name
+                when (drawerSelectedItem) {
+                    is DrawerSelectedItem.AllNotes -> requireActivity().findNavController(R.id.navHostFragment)
+                        .navigate(
+                            HomeFragmentDirections.actionHomeFragmentToDraftFragment(
+                                noteEntity.id,
+                                DrawerSelectedItemInShow.ALL_NOTE.name,
+                                NoteType.NORMAL.name
+                            )
                         )
-                    )
-                    is DrawerSelectedItem.BookmarkedNotes -> requireActivity().findNavController(R.id.navHostFragment).navigate(
-                        HomeFragmentDirections.actionHomeFragmentToDraftFragment(
-                            noteEntity.id,
-                            DrawerSelectedItemInShow.BOOKMARKED.name,
-                            NoteType.NORMAL.name
+
+                    is DrawerSelectedItem.BookmarkedNotes -> requireActivity().findNavController(R.id.navHostFragment)
+                        .navigate(
+                            HomeFragmentDirections.actionHomeFragmentToDraftFragment(
+                                noteEntity.id,
+                                DrawerSelectedItemInShow.BOOKMARKED.name,
+                                NoteType.NORMAL.name
+                            )
                         )
-                    )
-                    is DrawerSelectedItem.DraftNotes -> requireActivity().findNavController(R.id.navHostFragment).navigate(
-                        HomeFragmentDirections.actionHomeFragmentToDraftFragment(
-                            noteEntity.id,
-                            DrawerSelectedItemInShow.DRAFTS.name,
-                            NoteType.DRAFT.name
+
+                    is DrawerSelectedItem.DraftNotes -> requireActivity().findNavController(R.id.navHostFragment)
+                        .navigate(
+                            HomeFragmentDirections.actionHomeFragmentToDraftFragment(
+                                noteEntity.id,
+                                DrawerSelectedItemInShow.DRAFTS.name,
+                                NoteType.DRAFT.name
+                            )
                         )
-                    )
-                    is DrawerSelectedItem.TrashNotes -> requireActivity().findNavController(R.id.navHostFragment).navigate(
-                        HomeFragmentDirections.actionHomeFragmentToDraftFragment(
-                            noteEntity.id,
-                            DrawerSelectedItemInShow.TRASH.name,
-                            NoteType.NORMAL.name
+
+                    is DrawerSelectedItem.TrashNotes -> requireActivity().findNavController(R.id.navHostFragment)
+                        .navigate(
+                            HomeFragmentDirections.actionHomeFragmentToDraftFragment(
+                                noteEntity.id,
+                                DrawerSelectedItemInShow.TRASH.name,
+                                NoteType.NORMAL.name
+                            )
                         )
-                    )
-                    is DrawerSelectedItem.EmojiCategory -> requireActivity().findNavController(R.id.navHostFragment).navigate(
-                        HomeFragmentDirections.actionHomeFragmentToDraftFragment(
-                            noteEntity.id,
-                            DrawerSelectedItemInShow.EMOJI.name,
-                            NoteType.NORMAL.name
+
+                    is DrawerSelectedItem.EmojiCategory -> requireActivity().findNavController(R.id.navHostFragment)
+                        .navigate(
+                            HomeFragmentDirections.actionHomeFragmentToDraftFragment(
+                                noteEntity.id,
+                                DrawerSelectedItemInShow.EMOJI.name,
+                                NoteType.NORMAL.name
+                            )
                         )
-                    )
-                    is DrawerSelectedItem.ReadFile, is DrawerSelectedItem.ReadApplicationFile, is DrawerSelectedItem.GoToSettings -> requireActivity().findNavController(R.id.navHostFragment).navigate(
+
+                    is DrawerSelectedItem.ReadFile, is DrawerSelectedItem.ReadApplicationFile, is DrawerSelectedItem.GoToSettings -> requireActivity().findNavController(
+                        R.id.navHostFragment
+                    ).navigate(
                         HomeFragmentDirections.actionHomeFragmentToDraftFragment(
                             noteEntity.id,
                             DrawerSelectedItemInShow.ALL_NOTE.name,
@@ -439,14 +514,174 @@ class HomeFragment : Fragment() {
             noteAdapter.setOnItemLikedClickListener { noteEntity, i, isSelected ->
                 Timber.d("clicked note: $noteEntity\nindex: $i\nselected: $isSelected")
                 requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).performShow()
-                if (!isSelected) homeViewModel.insertBookmarkedNote(noteEntity.convertNoteBookMarkEntity()) else homeViewModel.deleteBookmarkedNote(noteEntity.id)
-                homeRecylcerViewState = binding.homeNotesRecyclerView.layoutManager?.onSaveInstanceState()
+                if (!isSelected) homeViewModel.insertBookmarkedNote(noteEntity.convertNoteBookMarkEntity()) else homeViewModel.deleteBookmarkedNote(
+                    noteEntity.id
+                )
+                homeRecylcerViewState =
+                    binding.homeNotesRecyclerView.layoutManager?.onSaveInstanceState()
+            }
+            noteAdapter.setOnItemLongClickListener { note, i, b ->
+                homeRecylcerViewState =
+                    binding.homeNotesRecyclerView.layoutManager?.onSaveInstanceState()
+                when (activityViewModel.filteredNotesValue.value.currentDrawerSelectedItem) {
+                    is DrawerSelectedItem.AllNotes, is DrawerSelectedItem.GoToSettings, is DrawerSelectedItem.ReadFile, is DrawerSelectedItem.ReadApplicationFile -> {
+                        Timber.d("delete note: ${note.body}\n$i")
+                        homeViewModel.insertTrashNote(note.convertNoteTrashEntity())
+                        val bookmarksList =
+                            activityViewModel.dataBaseValues.value.allBookmarkNotes.map {
+                                it.id
+                            }
+                        if (bookmarksList.contains(note.id)) {
+                            homeViewModel.deleteBookmarkedNote(note.id)
+                            Snackbar.make(
+                                requireView(),
+                                "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                Snackbar.LENGTH_LONG
+                            ).apply {
+                                setAction(getString(R.string.undo_message)) {
+                                    homeViewModel.deleteTrashNote(note.id)
+                                    homeViewModel.insertBookmarkedNote(note.convertNoteBookMarkEntity())
+                                }
+                            }.show()
+                        } else {
+                            Snackbar.make(
+                                requireView(),
+                                "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                Snackbar.LENGTH_LONG
+                            ).apply {
+                                setAction(getString(R.string.undo_message)) {
+                                    homeViewModel.deleteTrashNote(note.id)
+                                    homeViewModel.insertNote(note)
+                                }
+                            }.show()
+                        }
+                    }
+
+                    is DrawerSelectedItem.TrashNotes -> {
+                        AlertDialog.Builder(requireContext())
+                            .setMessage(getString(R.string.delete_note_in_trash_message))
+                            .setPositiveButton(
+                                "Confirm"
+                            ) { dialog, _ ->
+                                homeViewModel.deleteTrashNote(note.id)
+                                homeViewModel.deleteNote(note.id)
+
+                                dialog.dismiss()
+
+                                Snackbar.make(
+                                    requireView(),
+                                    "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                    Snackbar.LENGTH_LONG
+                                ).show()
+                            }
+                            .setNegativeButton(
+                                "Cancel"
+                            ) { dialog, _ ->
+                                dialog.dismiss()
+                                adapter?.let { noteAdapter ->
+                                    binding.homeNotesRecyclerView.adapter = noteAdapter
+                                }
+                            }
+                            .setCancelable(true)
+                            .setOnCancelListener {
+                                adapter?.let { noteAdapter ->
+                                    binding.homeNotesRecyclerView.adapter = noteAdapter
+                                }
+                            }
+                            .show()
+
+                    }
+
+                    is DrawerSelectedItem.EmojiCategory -> {
+                        val bookmarksList =
+                            activityViewModel.dataBaseValues.value.allBookmarkNotes.map {
+                                it.id
+                            }
+                        homeViewModel.insertTrashNote(note.convertNoteTrashEntity())
+                        if (bookmarksList.contains(note.id)) {
+                            homeViewModel.deleteBookmarkedNote(note.id)
+                            Snackbar.make(
+                                requireView(),
+                                "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                Snackbar.LENGTH_LONG
+                            ).apply {
+                                setAction(getString(R.string.undo_message)) {
+                                    homeViewModel.deleteTrashNote(note.id)
+                                    homeViewModel.insertBookmarkedNote(note.convertNoteBookMarkEntity())
+                                }
+                            }.show()
+                        } else {
+                            Snackbar.make(
+                                requireView(),
+                                "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                Snackbar.LENGTH_LONG
+                            ).apply {
+                                setAction(getString(R.string.undo_message)) {
+                                    homeViewModel.deleteTrashNote(note.id)
+                                }
+                            }.show()
+                        }
+                    }
+
+                    is DrawerSelectedItem.DraftNotes -> {
+                        AlertDialog.Builder(requireContext())
+                            .setMessage(getString(R.string.delete_note_in_draft_message))
+                            .setPositiveButton(
+                                "Confirm"
+                            ) { dialog, _ ->
+                                homeViewModel.deleteDraftNote(note.id)
+                                dialog.dismiss()
+                                Snackbar.make(
+                                    requireView(),
+                                    "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                                    Snackbar.LENGTH_LONG
+                                ).apply {
+                                    setAction(getString(R.string.undo_message)) {
+                                        homeViewModel.insertDraftedNote(note.convertNoteDraftEntity())
+                                    }
+                                }.show()
+                            }
+                            .setNegativeButton(
+                                "Cancel"
+                            ) { dialog, _ ->
+                                dialog.dismiss()
+                                adapter?.let { noteAdapter ->
+                                    binding.homeNotesRecyclerView.adapter = noteAdapter
+                                }
+                            }
+                            .setCancelable(true)
+                            .setOnCancelListener {
+                                adapter?.let { noteAdapter ->
+                                    binding.homeNotesRecyclerView.adapter = noteAdapter
+                                }
+                            }
+                            .show()
+                    }
+
+                    is DrawerSelectedItem.BookmarkedNotes -> {
+                        homeViewModel.deleteBookmarkedNote(note.id)
+                        homeViewModel.insertTrashNote(note.convertNoteTrashEntity())
+                        Snackbar.make(
+                            requireView(),
+                            "${note.body.getTitleFromNote()} ${getString(R.string.deleted_message)}",
+                            Snackbar.LENGTH_LONG
+                        ).apply {
+                            setAction(getString(R.string.undo_message)) {
+                                homeViewModel.insertBookmarkedNote(note.convertNoteBookMarkEntity())
+                                homeViewModel.deleteTrashNote(note.id)
+                            }
+                        }.show()
+                    }
+                }
             }
         }
         this.layoutManager = LinearLayoutManager(requireContext())
     }
 
-    private fun setSwipeRefreshLayout(notes: List<NoteEntity>, adapter: HomeNotesRecyclerViewAdapter?){
+    private fun setSwipeRefreshLayout(
+        notes: List<NoteEntity>,
+        adapter: HomeNotesRecyclerViewAdapter?
+    ) {
         binding.homeFragmentSwipeRefreshLayout.apply {
             setOnRefreshListener {
                 adapter?.let { noteAdapter ->
@@ -458,8 +693,11 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun setSearchView(notes: List<NoteEntity>, homeNotesAdapter: HomeNotesRecyclerViewAdapter?) = binding.homeSearchView.apply {
-        setOnQueryTextListener(object : SearchView.OnQueryTextListener{
+    private fun setSearchView(
+        notes: List<NoteEntity>,
+        homeNotesAdapter: HomeNotesRecyclerViewAdapter?
+    ) = binding.homeSearchView.apply {
+        setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -476,9 +714,6 @@ class HomeFragment : Fragment() {
                 return false
             }
         })
-        setOnQueryTextFocusChangeListener { _, hasFocus ->
-            requireActivity().findViewById<BottomAppBar>(R.id.bottom_app_bar).menu.findItem(R.id.bottom_bar_item_back_arrow).isVisible = !hasFocus
-        }
     }
 
 }
