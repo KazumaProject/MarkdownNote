@@ -157,7 +157,7 @@ class SettingFragment : PreferenceFragmentCompat() {
                         }catch (e: Exception){
                             Snackbar.make(
                                 requireView(),
-                                "Saved text is not valid.",
+                                "${e.message}",
                                 Snackbar.LENGTH_LONG
                             ).show()
                             e.printStackTrace()

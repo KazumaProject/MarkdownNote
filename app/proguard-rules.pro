@@ -20,4 +20,5 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keepnames class com.kazumaproject.markdownnote.database.note.** { *; }
+-keep class com.kazumaproject.markdownnote.database.note.** { *; }
+-keepattributes Signature
