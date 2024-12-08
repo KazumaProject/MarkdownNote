@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/markwon_show_bg_color"
-    tools:context=".ui.show.ShowFragment">
+    tools:context=".ui.show.ShowFragment"
+    android:fitsSystemWindows="true">
 
     <!-- ScrollView containing Markwon content -->
     <ScrollView
@@ -13,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="4dp"
+        android:paddingBottom="?attr/actionBarSize"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -20,13 +22,12 @@
             android:id="@+id/show_fragment_markwon_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="?attr/actionBarSize"
             android:background="@color/markwon_show_bg_color"
             android:fontFamily="@font/regular"
             android:gravity="top"
             android:minHeight="256dp"
             android:paddingHorizontal="16dp"
-            android:paddingVertical="16dp"
+            android:paddingTop="16dp"
             android:textColor="@color/text_color_main"
             android:textSize="20sp" />
     </ScrollView>

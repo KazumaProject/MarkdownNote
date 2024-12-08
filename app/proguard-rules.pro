@@ -21,4 +21,3 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class com.kazumaproject.markdownnote.database.note.** { *; }
--keepattributes Signature
